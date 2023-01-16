@@ -1,0 +1,129 @@
+.input__container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding:  5px 0;
+}
+.input__label {
+  color: var(--gray);
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0 5px;
+}
+.address_container{
+  display: flex;
+  gap: 10px;
+}
+.address_container input{
+  width: 100%;
+}
+.checkbox_container{
+  display: flex;
+  justify-content: space-between;
+  color: var(--gray);
+  font-size: 14px;
+  font-weight: 700;
+}
+.checkbox_1{
+  background: rgb(224, 224, 224);
+  padding: 5px 10px;
+  border-radius: 5px;
+  display: flex;
+  gap: 5px;
+}
+.submit_button{
+  margin-top: 5px;
+  padding: 10px 20px;
+}
+
+
+
+
+
+.modalForm {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+}
+
+/* .form__inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 2rem;
+  width: 90%;
+} */
+
+.infoButton {
+  width: 6rem;
+  height: 2rem;
+  margin: 2px;
+  /* align-self: flex-end; */
+}
+
+.popUp__body {
+  padding: 20px 0;
+  color: var(--gray);
+}
+.popUp__submit_btns {
+  display: flex;
+  float: right;
+}
+.popUp {
+  padding: 10px;
+  margin-right: 10px;
+}
+
+
+.infoInput {
+  margin-bottom: 10px;
+  border: none;
+  outline: none;
+  background-color: var(--inputColor);
+  border-radius: 8px;
+  padding: 20px;
+  width: 100%;
+  /* flex: 1; */
+}
+.input__error {
+  color: var(--red);
+  font-size: 12px;
+  font-weight: 700;
+  margin: 0 5px;
+}
+.form__select {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 0.5rem;
+}
+.form__select > select {
+  width: 70%;
+}
+
+.bill__header {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px;
+}
+.bill__info {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  gap: 5px;
+}
+.bill__info p {
+  padding: 10px;
+  font-size: 12px;
+}
+.switch {
+  padding: 0 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  cursor: pointer;
+  /* color: #5bc8ab; */
+  margin-right: auto;
+}

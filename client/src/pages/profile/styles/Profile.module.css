@@ -1,0 +1,133 @@
+.Profile__wrapper {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  width: 100vw;
+  height: 100vh;
+  /* position: relative; */
+}
+.Profile__left {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  padding: 10px;
+}
+
+.Profile__center {
+  
+  display: flex;
+  padding: 10px;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100vh;
+  overflow: auto;
+  border-radius: 10px;
+}
+.center__profile__section{
+  /* background: rgb(102, 72, 72); */
+  
+
+}
+.user__chart{
+  height: 350px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.bill__table{
+}
+
+.Profile__right {
+  padding: 10px;
+  position: relative;
+}
+
+@media screen and (max-width: 768px) {
+  .Profile__wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .Profile__left {
+    width: 100%;
+    position: fixed;
+    top: 0;
+  }
+  .Profile__center {
+    margin-top: 65px;
+    height: calc(100vh - 140px );
+    overflow-y: scroll;
+  }
+
+  .user__chart{
+    /* overflow: auto; */
+  }
+  .bill__table{
+    /* overflow: auto; */
+  }
+  .Profile__right {
+    width: 100%;
+    position: fixed;
+    bottom: -10px;
+    /* margin-left: -10px; */
+  }
+}
+
+
+.scrollUp__icon {
+  color: var(--orange);
+  font-size: 30px;
+  font-weight: 900;
+  position: absolute;
+  right: 30px;
+  bottom: 0;
+  animation: MoveUpDown 4s linear infinite;
+}
+@keyframes MoveUpDown {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+/* @media screen and (max-width: 769px) {
+  .Profile__wrapper {
+    grid-template-columns: 1fr;
+  }
+  .Profile__right {
+    width: 100%;
+    position: fixed;
+    top: 0;
+  }
+  .RightSide {
+    position: fixed;
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    border-radius: 20px;
+  }
+  .navIcons {
+    margin-top: 0rem;
+  }
+  .navIcons > img {
+    cursor: pointer;
+  }
+
+  .navIcons > a > img {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  .Profile__left {
+    width: 100%;
+    position: fixed;
+    top: 80px;
+  }
+
+  .Profile-center {
+    margin-top: 300px;
+    height: calc(100vh - 370px);
+    z-index: 5;
+  }
+} */

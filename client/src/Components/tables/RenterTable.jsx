@@ -1,0 +1,239 @@
+import "./TableStyle.css";
+import { AgGridReact } from "ag-grid-react";
+import AssignRenter from "../modals/renterModal/AssignRenter";
+import { useCallback, useRef, useState } from "react";
+import UnAssignRenter from "../modals/renterModal/UnAssignRenter";
+import { useSelector } from "react-redux";
+import UpdateRenter from "../modals/renterModal/UpdateRenter";
+import ConfirmationModal from "../modals/ConfirmationModal";
+
+const RenterTable = ({ data }) => {
+  const gridRef = useRef();
+  const [isAssignData, setIsAssignData] = useState();
+  const [removeData, setRemoveData] = useState();
+  const [updateModalOpened, setUpdateModalOpened] = useState(false);
+  const [updateData, setUpdateData] = useState({});
+  const [confirmationPopUp, setConfirmationPopUp] = useState(false);
+  const [assignModalOpened, setAssignModalOpened] = useState(false);
+  const [unAssignModalOpened, setUnAssignModalOpened] = useState(false);
+
+  const { user } = useSelector((state) => state.auth.user);
+
+  const handleRemove = (renter) => {
+    if (
+      renter.apartmentId === "" &&
+      renter.apartNo === "" &&
+      renter.roomNo === ""
+    ) {
+      setConfirmationPopUp(true);
+      setRemoveData({ ownerId: user._id, renterId: renter._id });
+      setIsAssignData(
+        //   {
+        //   ownerId: "",
+        //   apartmentId: "",
+        //   renterId: "",
+        // }
+        null
+      );
+    } else {
+      setConfirmationPopUp(true);
+      setRemoveData(
+        // { ownerId: "", renterId: "" }
+        null
+      );
+      setIsAssignData(renter);
+      // const unAssignedData = {
+      //   ownerId: user._id,
+      //   apartmentId: renter.apartmentId,
+      //   renterId: renter._id,
+      // };
+    }
+  };
+
+  const handleUpdate = (renter) => {
+    setUpdateData({ ...renter, ownerId: user._id });
+    setUpdateModalOpened(true);
+  };
+
+  const defaultColDef = {
+    sortable: true,
+    filter: true,
+    floatingFilter: true,
+  };
+  const renterColumns = [
+    {
+      headerName: "First name",
+      field: "firstname",
+      resizable: true,
+      width: 150,
+    },
+    {
+      headerName: "Last Name",
+      field: "lastname",
+      resizable: true,
+      width: 100,
+    },
+    { headerName: "Phone No", field: "phoneNo", resizable: true, width: 100 },
+    { headerName: "Username", field: "username", resizable: true, width: 100 },
+    {
+      headerName: "Address",
+      field: "livesin",
+      resizable: true,
+      width: 100,
+    },
+    {
+      headerName: "Nid",
+      field: "nid",
+      resizable: true,
+      width: 100,
+    },
+    {
+      headerName: "Apartment number",
+      field: "apartNo",
+      resizable: true,
+      width: 100,
+      cellStyle: function (params) {
+        if (params.data.apartNo) {
+          return {
+            color: "white",
+            backgroundColor: "#5bc8ab",
+            fontWeight: 900,
+          };
+        } else {
+          return null;
+        }
+      },
+    },
+
+    {
+      headerName: "Room number",
+      field: "roomNo",
+      // valueFormatter: dateFormatter,
+      resizable: true,
+      width: 150,
+      cellStyle: function (params) {
+        if (params.data.roomNo) {
+          return {
+            color: "white",
+            backgroundColor: "#5bc887",
+            fontWeight: 900,
+          };
+        } else {
+          return null;
+        }
+      },
+    },
+    {
+      headerName: "Advance Rent",
+      field: "advanceRent",
+      resizable: true,
+      width: 100,
+      cellStyle: function (params) {
+        if (params.data.advanceRent) {
+          return {
+            color: "black",
+            backgroundColor: "#c4c85b",
+            fontWeight: 900,
+          };
+        } else {
+          return null;
+        }
+      },
+    },
+    {
+      headerName: "Actions",
+      field: "_id",
+      resizable: true,
+      width: 180,
+      cellRenderer: (params) => (
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <button
+            className="updateButton btns"
+            onClick={() => handleUpdate(params.data)}
+          >
+            update
+          </button>
+          <button
+            className="removeButton btns"
+            onClick={() => handleRemove(params.data)}
+          >
+            remove
+          </button>
+        </div>
+      ),
+    },
+  ];
+
+  const autoSizeAll = useCallback((skipHeader) => {
+    const allColumnIds = [];
+    gridRef.current.columnApi.getColumns().forEach((column) => {
+      allColumnIds.push(column.getId());
+    });
+    gridRef.current.columnApi.autoSizeColumns(allColumnIds, skipHeader);
+  }, []);
+  return (
+    <>
+      <UpdateRenter
+        updateModalOpened={updateModalOpened}
+        setUpdateModalOpened={setUpdateModalOpened}
+        data={updateData}
+      />
+      <ConfirmationModal
+        confirmationPopUp={confirmationPopUp}
+        setConfirmationPopUp={setConfirmationPopUp}
+        data={removeData}
+        popUp_type="Remove_Renter"
+        isAssignData={isAssignData}
+      />
+      <div className="card table_container">
+        <div className="table__header">
+          <button
+            className="button create__btn"
+            onClick={() => setAssignModalOpened(true)}
+          >
+            Assign
+          </button>
+          <AssignRenter
+            assignModalOpened={assignModalOpened}
+            setAssignModalOpened={setAssignModalOpened}
+            renterData={data}
+            searchPopUp={false}
+          />
+          <button
+            className="removeButton create__btn"
+            onClick={() => setUnAssignModalOpened(true)}
+          >
+            Unassign
+          </button>
+          <UnAssignRenter
+            unAssignModalOpened={unAssignModalOpened}
+            setUnAssignModalOpened={setUnAssignModalOpened}
+            renterData={data}
+          />
+        </div>
+        <div
+          className="ag-theme-alpine"
+          style={{ height: "50vh", width: "100%" }}
+        >
+          <AgGridReact
+            ref={gridRef}
+            rowData={data}
+            columnDefs={renterColumns}
+            defaultColDef={defaultColDef}
+          />
+        </div>
+        <span className="subtitle " style={{ marginLeft: "15px" }}>
+          <i
+            className="uil uil-arrows-h-alt button"
+            onClick={() => {
+              autoSizeAll(false);
+            }}
+          ></i>
+          click here to resize table
+        </span>
+      </div>
+    </>
+  );
+};
+
+export default RenterTable;

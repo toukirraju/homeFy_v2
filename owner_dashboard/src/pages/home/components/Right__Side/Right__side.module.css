@@ -1,0 +1,50 @@
+.right__nav {
+  height: 4rem;
+  display: flex;
+  /* width: 100%; */
+  margin-bottom: 10px;
+}
+
+.navIcons {
+  width: 100%;
+  display: flex;
+  /* grid-template-columns: auto auto auto auto; */
+  justify-content: space-around;
+  align-items: center;
+}
+.navIcons > a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.navIcons > a:hover {
+  /* background: unset;
+  box-shadow: unset; */
+  /* color: unset; */
+  width: unset;
+  cursor: pointer;
+}
+
+.right__logOut:hover {
+  background: var(--location);
+}
+.message__container {
+  height: calc(100vh - 100px);
+  width: 95%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  z-index: 1;
+}
+
+@media screen and (max-width: 768px) {
+  .navIcons > a {
+    color: gray;
+  }
+  .message__container {
+    position: fixed;
+    top: 10px;
+    height: calc(100vh - 87px);
+  }
+}

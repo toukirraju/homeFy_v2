@@ -1,0 +1,46 @@
+        {user ? (
+          <>
+            {user?.user.role === undefined ? (
+              <>
+                {/* ************ renter Login start ************/}
+                <RentersApp user={user} />
+                {/* ************ renter Login end *************/}
+              </>
+            ) : (
+              <>
+                {user ? (
+                  <>
+                    {/* ************ owner Login start ************ */}
+                    <OwnerApp user={user} />
+                    {/* ************ owner Login end ************ */}
+                  </>
+                ) : (
+                  <>
+                    {/* ************ Auth start *************/}
+                    <Routes>
+                      <Route
+                        path="auth"
+                        element={user ? <Navigate to="/" /> : <Auth />}
+                      />
+                      <Route
+                        path="*"
+                        element={<Navigate to="/auth" replace />}
+                      />
+                    </Routes>
+                    {/* ************ Auth end *************/}
+                  </>
+                )}
+              </>
+            )}
+          </>
+        ) : (
+          <>
+            <Routes>
+              <Route
+                path="auth"
+                element={user ? <Navigate to="/" /> : <Auth />}
+              />
+              <Route path="*" element={<Navigate to="/auth" replace />} />
+            </Routes>
+          </>
+        )}
