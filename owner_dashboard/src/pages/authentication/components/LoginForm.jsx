@@ -238,7 +238,7 @@ const LoginForm = () => {
                   <label htmlFor="role">Role</label>
 
                   <select
-                    name="roles"
+                    name="role"
                     value={values.role}
                     onChange={handleChange}
                     onBlur={handleBlur}

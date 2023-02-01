@@ -26,18 +26,10 @@ const Transaction = () => {
     dispatch(temporaryBill());
   }, [date, isReload, dispatch]);
 
+  useEffect(() => {}, [billData, temporaryData]);
+
   return (
     <>
-      {/* <PayableRenters
-        payableModalOpened={payableModalOpened}
-        setPayableModalOpened={setPayableModalOpened}
-        data={payableRenters}
-      />
-      <RenterDropDown
-        renterDropDownModalOpened={renterDropDownModalOpened}
-        setRenterDropDownModalOpened={setRenterDropDownModalOpened}
-        data={renterData}
-      /> */}
       <div className="card headerContainer">
         <h3 className="title">Transaction</h3>
         <div className="bulkCreate">
@@ -56,39 +48,6 @@ const Transaction = () => {
           />
         </div>
       </div>
-      {/* <div className={`card ${Style.btn__container}`}>
-        <DatePicker
-          style={{ display: "none" }}
-          dropdownType="modal"
-          variant="unstyled"
-          firstDayOfWeek="sunday"
-          dropdownOpened={isMakeBillOpen}
-          setDropdownOpened={() => setIsMakeBillOpen(!isMakeBillOpen)}
-          maxDate={new Date()}
-          value={date}
-          onChange={handleMakeBillChange}
-        />
-
-        <button
-          className="tempBill__button"
-          onClick={() => rentersPopUp()}
-          disabled={loading}
-        >
-          {loading ? <LoadingSpinner /> : "Temporary Bill"}
-        </button>
-        <button
-          className={Style.makeBill__button}
-          onClick={() => setIsMakeBillOpen(!isMakeBillOpen)}
-        >
-          Make Bill
-        </button>
-        <button
-          className="button "
-          onClick={() => setIsTempBillOpen(!isTempBillOpen)}
-        >
-          Renter profile
-        </button>
-      </div> */}
       <TransactionButtons />
       <div className={` ${Style.bills__container}`}>
         <div className={Style.billTable}>

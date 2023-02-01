@@ -1,7 +1,30 @@
 const AdminModel = require("../database/models/adminModel");
 const { serverError, resourceError } = require("../utils/error");
 
-//********* Update Personal Profile ************//
+//********* Get All Admins ************\\
+
+const GetAllAdmins = async (req, res) => {
+  // let { _id } = req.user;
+
+  let admins = await AdminModel.find({
+    // ownerId: _id,
+  });
+  try {
+    if (admins) {
+      admins = admins.map((admin) => {
+        const { password, ...otherDetails } = admin._doc;
+        return otherDetails;
+      });
+      res.status(200).json(admins);
+    } else {
+      return resourceError(res, "No admin found");
+    }
+  } catch (error) {
+    serverError(res, error);
+  }
+};
+
+//********* Update Personal Profile ************\\
 
 const UpdatePersonalProfile = async (req, res) => {
   try {
@@ -18,7 +41,7 @@ const UpdatePersonalProfile = async (req, res) => {
   }
 };
 
-//********* Update Admin Profile ************//
+//********* Update Admin Profile ************\\
 
 const UpdateAdminProfile = async (req, res) => {
   const id = req.params.id;
@@ -41,7 +64,7 @@ const UpdateAdminProfile = async (req, res) => {
   }
 };
 
-//********* Delete Admin Profile ************//
+//********* Delete Admin Profile ************\\
 
 const DeleteAdminProfile = async (req, res) => {
   const id = req.params.id;
@@ -80,6 +103,7 @@ const DeleteAdminProfile = async (req, res) => {
 };
 
 module.exports = {
+  GetAllAdmins,
   UpdatePersonalProfile,
   UpdateAdminProfile,
   DeleteAdminProfile,

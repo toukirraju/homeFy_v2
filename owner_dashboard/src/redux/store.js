@@ -16,7 +16,7 @@ export default configureStore({
   reducer: {
     auth: authReducer,
     message: messageReducer,
-    houseInfo: houseOwnerReducer,
+    owner: houseOwnerReducer,
     posts: postReducer,
     apartmentInfo: apartmentReducer,
     renterInfo: renterReducer,

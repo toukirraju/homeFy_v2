@@ -6,9 +6,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { payableUsers } from "../../../../redux/slices/billSlice";
 
 import LoadingSpinner from "../../../../Components/LoadingSpinner";
-import PayableRenters from "../../../../Components/modals/billModal/PayableRenters";
-import RenterDropDown from "../../../../Components/modals/searchModal/RenterDropDown";
 import { getAllrenters } from "../../../../redux/slices/renterSlice";
+import PayableRenters from "../../modals/PayableRenters";
+import RenterDropDown from "../../modals/RenterDropDown";
 const TransactionButtons = () => {
   const dispatch = useDispatch();
   const { payableRenters } = useSelector((state) => state.billInfo);
@@ -68,7 +68,6 @@ const TransactionButtons = () => {
           value={date}
           onChange={handleMakeBillChange}
         />
-
         <button
           className="tempBill__button"
           onClick={() => rentersPopUp()}
@@ -94,11 +93,14 @@ const TransactionButtons = () => {
           setPayableModalOpened={setPayableModalOpened}
           data={payableRenters}
         />
-        <RenterDropDown
-          renterDropDownModalOpened={renterDropDownModalOpened}
-          setRenterDropDownModalOpened={setRenterDropDownModalOpened}
-          data={renterData}
-        />
+
+        {renterData.length !== 0 && (
+          <RenterDropDown
+            renterDropDownModalOpened={renterDropDownModalOpened}
+            setRenterDropDownModalOpened={setRenterDropDownModalOpened}
+            data={renterData}
+          />
+        )}
       </div>
 
       {loading && (

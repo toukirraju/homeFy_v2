@@ -11,13 +11,16 @@ const tempBillSchema = new Schema(
       type: String,
       required: true,
     },
+    defaultHomeID: {
+      type: String,
+    },
     renterName: {
       type: String,
     },
-    e_bill: {
+    electricity_bill: {
       type: Number,
     },
-    o_bill: {
+    others: {
       type: Number,
     },
     tempDue: {

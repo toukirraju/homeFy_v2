@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./ProfileCard.css";
+import Style from "./ProfileCard.module.css";
 import Profle from "../../../../assets/userlogo.png";
 import { Link } from "react-router-dom";
 import { UilUserCircle, UilPen } from "@iconscout/react-unicons";
@@ -9,19 +9,20 @@ import { useSelector } from "react-redux";
 
 const ProfileCard = ({ data }) => {
   // const isMobile = useMediaQuery("(max-width: 768px)");
+
   const [modalOpened, setModalOpened] = useState(false);
-  const { user } = useSelector((state) => state.auth);
+  // const { user } = useSelector((state) => state.auth);
   return (
-    <div className="card ProfileCard_wrapper">
-      <div className="Profile__image__section">
-        <div className="profile_image">
+    <div className={`card ${Style.ProfileCard_wrapper}`}>
+      <div className={` ${Style.Profile__image__section}`}>
+        <div className={` ${Style.profile_image}`}>
           <img src={Profle} alt="" />
         </div>
-        <div className="image__upload">
+        <div className={` ${Style.image__upload}`}>
           <input type="file" />
         </div>
       </div>
-      <div className="edit__button">
+      <div className={` ${Style.edit__button}`}>
         <UilPen
           width="2rem"
           height="1.2rem"
@@ -30,30 +31,30 @@ const ProfileCard = ({ data }) => {
         <ProfileUpdateModal
           modalOpened={modalOpened}
           setModalOpened={setModalOpened}
-          data={user}
+          data={data}
         />
       </div>
-      <div className="Profile__info__section">
+      <div className={` ${Style.Profile__info__section}`}>
         <div>
           <span>Name:</span>
-          Mr. Ali
+          {data.firstname + " " + data.lastname}
         </div>
         <div>
           {" "}
           <span>Phone:</span>
-          019444654434
+          {data.phone}
         </div>
         <div>
           <span>Nid:</span>
-          25346455767
+          {data.nid}
         </div>
         <div>
           <span>Profession:</span>
-          Businessman
+          {data.profession}
         </div>
         <div>
           <span>Role:</span>
-          House Owner
+          House {data.role}
         </div>
       </div>
     </div>

@@ -1,5 +1,6 @@
 const passport = require("passport");
 const AdminModel = require("../database/models/adminModel");
+const OwnerModel = require("../database/models/ownerModel");
 
 verifyToken = (req, res, next) => {
   passport.authenticate("jwt", (err, user, info) => {
@@ -10,7 +11,7 @@ verifyToken = (req, res, next) => {
     }
     if (!user) {
       return res.status(400).json({
-        message: "Admin Authentication Failed",
+        message: "Authentication Failed",
       });
     }
     // console.log(req.user);
@@ -74,10 +75,43 @@ isModerator = (req, res, next) => {
   });
 };
 
+isOwner = (req, res, next) => {
+  // console.log(req);
+  OwnerModel.findById(req.user._id).exec((err, user) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+    if (user.role === "owner") {
+      next();
+      return;
+    }
+    res.status(403).send({ message: "Require Owner Role!" });
+  });
+};
+
+isManager = (req, res, next) => {
+  // console.log(req);
+  OwnerModel.findById(req.user._id).exec((err, user) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+
+    if (user.role === "manager") {
+      next();
+      return;
+    }
+    res.status(403).send({ message: "Require Manager Role!" });
+  });
+};
+
 const authVerify = {
   verifyToken,
   isSuperAdmin,
   isAdmin,
   isModerator,
+  isOwner,
+  isManager,
 };
 module.exports = { authVerify };

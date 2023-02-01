@@ -1,42 +1,35 @@
 import { Modal, useMantineTheme } from "@mantine/core";
+import Styles from "../../../Styles/ModalStyle.module.css";
 import { useMediaQuery } from "@mantine/hooks";
 import { useState } from "react";
+import { Formik, Form, Field } from "formik";
+import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
-import { createMultiApartment } from "../../../redux/slices/apartmentSlice";
+import {
+  allApartments,
+  createMultiApartment,
+} from "../../../redux/slices/apartmentSlice";
 import { setReload } from "../../../redux/slices/reloadSlice";
 import LoadingSpinner from "../../../Components/LoadingSpinner";
+import { toast } from "react-toastify";
+import { clearMessage } from "../../../redux/slices/message";
+
+const validation = Yup.object().shape({
+  numOfFloors: Yup.number()
+    .min(1, " Zero '0' not accepted. Minimum length is 1-100")
+    .max(100, "Too Long! Maximum length is 1-100")
+    .required("Required"),
+});
 
 const CreateBulkApartment = ({ modalOpened, setModalOpened }) => {
   const theme = useMantineTheme();
   const isMobile = useMediaQuery("(max-width: 600px)");
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-  const { user } = useSelector((state) => state.auth.user);
-  const [formData, setFormData] = useState({
-    ownerId: user._id,
-    ownerName: user.firstname + " " + user.lastname,
+  const { apartmentData } = useSelector((state) => state.apartmentInfo);
+
+  const initialValues = {
     numOfFloors: 0,
-  });
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setLoading(true);
-    dispatch(createMultiApartment(formData))
-      .unwrap()
-      .then(() => {
-        setModalOpened(false);
-        setLoading(false);
-        dispatch(setReload());
-        // toast.success("Successfully registered!");
-
-        // dispatch(clearMessage());
-      })
-      .catch(() => {
-        setLoading(false);
-      });
   };
 
   const resetInput = (e) => {
@@ -58,33 +51,69 @@ const CreateBulkApartment = ({ modalOpened, setModalOpened }) => {
         opened={modalOpened}
         onClose={() => setModalOpened(false)}
       >
-        <form className="infoForm">
-          <h3>Bulk Create</h3>
-          <span className="subtitle">
-            * if apartment already created then you can only create which floor
-            you want to create
-          </span>
-          <div>
-            <input
-              type="number"
-              className="infoInput"
-              name="numOfFloors"
-              onChange={handleChange}
-              value={formData.numOfFloors}
-              onFocus={(e) => resetInput(e)}
-              placeholder="Number of floors"
-              required
-            />
-          </div>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validation}
+          onSubmit={(values, { resetForm }) => {
+            // same shape as initial values
+            // console.log(values);
+            setLoading(true);
+            dispatch(createMultiApartment(values))
+              .unwrap()
+              .then(() => {
+                setModalOpened(false);
+                setLoading(false);
+                dispatch(allApartments());
 
-          <button
-            className="button infoButton"
-            disabled={loading}
-            onClick={handleSubmit}
-          >
-            {loading ? <LoadingSpinner /> : "Create"}
-          </button>
-        </form>
+                resetForm();
+                toast.success("Created multiple apartment");
+
+                dispatch(clearMessage());
+              })
+              .catch(() => {
+                setLoading(false);
+              });
+          }}
+        >
+          {({ errors, touched }) => (
+            <Form>
+              <div className={Styles.Modal_header}>
+                <h3 className={Styles.Modal_header_title}>
+                  {apartmentData.length === 0
+                    ? "Create Multipule Apartment"
+                    : "Create Apartment"}
+                </h3>
+                <span className={Styles.Modal_header_subtitle}>
+                  {apartmentData.length === 0
+                    ? "* if you want to create multiple apartment then you just enter how many floors you want to create"
+                    : "* You just enter floor number where you want to create apartment"}
+                </span>
+              </div>
+              <div className={Styles.input__container}>
+                <label htmlFor="numOfFloors" className={Styles.input__label}>
+                  Number of Floor
+                </label>
+                <Field
+                  name="numOfFloors"
+                  type="number"
+                  onFocus={(e) => resetInput(e)}
+                />
+                {errors.numOfFloors && touched.numOfFloors ? (
+                  <div className={Styles.input__error}>
+                    {errors.numOfFloors}
+                  </div>
+                ) : null}
+              </div>
+              <button
+                className={Styles.submit_button}
+                type="submit"
+                disabled={loading}
+              >
+                {loading ? <LoadingSpinner /> : "Create"}
+              </button>
+            </Form>
+          )}
+        </Formik>
       </Modal>
     </>
   );

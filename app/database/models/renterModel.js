@@ -3,8 +3,35 @@ const Schema = mongoose.Schema;
 
 const renterSchema = new Schema(
   {
+    // those fields are used when user was assigned on apartment  \\//
     ownerId: {
       type: String,
+    },
+    defaultHomeID: {
+      type: String,
+    },
+    apartment: {
+      type: mongoose.Types.ObjectId,
+      ref: "ApartmentModel",
+    },
+    apartmentId: {
+      type: String,
+    },
+    apartment_number: {
+      type: String,
+    },
+    roomNumber: {
+      type: String,
+    },
+    advanceRent: {
+      type: Number,
+    },
+    assignedDate: {
+      type: Date,
+    },
+    //\\those fields are used when user was assigned on apartment  //\\
+    billingDate: {
+      type: Date,
     },
     username: {
       type: String,
@@ -20,28 +47,40 @@ const renterSchema = new Schema(
     lastname: {
       type: String,
     },
-    phoneNo: {
+    phone: {
       type: String,
       require: true,
     },
-    nid: {
+    address: {
+      type: String,
+      // require: true,
+    },
+    city: {
+      type: String,
+      // require: true,
+    },
+    area: {
+      type: String,
+      // require: true,
+    },
+    postCode: {
+      type: String,
+      // require: true,
+    },
+    National_ID_Passport_no: {
       type: String,
     },
-    apartmentId: {
-      type: String,
-    },
-    apartNo: {
-      type: String,
-    },
-    roomNo: {
-      type: String,
-    },
-    advanceRent: {
-      type: Number,
+
+    isBlocked: {
+      type: Boolean,
+      default: false,
     },
     profilePicture: String,
-    coverPicture: String,
-    livesin: String,
+    documents: {
+      nid: String,
+      income_tax: String,
+      others_doc: String,
+    },
   },
   { timestamps: true }
 );

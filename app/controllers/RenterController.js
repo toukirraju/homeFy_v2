@@ -3,7 +3,7 @@ const { serverError, resourceError } = require("../utils/error");
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
 
-// Create new renter
+//************* Create new renter ***************\\
 
 const createRenter = async (req, res) => {
   const password = "12345";
@@ -11,17 +11,24 @@ const createRenter = async (req, res) => {
   const hashedPass = await bcrypt.hash(password, salt);
 
   const newRenter = new RenterInfoModel({
-    ownerId: req.body.ownerId,
+    ownerId: req.user._id,
+    defaultHomeID: req.user.defaultHomeID,
+    houseName: req.user.houseName,
+
     username: req.body.username,
-    phoneNo: req.body.phoneNo,
+    phone: req.body.phone,
     password: hashedPass,
     firstname: req.body.firstname,
     lastname: req.body.lastname,
-    livesin: req.body.livesin,
-    nid: req.body.nid,
-    apartmentId: "",
-    apartNo: "",
-    roomNo: "",
+    address: req.body.address,
+    city: req.body.city,
+    area: req.body.area,
+    postCode: req.body.postCode,
+    National_ID_Passport_no: req.body.National_ID_Passport_no,
+
+    // apartmentId: "",
+    // apartment_number: "",
+    // roomNo: "",
     advanceRent: req.body.advanceRent,
   });
   try {
@@ -42,16 +49,17 @@ const createRenter = async (req, res) => {
   }
 };
 
-// Get all renter
-
+//************* Get all renter ***************\\
 const getAllRenters = async (req, res) => {
-  let { _id } = req.user;
+  let { _id, defaultHomeID } = req.user;
   // adminId: role === "" || role === undefined ? _id : homeId,
   // ownerId: role === "owner" ? _id : ownerId,
 
   let renters = await RenterInfoModel.find({
     ownerId: _id,
-  });
+    defaultHomeID,
+  }).populate("apartment");
+  // console.log(renters);
   try {
     if (renters) {
       renters = renters.map((renter) => {
@@ -67,8 +75,7 @@ const getAllRenters = async (req, res) => {
   }
 };
 
-// find renter
-
+//************* find renter ***************\\
 const findRenter = async (req, res) => {
   // let { _id } = req.user;
   const { searchId } = req.params;
@@ -80,7 +87,7 @@ const findRenter = async (req, res) => {
         username: searchId,
       },
       {
-        phoneNo: searchId,
+        phone: searchId,
       },
     ],
   });
@@ -107,8 +114,8 @@ const findRenter = async (req, res) => {
   }
 };
 
-// Update a renter
-
+//
+//************* Update a renter ***************\\
 const updateRenter = async (req, res) => {
   const renterId = req.params.id;
   // const { ownerId } = req.body;
@@ -129,9 +136,9 @@ const updateRenter = async (req, res) => {
   }
 };
 
-//remove renter form home
-
-const removeRenterFormHome = async (req, res) => {
+//
+//************* remove renter from home ***************\\
+const removeRenterFromHome = async (req, res) => {
   const renterId = req.params.id;
   // const { ownerId } = req.body;
   const { _id } = req.user;
@@ -142,8 +149,10 @@ const removeRenterFormHome = async (req, res) => {
       await renter.updateOne({
         $set: {
           ownerId: "",
+          defaultHomeID: "",
+          houseName: "",
           apartmentId: "",
-          apartNo: "",
+          apartment_number: "",
           roomNo: "",
           advanceRent: 0,
         },
@@ -184,6 +193,6 @@ module.exports = {
   getAllRenters,
   findRenter,
   updateRenter,
-  removeRenterFormHome,
+  removeRenterFromHome,
   deleteRenter,
 };

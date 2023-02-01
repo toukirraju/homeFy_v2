@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { setMessage } from "./message";
-import ModeratorService from "../services/moderator.service";
 import RenterService from "../services/renter.api.service";
 
 export const createRenter = createAsyncThunk(
@@ -9,25 +8,6 @@ export const createRenter = createAsyncThunk(
     try {
       const data = await RenterService.createRenter(formData);
       // return  data
-    } catch (error) {
-      const message =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
-        error.toString();
-      thunkAPI.dispatch(setMessage(message));
-      return thunkAPI.rejectWithValue();
-    }
-  }
-);
-
-export const addNewApartment = createAsyncThunk(
-  "mod/addNewApartment",
-  async (apartData, thunkAPI) => {
-    try {
-      await ModeratorService.addApartment(apartData);
-      // return { renters: data };
     } catch (error) {
       const message =
         (error.response &&
@@ -121,7 +101,7 @@ export const removeRenter = createAsyncThunk(
 const initialState = {
   isSuccess: false,
   isPending: false,
-  renterData: null,
+  renters: [],
   searchData: null,
 };
 
@@ -142,15 +122,6 @@ const renterSlice = createSlice({
       state.isPending = false;
     },
 
-    [addNewApartment.fulfilled]: (state, action) => {
-      state.isSuccess = true;
-      state.isAdded = true;
-      // state.data = action.payload;
-    },
-    [addNewApartment.rejected]: (state, action) => {
-      state.isSuccess = false;
-      // state.data = null;
-    },
     [updateRenterInfo.pending]: (state, action) => {
       state.isPending = true;
     },
@@ -169,7 +140,7 @@ const renterSlice = createSlice({
     [getAllrenters.fulfilled]: (state, action) => {
       state.isSuccess = true;
       state.isPending = false;
-      state.renterData = action.payload.renters;
+      state.renters = action.payload.renters;
     },
     [getAllrenters.rejected]: (state, action) => {
       state.isSuccess = false;

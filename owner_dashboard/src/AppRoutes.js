@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import Sidebar from "./Components/Navigation/sidebar/Sidebar";
 import Apartment from "./pages/apartment/Apartment";
@@ -8,9 +9,16 @@ import Message from "./pages/message/Message";
 import Profile from "./pages/profile/Profile";
 import Renter from "./pages/renter/Renter";
 import Transaction from "./pages/transaction/Transaction";
+import { GetProfileInfo } from "./redux/slices/ownerSlice";
 
 const AppRoutes = ({ user }) => {
+  const dispatch = useDispatch();
   const location = useLocation();
+
+  const { success } = useSelector((state) => state.owner);
+  useEffect(() => {
+    dispatch(GetProfileInfo());
+  }, [success]);
   return (
     <>
       <div className="App">

@@ -1,10 +1,12 @@
 import { Modal, useMantineTheme } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
+import Styles from "../../../Styles/ModalStyle.module.css";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { unAssign } from "../../../redux/slices/assignRenterSlice";
 import { setReload } from "../../../redux/slices/reloadSlice";
 import LoadingSpinner from "../../LoadingSpinner";
+import { toast } from "react-toastify";
 
 const UnAssignRenter = ({
   unAssignModalOpened,
@@ -43,6 +45,7 @@ const UnAssignRenter = ({
       .unwrap()
       .then(() => {
         setLoading(false);
+        toast.info("Un-Assigned");
         dispatch(setReload());
         setUnAssignModalOpened(false);
         setSelectedData({
@@ -66,18 +69,20 @@ const UnAssignRenter = ({
         }
         overlayOpacity={0.55}
         overlayBlur={3}
-        size={isMobile ? "sm" : "lg"}
+        size={isMobile ? "sm" : "md"}
         opened={unAssignModalOpened}
         onClose={() => setUnAssignModalOpened(false)}
       >
         {Array.isArray(renterData) === true ? (
           <form>
-            <h3>Unassign Renter</h3>
-            <span className="subtitle">
-              * select the renter which one you want to unassign from the
-              apartment{" "}
-            </span>
-            <div className="form__select">
+            <div className={Styles.Modal_header}>
+              <h3 className={Styles.Modal_header_title}>Unassign Renter</h3>
+              <span className={Styles.Modal_header_subtitle}>
+                * select the renter which one you want to unassign from the
+                apartment
+              </span>
+            </div>
+            <div className={Styles.input__container}>
               <select
                 name="renter"
                 className=""
@@ -87,9 +92,10 @@ const UnAssignRenter = ({
                 <option value="">Select Renter</option>
                 {renterData
                   ? renterData.map((item, index) =>
-                      item.apartNo !== "" && item.roomNo !== "" ? (
+                      item.apartment_number !== "" && item.roomNumber !== "" ? (
                         <option key={index} value={JSON.stringify(item)}>
-                          Name: {item.username} &#10148; Phone: {item.phoneNo}
+                          Name: {item.firstname + " " + item.lastname} &#10148;
+                          Phone: {item.phone}
                         </option>
                       ) : null
                     )
@@ -98,7 +104,7 @@ const UnAssignRenter = ({
             </div>
 
             <button
-              className="removeButton infoButton"
+              className={`removeButton ${Styles.submit_button}`}
               disabled={loading}
               onClick={onSubmit}
             >
@@ -107,7 +113,15 @@ const UnAssignRenter = ({
           </form>
         ) : (
           <>
-            <div
+            <div className={Styles.Modal_header}>
+              <h3 className={Styles.Modal_header_title}>
+                Are you sure to unassign?
+              </h3>
+              <span className={Styles.Modal_header_subtitle}>
+                After unassign you need to re-assign again
+              </span>
+            </div>
+            {/* <div
               style={{
                 margin: "20px 30px",
                 padding: "0 30px",
@@ -119,14 +133,14 @@ const UnAssignRenter = ({
                   marginBottom: "30px",
                 }}
               >
-                Are you sure to unassign?
+                
               </h3>
 
-              <p className="subtitle">After unassign you can re-assign again</p>
-            </div>
+              <p className="subtitle">After unassign you need to re-assign again</p>
+            </div> */}
 
             <button
-              className="removeButton infoButton"
+              className={`removeButton ${Styles.submit_button}`}
               disabled={loading}
               onClick={onSubmit}
               style={{

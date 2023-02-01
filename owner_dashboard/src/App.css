@@ -57,17 +57,14 @@
     padding: 10px 20px;
     color: #e15a3c;
   }
-  .card {
-    /* padding-bottom: 35px; */
-  
-    /* margin: 10px 0; */
+  /* .card {
     background: rgba(255, 255, 255, 0.5);
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
     border: 1px solid rgba(255, 255, 255, 0.18);
     border-radius: 10px;
-  }
+  } */
  
   
 .blur {
@@ -81,11 +78,8 @@
 }
 
 .card {
-  /* padding-bottom: 35px; */
-
-  /* margin: 10px 0; */
   background: rgba(255, 255, 255, 0.5);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  box-shadow: 0 8px 32px 0 rgba(69, 94, 99, 0.33);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
   border: 1px solid rgba(255, 255, 255, 0.18);
@@ -99,13 +93,15 @@
   color: gray;
   font-weight: 600;
 }
-/* form {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-} */
+
+.loading__screen{
+position: fixed;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+z-index: 99999999;
+}
+
 input,
 select {
   border: none;
@@ -122,11 +118,17 @@ select {
 }
 
 button {
-  background-image: linear-gradient(
+  /* background-image: linear-gradient(
     to right,
     #02aab0 0%,
     #00cdac 51%,
     #02aab0 100%
+  ); */
+  background-image: linear-gradient(
+    to right,
+    #8db9bb 0%,
+    #cde2df 51%,
+    #768788 100%
   );
   /* margin: 10px;
   padding: 15px 45px; */
@@ -147,29 +149,34 @@ button:hover {
   text-decoration: none;
 }
 
-/* .button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  border: none;
-  border-radius: 0.5rem;
-  background: var(--buttonBg);
-  transition: all 100ms ease-out;
-} */
+
 button:disabled {
   /* height: 2rem; */
   background: silver;
   pointer-events: none;
   cursor: wait;
 }
-/* .button:hover {
-  cursor: pointer;
-  color: var(--btnHoverColor);
-  background: transparent;
-  border: 2px solid var(--btnHoverColor);
-} */
 
+.submit_button {
+  background-image: linear-gradient(
+    to right,
+    #02aab0 0%,
+    #00cdac 51%,
+    #02aab0 100%
+  );
+ 
+  /* margin: 10px;
+  padding: 15px 45px; */
+  text-align: center;
+  text-transform: uppercase;
+  transition: 0.5s;
+  background-size: 200% auto;
+  color: white;
+  box-shadow: 0 0 20px #eee;
+  border-radius: 10px;
+  display: block;
+  cursor: pointer;
+}
 .removeButton {
   background-image: linear-gradient(
     to right,

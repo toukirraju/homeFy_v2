@@ -1,8 +1,9 @@
 import Style from "../../../../Styles/TableStyle.module.css";
 import { AgGridReact } from "ag-grid-react";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import ConfirmationModal from "../../../../Components/modals/ConfirmationModal";
 import { useLocation } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const BillTable = ({ data }) => {
   const gridRef = useRef();
@@ -31,8 +32,8 @@ const BillTable = ({ data }) => {
       setConfirmationPopUp(true);
       setRemoveId(bill._id);
     } else {
-      // toast.error("you can't remove this bill");
-      console.log("you can't remove this bill");
+      toast.error("you can't remove this bill");
+      // console.log("you can't remove this bill");
     }
   };
   const defaultColDef = {
@@ -130,6 +131,7 @@ const BillTable = ({ data }) => {
         ),
     },
   ];
+  useEffect(() => {}, [data]);
   return (
     <>
       <ConfirmationModal

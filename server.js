@@ -19,17 +19,19 @@ app.use(bodyParser.json());
 app.use(passport.initialize());
 require("./app/middlewares/Passport")(passport);
 
-///////\\\\\\
+///////************************End Points Start******************************\\\\\\
 
 app.use("/auth", require("./app/routers/Auth.routes"));
 app.use("/api/v1/admin", require("./app/routers/Admin.routes"));
-app.use("/api/house", require("./app/routers/HouseInfo.routes"));
-app.use("/api/renter", require("./app/routers/Renter.routes"));
-app.use("/api/apartment", require("./app/routers/Apartment.routes"));
-app.use("/api/bill", require("./app/routers/Bill.routes"));
+app.use("/api/v1/owner", require("./app/routers/Owner.routes"));
+app.use("/api/v1/apartment", require("./app/routers/Apartment.routes"));
+app.use("/api/v1/renter", require("./app/routers/Renter.routes"));
+app.use("/api/v1/bill", require("./app/routers/Bill.routes"));
+
+// app.use("/api/house", require("./app/routers/HouseInfo.routes"));
 app.use("/api/post", require("./app/routers/Post.routes"));
 
-///////\\\\\\
+///////************************End Points End******************************\\\\\\
 
 app.get("/", (req, res) => {
   res.json({

@@ -43,7 +43,9 @@ const adminSchema = new Schema(
     nid: {
       type: String,
     },
-
+    profession: {
+      type: String,
+    },
     roles: {
       type: [String],
       require: true,

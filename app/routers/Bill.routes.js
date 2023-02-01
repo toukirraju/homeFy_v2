@@ -1,6 +1,8 @@
 const router = require("express").Router();
 const authenticate = require("../middlewares/authenticate");
 
+const { authVerify } = require("../middlewares/authVerify");
+
 const {
   createBill,
   deleteBill,
@@ -14,24 +16,40 @@ const {
 } = require("../controllers/billController");
 
 //create bill Route
-router.post("/create", authenticate, createBill);
+router.post("/create", [authVerify.verifyToken], createBill);
 //delete bill Route
-router.delete("/delete/:id", authenticate, deleteBill);
+router.delete(
+  "/delete/:id",
+  [authVerify.verifyToken, authVerify.isOwner],
+  deleteBill
+);
 //get monthly bills Route
-router.get("/:month/:year", authenticate, monthlyBill);
+router.get("/:month/:year", [authVerify.verifyToken], monthlyBill);
 
 //create user temporary bill Route
-router.post("/temp/create", authenticate, createUserTempBill);
+router.post(
+  "/temp/create",
+  [authVerify.verifyToken, authVerify.isOwner],
+  createUserTempBill
+);
 //get all temp bills Route
-router.get("/temp", authenticate, allTempBills);
+router.get("/temp", [authVerify.verifyToken], allTempBills);
 //get user temp bill Route
-router.get("/temp/r/:id", authenticate, userTempBill);
+router.get("/temp/r/:id", [authVerify.verifyToken], userTempBill);
 //update user temporary bill Route
-router.post("/temp/update", authenticate, updateTempBill);
+router.post(
+  "/temp/update",
+  [authVerify.verifyToken, authVerify.isOwner],
+  updateTempBill
+);
 //delete temporay bill Route
-router.delete("/temp/delete/:id", authenticate, deleteTempBill);
+router.delete(
+  "/temp/delete/:id",
+  [authVerify.verifyToken, authVerify.isOwner],
+  deleteTempBill
+);
 
 //get payable renter Route
-router.get("/payable/:month/:year", authenticate, payableRenters);
+router.get("/payable/:month/:year", [authVerify.verifyToken], payableRenters);
 
 module.exports = router;

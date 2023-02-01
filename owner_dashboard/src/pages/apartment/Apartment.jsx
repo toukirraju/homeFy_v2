@@ -10,24 +10,31 @@ const Apartment = () => {
   const dispatch = useDispatch();
   const [modalOpened, setModalOpened] = useState(false);
 
+  const [floorData, setFloorData] = useState([]);
   const { isReload } = useSelector((state) => state.reload);
-  const { apartmentData } = useSelector((state) => state.apartmentInfo);
+  const { apartmentData, isPending } = useSelector(
+    (state) => state.apartmentInfo
+  );
+
   useEffect(() => {
     const fetchApartmentInfo = async () => {
-      await dispatch(allApartments());
+      await dispatch(allApartments()).unwrap();
     };
     fetchApartmentInfo();
-  }, [dispatch, isReload]);
+  }, [isReload]);
 
-  const [floorData, setFloorData] = useState([]);
-  function handlefloorChange(event) {
-    setFloorData((data) => JSON.parse(event.target.value));
-  }
-  const floors = apartmentData.map((item, index) => (
-    <option key={index} value={JSON.stringify(item)}>
-      {item[0].level}
-    </option>
-  ));
+  // function handlefloorChange(event) {
+  //   setFloorData((data) => JSON.parse(event.target.value));
+  // }
+
+  // //floor selected data
+  // const floors = apartmentData.map((item, index) => (
+  //   <option key={index} value={JSON.stringify(item)}>
+  //     {item[0].apartmentDetails.floor}
+  //   </option>
+  // ));
+  // useEffect(() => {}, [isPending]);
+
   return (
     <>
       <div className="card headerContainer" style={{ marginBottom: "10px" }}>
@@ -47,40 +54,22 @@ const Apartment = () => {
       </div>
 
       <div>
-        <div className={`${styles.input__container}`}>
+        {/* <div className={`${styles.input__container}`}>
           <label htmlFor="floor" className={styles.input__label}>
             Select floor number:{" "}
           </label>
           <select
             name="floor"
-            value={floorData.floors}
+            // value={floorData.floors}
             onChange={handlefloorChange}
           >
             <option value={JSON.stringify(new Array())}>----select----</option>
             {floors}
           </select>
-        </div>
+        </div> */}
         <Fragment key={uuidv4()}>
-          <ApartmentTable data={floorData} />
+          <ApartmentTable data={apartmentData} />
         </Fragment>
-        {/* {apartmentData ? (
-          groupByApartments(apartmentData, "level").map((item) => (
-            <>
-              <ApartmentTable data={item} />
-            </>
-          ))
-        ) : (
-          <>wait...</>
-        )} */}
-        {/* {apartmentData ? (
-          apartmentData.map((item) => (
-            <Fragment key={uuidv4()}>
-              <ApartmentTable data={item} />
-            </Fragment>
-          ))
-        ) : (
-          <>wait...</>
-        )} */}
       </div>
     </>
   );

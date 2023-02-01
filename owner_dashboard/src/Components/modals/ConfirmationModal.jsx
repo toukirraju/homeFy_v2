@@ -4,7 +4,12 @@ import { useMediaQuery } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { OwnerInfo, updateHouseInfo } from "../../redux/slices/ownerSlice";
+import {
+  GetManagers,
+  OwnerInfo,
+  RemoveRole,
+  updateHouseInfo,
+} from "../../redux/slices/ownerSlice";
 import { removeLevels } from "../../redux/slices/apartmentSlice";
 import { setReload } from "../../redux/slices/reloadSlice";
 import { removeRenter } from "../../redux/slices/renterSlice";
@@ -12,10 +17,13 @@ import UnAssignRenter from "./renterModal/UnAssignRenter";
 import {
   createBill,
   createTemporaryBill,
+  monthlyBill,
   removeBill,
   removeTemporaryBill,
+  temporaryBill,
 } from "../../redux/slices/billSlice";
 import LoadingSpinner from "../LoadingSpinner";
+import { toast } from "react-toastify";
 // import { uploadImage } from "../../actions/UploadAction";
 // import { updateUser } from "../../actions/UserAction";
 
@@ -29,6 +37,9 @@ function ConfirmationModal({
   const theme = useMantineTheme();
   const isMobile = useMediaQuery("(max-width: 600px)");
 
+  const [date, setDate] = useState(new Date());
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear();
   const [unAssignModalOpened, setUnAssignModalOpened] = useState(false);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
@@ -42,6 +53,7 @@ function ConfirmationModal({
           .unwrap()
           .then(() => {
             setLoading(false);
+            toast.success("Successfully remove apartment");
             dispatch(setReload());
             setConfirmationPopUp(false);
           })
@@ -69,10 +81,12 @@ function ConfirmationModal({
         dispatch(createBill(data))
           .unwrap()
           .then(() => {
-            // toast.success("Payment complete!");
+            toast.success("Payment complete!");
             setLoading(false);
             setConfirmationPopUp(false);
-            dispatch(setReload());
+            dispatch(monthlyBill({ month, year }));
+            dispatch(temporaryBill());
+            // dispatch(setReload());
           })
           .catch(() => {
             setLoading(false);
@@ -84,9 +98,11 @@ function ConfirmationModal({
         dispatch(removeBill(data))
           .unwrap()
           .then(() => {
-            // toast.success("Payment complete!");
+            toast.info("Bill removed!");
             setLoading(false);
             setConfirmationPopUp(false);
+            dispatch(monthlyBill({ month, year }));
+            dispatch(temporaryBill());
             dispatch(setReload());
           })
           .catch(() => {
@@ -98,7 +114,7 @@ function ConfirmationModal({
         dispatch(createTemporaryBill(data))
           .unwrap()
           .then(() => {
-            // toast.success("Payment complete!");
+            toast.success("Temporary bill created!");
             setLoading(false);
             setConfirmationPopUp(false);
             dispatch(setReload());
@@ -112,10 +128,25 @@ function ConfirmationModal({
         dispatch(removeTemporaryBill(data))
           .unwrap()
           .then(() => {
-            // toast.success("Payment complete!");
+            toast.info("Temporary Bill removed!");
             setLoading(false);
             setConfirmationPopUp(false);
             dispatch(setReload());
+          })
+          .catch(() => {
+            setLoading(false);
+          });
+        break;
+
+      case "Delete_manager":
+        setLoading(true);
+        dispatch(RemoveRole(data))
+          .unwrap()
+          .then(() => {
+            toast.success("Manager Deleted");
+            setLoading(false);
+            setConfirmationPopUp(false);
+            dispatch(GetManagers());
           })
           .catch(() => {
             setLoading(false);
@@ -154,13 +185,14 @@ function ConfirmationModal({
             {popUp_type === "Remove_Apartment" ||
             popUp_type === "Remove_Renter" ||
             popUp_type === "Remove_Bill" ||
-            popUp_type === "Remove_Temporary_Bill" ? (
+            popUp_type === "Remove_Temporary_Bill" ||
+            popUp_type === "Delete_manager" ? (
               <>
                 <h3 className="title"> Are you sure? </h3>
 
                 <div className={Styles.popUp__body}>
-                  Do you really want to <b>{popUp_type}</b> ? After removing it
-                  cannot be undone.
+                  Do you really want to <b>{popUp_type}</b> ? After doing this
+                  it can't be undone.
                 </div>
                 <div className={Styles.popUp__submit_btns}>
                   <button

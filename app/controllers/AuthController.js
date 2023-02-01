@@ -8,36 +8,18 @@ const { serverError, resourceError } = require("../utils/error");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
-//////////////// register  ////////////
+//////////////// client register  ////////////
 const register = async (req, res) => {
   const salt = await bcrypt.genSalt(10);
   const hashedPass = await bcrypt.hash(req.body.password, salt);
   req.body.password = hashedPass;
-  const newOwner = new OwnerInfoModel(req.body);
   const newRenter = new RenterInfoModel(req.body);
-  const { username, role } = req.body;
+  const { username } = req.body;
   try {
-    const oldOwner = await OwnerInfoModel.findOne({ username });
     const oldRenter = await RenterInfoModel.findOne({ username });
 
-    if (oldOwner) {
-      return resourceError(res, "username is already registered");
-    }
     if (oldRenter) {
       return resourceError(res, "username is already registered");
-    }
-
-    if (role === "owner" || role === "manager") {
-      const owner = await newOwner.save();
-      const token = jwt.sign(
-        {
-          username: owner.username,
-          id: owner._id,
-        },
-        process.env.JWT_KEY,
-        { expiresIn: "1h" }
-      );
-      res.status(200).json({ user: owner, token: `Bearer ${token}` });
     } else {
       const renter = await newRenter.save();
       const token = jwt.sign(
@@ -55,40 +37,41 @@ const register = async (req, res) => {
   }
 };
 
-////////////// Login /////////////
+////////////// client Login ////////////////
 const login = async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const owner = await OwnerInfoModel.findOne({ username: username });
+    // const owner = await OwnerInfoModel.findOne({ username: username });
+
+    // if (owner) {
+    //   const validity = await bcrypt.compare(password, owner.password);
+
+    //   if (!validity) {
+    //     return resourceError(res, "Password dose not match");
+    //   } else {
+    //     const token = jwt.sign(
+    //       {
+    //         username: owner.username,
+    //         id: owner._id,
+    //         role: owner.role,
+    //         ownerId: owner.ownerId,
+    //       },
+    //       process.env.JWT_KEY,
+    //       { expiresIn: "1h" }
+    //     );
+    //     const { password, ...otherDetails } = owner._doc;
+    //     const user = otherDetails;
+    //     res.status(200).json({ user, token: `Bearer ${token}` });
+    //   }
+    // } else
 
     const renter = await RenterInfoModel.findOne({ username });
-
-    if (owner) {
-      const validity = await bcrypt.compare(password, owner.password);
-
-      if (!validity) {
-        return resourceError(res, "Password dose not match");
-      } else {
-        const token = jwt.sign(
-          {
-            username: owner.username,
-            id: owner._id,
-            role: owner.role,
-            ownerId: owner.ownerId,
-          },
-          process.env.JWT_KEY,
-          { expiresIn: "1h" }
-        );
-        const { password, ...otherDetails } = owner._doc;
-        const user = otherDetails;
-        res.status(200).json({ user, token: `Bearer ${token}` });
-      }
-    } else if (renter) {
+    if (renter) {
       const validity = await bcrypt.compare(password, renter.password);
 
       if (!validity) {
-        return resourceError(res, "Password dose not match");
+        return resourceError(res, "Incorrect credentials. Try again.");
       } else {
         const token = jwt.sign(
           {
@@ -108,6 +91,77 @@ const login = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+//********* Home owner sign in ************//
+const OwnerLogin = async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const owner = await OwnerInfoModel.findOne({ username: username });
+
+    // const renter = await RenterInfoModel.findOne({ username });
+
+    if (owner) {
+      const validity = await bcrypt.compare(password, owner.password);
+
+      if (!validity) {
+        return resourceError(res, "Incorrect credentials. Try again.");
+      } else {
+        const token = jwt.sign(
+          {
+            username: owner.username,
+            id: owner._id,
+            role: owner.role,
+            ownerId: owner.ownerId,
+          },
+          process.env.JWT_KEY,
+          { expiresIn: "1h" }
+        );
+        const { password, ...otherDetails } = owner._doc;
+        const user = otherDetails;
+        res.status(200).json({ user, token: `Bearer ${token}` });
+      }
+    } else {
+      res.status(404).json({ message: "User does not exists" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+//********* Home owner sign up ************//
+
+const OwnerRegister = async (req, res) => {
+  const salt = await bcrypt.genSalt(10);
+  const hashedPass = await bcrypt.hash(req.body.password, salt);
+  req.body.password = hashedPass;
+  const newOwner = new OwnerInfoModel(req.body);
+  const { username, role } = req.body;
+  try {
+    const oldOwner = await OwnerInfoModel.findOne({ username });
+
+    if (oldOwner) {
+      return resourceError(res, "username is already registered");
+    }
+
+    if (role === "owner" || role === "manager") {
+      const owner = await newOwner.save();
+      const token = jwt.sign(
+        {
+          username: owner.username,
+          id: owner._id,
+        },
+        process.env.JWT_KEY,
+        { expiresIn: "1h" }
+      );
+      res.status(200).json({ user: owner, token: `Bearer ${token}` });
+    } else {
+      return resourceError(res, "Role not defined");
+    }
+  } catch (error) {
+    serverError(res, error);
   }
 };
 
@@ -181,4 +235,11 @@ const adminLogin = async (req, res) => {
   }
 };
 
-module.exports = { register, login, adminCreate, adminLogin };
+module.exports = {
+  register,
+  login,
+  adminCreate,
+  adminLogin,
+  OwnerRegister,
+  OwnerLogin,
+};

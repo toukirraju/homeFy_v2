@@ -1,11 +1,18 @@
 import { Modal, useMantineTheme } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
+
 import { useEffect, useState } from "react";
-import ApartmentService from "../../../redux/services/apartment.api.service";
+
+import Styles from "../../../Styles/ModalStyle.module.css";
+
 import { useDispatch, useSelector } from "react-redux";
+import ApartmentService from "../../../redux/services/apartment.api.service";
+
 import { assign } from "../../../redux/slices/assignRenterSlice";
 import { setReload } from "../../../redux/slices/reloadSlice";
+
 import LoadingSpinner from "../../LoadingSpinner";
+import { toast } from "react-toastify";
 
 const AssignRenter = ({
   assignModalOpened,
@@ -15,14 +22,16 @@ const AssignRenter = ({
 }) => {
   const theme = useMantineTheme();
   const isMobile = useMediaQuery("(max-width: 600px)");
-  const [loading, setLoading] = useState(false);
+
   const dispatch = useDispatch();
+
+  const [loading, setLoading] = useState(false);
   const [allApartments, setAllApartments] = useState([]);
-  const { user } = useSelector((state) => state.auth.user);
   const [selectedData, setSelectedData] = useState({
     apartment: "",
     renter: "",
   });
+  const { user } = useSelector((state) => state.auth.user);
 
   const handleChange = (e) => {
     setSelectedData({ ...selectedData, [e.target.name]: e.target.value });
@@ -37,21 +46,20 @@ const AssignRenter = ({
     const assignedData = {
       ownerId: user._id,
       apartmentId: apartment._id,
-      apartNo: apartment.apartNo,
-      roomNo: apartment.roomNo,
+      apartment_number: apartment.apartmentDetails.apartment_number,
+      roomNumber: apartment.apartmentDetails.roomNumber,
       renterName: searchPopUp
         ? renterData.firstname + " " + renterData.lastname
         : renter.firstname + " " + renter.lastname,
       renterId: searchPopUp ? renterData._id : renter._id,
     };
-
     // console.log(assignedData);
-
     dispatch(assign(assignedData))
       .unwrap()
       .then(() => {
         setLoading(false);
         dispatch(setReload());
+        toast.success("successfully assigned");
         setAssignModalOpened(false);
         setSelectedData({
           apartment: "",
@@ -82,15 +90,19 @@ const AssignRenter = ({
         }
         overlayOpacity={0.55}
         overlayBlur={3}
-        size={isMobile ? "sm" : "lg"}
+        size={isMobile ? "sm" : "md"}
         // fullScreen={isMobile}
         opened={assignModalOpened}
         onClose={() => setAssignModalOpened(false)}
       >
+        <div className={Styles.Modal_header}>
+          <h3 className={Styles.Modal_header_title}>Assign Renter</h3>
+          <span className={Styles.Modal_header_subtitle}>
+            * assign the renter to his apartment
+          </span>
+        </div>
         <form>
-          <h3>Assign Renter</h3>
-          <span className="subtitle">* assign the renter to his apartment</span>
-          <div className="form__select">
+          <div className={Styles.input__container}>
             <select
               className=""
               onChange={handleChange}
@@ -100,12 +112,14 @@ const AssignRenter = ({
               <option value="">Select Apartment</option>
 
               {allApartments
-                ? allApartments.map((item) =>
-                    item.map((i, idx) =>
-                      i.isAvailable === true ? (
-                        <option key={idx} value={JSON.stringify(i)}>
-                          Level: {i.level} &#10148; Apartment No: {i.apartNo}{" "}
-                          &#10148; Room No: {i.roomNo}
+                ? allApartments.map((apartments) =>
+                    apartments.map((apartment, idx) =>
+                      apartment.isAvailable === true ? (
+                        <option key={idx} value={JSON.stringify(apartment)}>
+                          Floor:- {apartment.apartmentDetails.floor} &#10148;
+                          Apartment:-{" "}
+                          {apartment.apartmentDetails.apartment_number} &#10148;
+                          Room:- {apartment.apartmentDetails.roomNumber}
                         </option>
                       ) : null
                     )
@@ -123,9 +137,13 @@ const AssignRenter = ({
                 <option value="">Select Renter</option>
                 {renterData
                   ? renterData.map((item, index) =>
-                      item.apartNo === "" && item.roomNo === "" ? (
+                      (item.apartment_number === "" ||
+                        item.apartment_number === undefined) &&
+                      (item.roomNumber === "" ||
+                        item.roomNumber === undefined) ? (
                         <option key={index} value={JSON.stringify(item)}>
-                          Name: {item.username} &#10148; Phone: {item.phoneNo}
+                          &#10687; Name&#9500; {item.username} &#9500;&#9742;
+                          Phone:- {item.phone}
                         </option>
                       ) : null
                     )
@@ -135,7 +153,7 @@ const AssignRenter = ({
           </div>
 
           <button
-            className="button infoButton"
+            className={Styles.submit_button}
             disabled={loading}
             onClick={onSubmit}
           >

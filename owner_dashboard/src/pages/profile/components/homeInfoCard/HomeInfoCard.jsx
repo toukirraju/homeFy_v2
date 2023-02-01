@@ -9,13 +9,15 @@ import {
   UilPen,
 } from "@iconscout/react-unicons";
 import HouseInfoUpdateModal from "../../modals/HouseInfoUpdateModal";
+import DefaultHousePopupModal from "../../modals/DefaultHousePopUpModal";
 // import { useMediaQuery } from "@mantine/hooks";
 
 const HomeInfoCard = ({ data }) => {
   // const isMobile = useMediaQuery("(max-width: 768px)");
   const [modalOpened, setModalOpened] = useState(false);
+  const [defaultPopUpModalOpened, setDefaultPopUpModalOpened] = useState(false);
   const [isVerified, setisVerified] = useState(true);
-  const [isDefault, setisDefault] = useState(true);
+  const [isDefault, setisDefault] = useState(false);
   return (
     <div className="card ProfileCard_wrapper">
       <div className="Profile__image__section">
@@ -27,11 +29,21 @@ const HomeInfoCard = ({ data }) => {
         </div>
       </div>
       <div className="edit__button">
-        {isDefault ? (
+        <DefaultHousePopupModal
+          defaultPopUpModalOpened={defaultPopUpModalOpened}
+          setDefaultPopUpModalOpened={setDefaultPopUpModalOpened}
+          data={data}
+        />
+        {data.isDefault ? (
           <UilCheckCircle color="var(--orange)" width="2rem" />
         ) : (
-          <UilCheckCircle width="2rem" />
+          <UilCheckCircle
+            width="2rem"
+            cursor="pointer"
+            onClick={() => setDefaultPopUpModalOpened(true)}
+          />
         )}
+
         {isVerified ? (
           <UilFileCheckAlt color="green" width="2rem" />
         ) : (
@@ -48,38 +60,44 @@ const HomeInfoCard = ({ data }) => {
         <HouseInfoUpdateModal
           modalOpened={modalOpened}
           setModalOpened={setModalOpened}
-          homeData={[]}
+          data={data}
         />
       </div>
 
       <div className="Profile__info__section">
         <div>
           <span>House Name:</span>
-          ChayaNirr
+          {data.houseName}
         </div>
         <div>
           {" "}
           <span>House No:</span>
-          241/1
+          {data.houseNo}
         </div>
         <div>
-          <span>Village/Town:</span>
-          Laxmipura
+          <span>Address:</span>
+          {data.address}
         </div>
         <div>
-          <span>District:</span>
-          Gazipur
+          <span>Area:</span>
+          {data.area}
         </div>
         <div>
-          <span>Division:</span>
-          Dhaka
+          <span>City/Town:</span>
+          {data.city}
         </div>
         <div>
-          <span>Number of floors:</span>6
+          <span>Postcode:</span>
+          {data.postCode}
+        </div>
+
+        <div>
+          <span>Number of floors:</span>
+          {data.number_of_floors}
         </div>
         <div>
           <span>Number of apartments:</span>
-          12
+          {data.number_of_apartments}
         </div>
       </div>
     </div>

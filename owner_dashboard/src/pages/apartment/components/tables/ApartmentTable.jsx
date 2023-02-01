@@ -1,50 +1,62 @@
 import Style from "../../../../Styles/TableStyle.module.css";
+import ModalStyle from "../../../../Styles/ModalStyle.module.css";
 import { AgGridReact } from "ag-grid-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { createMultiApartment } from "../../../../redux/slices/apartmentSlice";
+import {
+  allApartments,
+  createMultiApartment,
+} from "../../../../redux/slices/apartmentSlice";
 import { setReload } from "../../../../redux/slices/reloadSlice";
 import LoadingSpinner from "../../../../Components/LoadingSpinner";
 import ConfirmationModal from "../../../../Components/modals/ConfirmationModal";
 import UpdateApartment from "../../modals/UpdateApartment";
 import CreatePost from "../../../../Components/modals/postModal/CreatePost";
 import PostShare from "../../../../Components/postComponents/postShare/PostShare";
+import { toast } from "react-toastify";
+import PopUpWindow from "../../modals/PopUpWindow";
 
 const ApartmentTable = ({ data }) => {
   const gridRef = useRef();
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(false);
+
+  const [floorData, setFloorData] = useState([]);
+
   const [isAssignData, setIsAssignData] = useState();
   const [removeId, setRemoveId] = useState();
+
   const [updateModalOpened, setUpdateModalOpened] = useState(false);
   const [updateData, setUpdateData] = useState({});
+
   const [postModalOpened, setPostModalOpened] = useState(false);
   const [postData, setPostData] = useState({});
+
   const [confirmationPopUp, setConfirmationPopUp] = useState(false);
 
-  const { user } = useSelector((state) => state.auth.user);
+  const [popUpModalOpened, setPopUpModalOpened] = useState(false);
+  const [popUpData, setPopUpData] = useState({});
 
+  const { user } = useSelector((state) => state.auth.user);
+  const { isPending } = useSelector((state) => state.apartmentInfo);
+
+  //add single apartment
   const addApartment = (floor) => {
     const formData = {
-      ownerId: user._id,
-      ownerName: user.firstname + " " + user.lastname,
       numOfFloors: floor,
     };
-    setLoading(true);
     dispatch(createMultiApartment(formData))
       .unwrap()
       .then(() => {
-        setLoading(false);
-        dispatch(setReload());
-        // toast.success("Successfully registered!");
+        dispatch(allApartments());
+        toast.success("Successfully add new apartment");
 
         // dispatch(clearMessage());
       })
-      .catch(() => {
-        setLoading(false);
+      .catch((err) => {
+        console.log(err);
       });
   };
-
+  //apartment remove function
   const handleRemove = (apartment) => {
     if (apartment.isAvailable === true) {
       setConfirmationPopUp(true);
@@ -87,45 +99,87 @@ const ApartmentTable = ({ data }) => {
       headerName: "Renter Name",
       field: "renterName",
       resizable: true,
-      width: 100,
+      pinned: true,
+      width: 150,
+    },
+    // apartment details
+    {
+      headerName: "Apartment Name",
+      field: "apartmentDetails.apartmentName",
+      resizable: true,
     },
     {
       headerName: "Apartment No",
-      field: "apartNo",
+      field: "apartmentDetails.apartment_number",
       resizable: true,
-      width: 100,
     },
     {
       headerName: "Room No",
-      field: "roomNo",
+      field: "apartmentDetails.roomNumber",
       resizable: true,
-      width: 100,
     },
+    {
+      headerName: "Apartment Type",
+      field: "apartmentDetails.apartmentType",
+      resizable: true,
+    },
+    {
+      headerName: "Beds",
+      field: "apartmentDetails.number_of_bed_room",
+      resizable: true,
+    },
+    {
+      headerName: "Kitchen",
+      field: "apartmentDetails.number_of_kitchen",
+      resizable: true,
+    },
+    {
+      headerName: "Balcony",
+      field: "apartmentDetails.number_of_balcony",
+      resizable: true,
+    },
+    {
+      headerName: "Baths",
+      field: "apartmentDetails.number_of_baths",
+      resizable: true,
+    },
+    // bill details
     {
       headerName: "Rent",
-      field: "rent",
+      field: "billDetails.rent",
       resizable: true,
-      width: 100,
+      // width: 100,
     },
-    { headerName: "Gas bill", field: "gasbill", resizable: true, width: 100 },
+    {
+      headerName: "Gas bill",
+      field: "billDetails.gas_bill",
+      resizable: true,
+      // width: 100,
+    },
     {
       headerName: "Water bill",
-      field: "waterbill",
+      field: "billDetails.water_bill",
       resizable: true,
-      width: 150,
+      // width: 150,
     },
-    { headerName: "Fridge bill", field: "f_bill", resizable: true, width: 100 },
+
     {
       headerName: "Service charge",
-      field: "c_service",
+      field: "billDetails.service_charge",
       resizable: true,
-      width: 100,
+      // width: 100,
+    },
+    {
+      headerName: "Others",
+      field: "billDetails.others",
+      resizable: true,
+      // width: 100,
     },
     {
       headerName: "Total Rent",
-      field: "totalRent",
+      field: "billDetails.totalRent",
       resizable: true,
-      width: 100,
+      // width: 100,
     },
     {
       headerName: "Available",
@@ -183,7 +237,7 @@ const ApartmentTable = ({ data }) => {
   const groupByApartments = (arr, property) => {
     let grouped = [];
     for (let i = 0; i < arr.length; i++) {
-      let p = arr[i][property];
+      let p = arr[i].apartmentDetails[property];
       if (!grouped[p]) {
         grouped[p] = [];
       }
@@ -191,9 +245,9 @@ const ApartmentTable = ({ data }) => {
     }
     return grouped;
   };
+  const numberOfApartments = groupByApartments(floorData, "apartment_number");
 
-  const numberOfApartments = groupByApartments(data, "apartNo");
-
+  //table resizing function start
   const sizeToFit = useCallback(() => {
     gridRef.current.api.sizeColumnsToFit();
   }, []);
@@ -204,58 +258,73 @@ const ApartmentTable = ({ data }) => {
     });
     gridRef.current.columnApi.autoSizeColumns(allColumnIds, skipHeader);
   }, []);
+  //table resizing function end
+
+  //handle selected floor data
+  function handlefloorChange(event) {
+    setFloorData((data) => JSON.parse(event.target.value));
+  }
+
+  //floor selected data
+  const floors = data.map((item, index) => (
+    <option key={index} value={JSON.stringify(item)}>
+      {item[0].apartmentDetails.floor}
+    </option>
+  ));
+  const handlePopUpOn = (rowData) => {
+    setPopUpModalOpened(true);
+    setPopUpData(rowData);
+  };
+
   return (
     <>
-      <ConfirmationModal
-        confirmationPopUp={confirmationPopUp}
-        setConfirmationPopUp={setConfirmationPopUp}
-        data={removeId}
-        popUp_type="Remove_Apartment"
-        isAssignData={isAssignData}
-      />
-
-      <UpdateApartment
-        updateModalOpened={updateModalOpened}
-        setUpdateModalOpened={setUpdateModalOpened}
-        data={updateData}
-      />
-
-      <PostShare
-        postModalOpened={postModalOpened}
-        setPostModalOpened={setPostModalOpened}
-        data={postData}
-      />
       <div className={`card ${Style.table_container}`}>
+        <div className={``}>
+          <label htmlFor="floor" className={ModalStyle.input__label}>
+            Floor number{" "}
+          </label>
+          <select name="floor" onChange={handlefloorChange}>
+            <option value={JSON.stringify(new Array())}>----select----</option>
+            {floors}
+          </select>
+        </div>
+        {/**********  Contain header section ***********/}
         <div className={Style.table__header}>
           <h3 className="title">
-            Floor : {data.length === 0 ? 0 : data[0].level}
+            Floor :{" "}
+            {floorData.length === 0 ? 0 : floorData[0].apartmentDetails.floor}
           </h3>
           <h4 className="subtitle">
             Apartments : {Object.keys(numberOfApartments).length}
           </h4>
-          <h4 className="subtitle">Number of Room : {data.length}</h4>
+          <h4 className="subtitle">Number of Room : {floorData.length}</h4>
         </div>
+        {/**********  table  section ***********/}
         <div
           className="ag-theme-alpine"
           style={{ height: "55vh", width: "100%" }}
         >
-          {data.length === 0 ? (
-            <h1>Please select floor</h1>
+          {floorData.length === 0 ? (
+            <h1 className={Style.table__alert}>Please select floor</h1>
           ) : (
             <AgGridReact
               ref={gridRef}
-              rowData={data}
+              rowData={floorData}
               columnDefs={tableColumns}
               defaultColDef={defaultColDef}
+              gridOptions={{
+                onRowDoubleClicked: (event) => handlePopUpOn(event.data),
+                suppressCellFocus: true,
+              }}
             />
           )}
         </div>
         <button
           className={`button ${Style.table__btn}`}
-          disabled={loading}
-          onClick={() => addApartment(data[0].level)}
+          disabled={isPending}
+          onClick={() => addApartment(floorData[0].apartmentDetails.floor)}
         >
-          {loading ? <LoadingSpinner /> : "ADD"}
+          {isPending ? <LoadingSpinner /> : "ADD"}
         </button>
         <div className={Style.table_resize_buttons}>
           <i
@@ -278,6 +347,34 @@ const ApartmentTable = ({ data }) => {
           ></i>
         </div>
       </div>
+
+      <ConfirmationModal
+        confirmationPopUp={confirmationPopUp}
+        setConfirmationPopUp={setConfirmationPopUp}
+        data={removeId}
+        popUp_type="Remove_Apartment"
+        isAssignData={isAssignData}
+      />
+
+      {Object.keys(popUpData) != 0 && (
+        <PopUpWindow
+          popUpModalOpened={popUpModalOpened}
+          setPopUpModalOpened={setPopUpModalOpened}
+          data={popUpData}
+        />
+      )}
+
+      <UpdateApartment
+        updateModalOpened={updateModalOpened}
+        setUpdateModalOpened={setUpdateModalOpened}
+        data={updateData}
+      />
+
+      <PostShare
+        postModalOpened={postModalOpened}
+        setPostModalOpened={setPostModalOpened}
+        data={postData}
+      />
     </>
   );
 };

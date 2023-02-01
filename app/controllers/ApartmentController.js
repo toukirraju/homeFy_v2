@@ -2,82 +2,81 @@ const ApartmentModel = require("../database/models/apartmentModel");
 const { serverError, resourceError } = require("../utils/error");
 
 const createMultipleApartment = async (req, res) => {
-  let { ownerName, ownerId, numOfFloors } = req.body;
-
-  const apartmentsArray = Array.from({ length: numOfFloors }, (_, index) => ({
-    level: index + 1,
-    apartNo: `A${index + 1}`,
-    roomNo: `R${index + 1}`,
-    rent: 0,
-    gasbill: 0,
-    waterbill: 0,
-    c_service: 0,
-    f_bill: 0,
-    totalRent: 0,
-    renterId: "",
-    renterName: "",
-  }));
-
-  let apartmentData = new ApartmentModel({
-    ownerName,
-    ownerId,
-    allApartments: apartmentsArray,
-  });
-
-  const apartmentsInfo = await ApartmentModel.findOne({ ownerId });
-
+  let { numOfFloors } = req.body;
+  const { _id, defaultHomeID } = req.user;
   try {
-    if (apartmentsInfo) {
-      if (apartmentsInfo.allApartments.length === 0) {
-        //create multiple apartments
-        for (let i = 0; i < numOfFloors; i++) {
-          let multiObject = new Object({
-            level: i + 1,
-            apartNo: `A${i + 1}`,
-            roomNo: `R${i + 1}`,
+    const apartmentsInfo = await ApartmentModel.find({
+      ownerId: _id,
+      defaultHomeID,
+    });
+    if (!apartmentsInfo) {
+      for (let index = 0; index < numOfFloors; index++) {
+        const apartmentData = new ApartmentModel({
+          ownerName: req.user.firstname + " " + req.user.lastname,
+          ownerId: req.user._id,
+          defaultHomeID: req.user.defaultHomeID,
+          houseName: req.user.houseName,
+          apartmentDetails: {
+            floor: index + 1,
+            apartmentName: `Apartment${index + 1}`,
+            apartment_number: `${index + 1}`,
+            apartmentType: "",
+            roomNumber: `Room${index + 1}`,
+            number_of_bed_room: 0,
+            number_of_kitchen: 0,
+            number_of_baths: 0,
+            number_of_balcony: 0,
+            apartment_length: 0,
+          },
+          billDetails: {
             rent: 0,
-            gasbill: 0,
-            waterbill: 0,
-            c_service: 0,
-            f_bill: 0,
+            gas_bill: 0,
+            water_bill: 0,
+            electricity_bill: 0,
+            service_charge: 0,
+            others: 0,
             totalRent: 0,
-            renterId: "",
-            renterName: "",
-          });
-          apartmentsInfo.allApartments.push(multiObject);
-        }
-        await apartmentsInfo.save();
-        res.status(200).json(apartmentsInfo);
-      } else {
-        //create single apartments
-        let singleObj = new Object({
-          level: numOfFloors,
-          apartNo: `A${numOfFloors}`,
-          roomNo: `R${numOfFloors}`,
-          rent: 0,
-          gasbill: 0,
-          waterbill: 0,
-          c_service: 0,
-          f_bill: 0,
-          totalRent: 0,
+          },
           renterId: "",
           renterName: "",
         });
-
-        apartmentsInfo.allApartments.push(singleObj);
-        await apartmentsInfo.save();
-        res.status(200).json(
-          // {message: "Create successfully"}
-          apartmentsInfo
-        );
+        await apartmentData.save();
+        // console.log(apartmentData);
       }
+      res.status(200).json({ message: "Multiple apartment created" });
     } else {
-      //create multiple apartments
+      const apartmentData = new ApartmentModel({
+        ownerName: req.user.firstname + " " + req.user.lastname,
+        ownerId: req.user._id,
+        defaultHomeID: req.user.defaultHomeID,
+        houseName: req.user.houseName,
+        apartmentDetails: {
+          floor: numOfFloors,
+          apartmentName: `Apartment${numOfFloors}`,
+          apartment_number: `${numOfFloors}`,
+          apartmentType: "",
+          roomNumber: `Room${numOfFloors}`,
+          number_of_bed_room: 0,
+          number_of_kitchen: 0,
+          number_of_baths: 0,
+          number_of_balcony: 0,
+          apartment_length: 0,
+        },
+        billDetails: {
+          rent: 0,
+          gas_bill: 0,
+          water_bill: 0,
+          electricity_bill: 0,
+          service_charge: 0,
+          others: 0,
+          totalRent: 0,
+        },
+        renterId: "",
+        renterName: "",
+      });
       await apartmentData.save();
-      res.status(200).json(
-        // {message: "Create successfully"}
-        apartmentsInfo
-      );
+      // console.log(apartmentData);
+      res.status(200).json({ message: "Create successfully" });
     }
   } catch (error) {
     serverError(res, error);
@@ -85,39 +84,32 @@ const createMultipleApartment = async (req, res) => {
 };
 
 const getAllApartments = async (req, res) => {
-  //   ownerId: role === "" || role === undefined ? _id : homeId,
-  const { _id } = req.user;
-  const apartmentsInfo = await ApartmentModel.findOne({
+  const { _id, defaultHomeID } = req.user;
+  const apartments = await ApartmentModel.find({
     ownerId: _id,
-  });
-
+    defaultHomeID,
+  }).sort({ floor: 1 });
   try {
-    if (apartmentsInfo) {
-      if (apartmentsInfo.allApartments.length !== 0) {
-        const groupByApartments = (arr, property) => {
-          let grouped = [];
-          for (let i = 0; i < arr.length; i++) {
-            let p = arr[i][property];
-            if (!grouped[p]) {
-              grouped[p] = [];
-            }
-            grouped[p].push(arr[i]);
+    if (apartments) {
+      const groupByApartments = (arr, property) => {
+        let grouped = [];
+        for (let i = 0; i < arr.length; i++) {
+          let p = arr[i].apartmentDetails[property];
+          if (!grouped[p]) {
+            grouped[p] = []; //if property are not an grouped array then it will create new array
           }
-          return grouped;
-        };
-        // console.log();
-        const filtered = groupByApartments(
-          apartmentsInfo.allApartments,
-          "level"
-        ).filter(function (el) {
-          return el != null;
-        });
-        res.status(200).json(filtered);
-      } else {
-        return resourceError(res, "Please create apartment");
-      }
+          grouped[p].push(arr[i]); //property's are push on their own named array
+        }
+        return grouped;
+      };
+      const filtered = groupByApartments(apartments, "floor").filter(function (
+        el
+      ) {
+        return el != null;
+      });
+      res.status(200).json(filtered);
     } else {
-      return resourceError(res, "Apartment not found");
+      return resourceError(res, "No apartment found");
     }
   } catch (error) {
     serverError(res, error);
@@ -125,65 +117,57 @@ const getAllApartments = async (req, res) => {
 };
 
 const updateApartmentInfo = async (req, res) => {
+  //only owner can update apartment
   const { _id } = req.user;
-  const apartmentInfo = await ApartmentModel.findOne({
-    ownerId: _id,
-  });
-
+  const apartment = await ApartmentModel.findById(req.body._id);
+  console.log(req.body);
   try {
-    if (apartmentInfo) {
-      let apartmentData;
-
-      apartmentInfo.allApartments.filter((i, index) => {
-        if (i._id == req.body._id) {
-          return (apartmentData = i);
-        }
+    if (apartment.ownerId == _id) {
+      await apartment.updateOne({
+        $set: {
+          billDetails: {
+            // ...req.body,
+            rent: req.body.billDetails.rent,
+            gas_bill: req.body.billDetails.gas_bill,
+            water_bill: req.body.billDetails.water_bill,
+            service_charge: req.body.billDetails.service_charge,
+            others: req.body.billDetails.others,
+            totalRent:
+              parseInt(req.body.billDetails.rent) +
+              parseInt(req.body.billDetails.gas_bill) +
+              parseInt(req.body.billDetails.water_bill) +
+              parseInt(req.body.billDetails.service_charge) +
+              parseInt(req.body.billDetails.others),
+          },
+        },
       });
-      if (apartmentData !== undefined) {
-        apartmentData.apartNo = req.body.apartNo;
-        apartmentData.roomNo = req.body.roomNo;
-        apartmentData.rent = req.body.rent;
-        apartmentData.f_bill = req.body.f_bill;
-        apartmentData.gasbill = req.body.gasbill;
-        apartmentData.waterbill = req.body.waterbill;
-        apartmentData.c_service = req.body.c_service;
-        apartmentData.totalRent =
-          parseInt(req.body.rent) +
-          parseInt(req.body.f_bill) +
-          parseInt(req.body.gasbill) +
-          parseInt(req.body.waterbill) +
-          parseInt(req.body.c_service);
-
-        await apartmentInfo.save();
-        res.status(200).json({
-          message: "Update successfully",
-        });
-      } else {
-        return resourceError(res, "id dosen't match");
-      }
+      res.status(201).json({
+        message: "apartment updated",
+      });
     } else {
-      return resourceError(res, "Somthing went wrong");
+      return resourceError(res, "Action forbidden");
     }
   } catch (error) {
     serverError(res, error);
   }
 };
 
-const removeApartment = (req, res) => {
-  ApartmentModel.updateMany(
-    {},
-    { $pull: { allApartments: { _id: req.params.id } } }
-  )
-    .then((result) => {
-      if (result.modifiedCount) {
-        res.status(200).json({
-          message: "Successfully Removed Apartment",
-        });
-      } else {
-        return resourceError(res, "Somthing went wrong");
-      }
-    })
-    .catch((error) => serverError(res, error));
+const removeApartment = async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const apartment = await ApartmentModel.findById(id);
+    if (apartment.ownerId === req.user._id.toString()) {
+      await apartment.deleteOne();
+      res.status(201).json({
+        message: "successfully apartment deleted",
+      });
+    } else {
+      return resourceError(res, "Action forbidden");
+    }
+  } catch (error) {
+    serverError(res, error);
+  }
 };
 
 module.exports = {

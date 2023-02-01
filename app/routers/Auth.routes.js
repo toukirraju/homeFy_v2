@@ -6,22 +6,30 @@ const {
   login,
   adminCreate,
   adminLogin,
+  OwnerRegister,
+  OwnerLogin,
 } = require("../controllers/AuthController");
 
-//Registration Route
+//client Registration Route
 router.post("/register", register);
 
-//Login Route
+//client Login Route
 router.post("/login", login);
 
-//********* New Admin Create Route ************//
+//*********oooooooooo Home owner sign up Route oooooooooo************//
+router.post("/owner/signup", OwnerRegister);
+
+//*********oooooooooo Home owner sign in Route oooooooooo************//
+router.post("/owner/signin", OwnerLogin);
+
+//*********aaaaaaaaa New Admin Create Route aaaaaaaaa************//
 router.post(
   "/admin/create",
   [authVerify.verifyToken, authVerify.isSuperAdmin],
   adminCreate
 );
 
-//********* Admin Login Route************//
+//*********aaaaaaaaa Admin Login Route aaaaaaaaa************//
 router.post("/admin/login", adminLogin);
 
 module.exports = router;

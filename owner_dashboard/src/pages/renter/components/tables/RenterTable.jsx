@@ -4,7 +4,7 @@ import AssignRenter from "../../../../Components/modals/renterModal/AssignRenter
 import { useCallback, useRef, useState } from "react";
 import UnAssignRenter from "../../../../Components/modals/renterModal/UnAssignRenter";
 import { useSelector } from "react-redux";
-import UpdateRenter from "../../../../Components/modals/renterModal/UpdateRenter";
+import UpdateRenter from "../../modals/UpdateRenter";
 import ConfirmationModal from "../../../../Components/modals/ConfirmationModal";
 
 const RenterTable = ({ data }) => {
@@ -21,9 +21,10 @@ const RenterTable = ({ data }) => {
 
   const handleRemove = (renter) => {
     if (
-      renter.apartmentId === "" &&
-      renter.apartNo === "" &&
-      renter.roomNo === ""
+      (renter.apartmentId === "" || renter.apartmentId === undefined) &&
+      (renter.apartment_number === "" ||
+        renter.apartment_number === undefined) &&
+      (renter.roomNo === "" || renter.roomNo === undefined)
     ) {
       setConfirmationPopUp(true);
       setRemoveData({ ownerId: user._id, renterId: renter._id });
@@ -73,27 +74,45 @@ const RenterTable = ({ data }) => {
       resizable: true,
       width: 100,
     },
-    { headerName: "Phone No", field: "phoneNo", resizable: true, width: 100 },
+    { headerName: "Phone No", field: "phone", resizable: true, width: 100 },
     { headerName: "Username", field: "username", resizable: true, width: 100 },
     {
       headerName: "Address",
-      field: "livesin",
+      field: "address",
       resizable: true,
       width: 100,
     },
     {
-      headerName: "Nid",
-      field: "nid",
+      headerName: "Area",
+      field: "area",
+      resizable: true,
+      width: 100,
+    },
+    {
+      headerName: "City/town",
+      field: "city",
+      resizable: true,
+      width: 100,
+    },
+    {
+      headerName: "Postcode",
+      field: "postCode",
+      resizable: true,
+      width: 100,
+    },
+    {
+      headerName: "National ID /Passport",
+      field: "National_ID_Passport_no",
       resizable: true,
       width: 100,
     },
     {
       headerName: "Apartment number",
-      field: "apartNo",
+      field: "apartment_number",
       resizable: true,
       width: 100,
       cellStyle: function (params) {
-        if (params.data.apartNo) {
+        if (params.data.apartment_number) {
           return {
             color: "white",
             backgroundColor: "#5bc8ab",
@@ -107,7 +126,7 @@ const RenterTable = ({ data }) => {
 
     {
       headerName: "Room number",
-      field: "roomNo",
+      field: "roomNumber",
       // valueFormatter: dateFormatter,
       resizable: true,
       width: 150,
@@ -139,6 +158,16 @@ const RenterTable = ({ data }) => {
           return null;
         }
       },
+    },
+
+    {
+      headerName: "Assigned Date",
+      field: "assignedDate",
+      valueFormatter: (params) => {
+        return new Date(params.value).toDateString();
+      },
+      resizable: true,
+      width: 150,
     },
     {
       headerName: "Actions",
@@ -176,18 +205,6 @@ const RenterTable = ({ data }) => {
   }, []);
   return (
     <>
-      <UpdateRenter
-        updateModalOpened={updateModalOpened}
-        setUpdateModalOpened={setUpdateModalOpened}
-        data={updateData}
-      />
-      <ConfirmationModal
-        confirmationPopUp={confirmationPopUp}
-        setConfirmationPopUp={setConfirmationPopUp}
-        data={removeData}
-        popUp_type="Remove_Renter"
-        isAssignData={isAssignData}
-      />
       <div className={`card ${Style.table_container}`}>
         <div className={Style.table__header}>
           <button
@@ -246,6 +263,18 @@ const RenterTable = ({ data }) => {
           ></i>
         </div>
       </div>
+      <UpdateRenter
+        updateModalOpened={updateModalOpened}
+        setUpdateModalOpened={setUpdateModalOpened}
+        data={updateData}
+      />
+      <ConfirmationModal
+        confirmationPopUp={confirmationPopUp}
+        setConfirmationPopUp={setConfirmationPopUp}
+        data={removeData}
+        popUp_type="Remove_Renter"
+        isAssignData={isAssignData}
+      />
     </>
   );
 };

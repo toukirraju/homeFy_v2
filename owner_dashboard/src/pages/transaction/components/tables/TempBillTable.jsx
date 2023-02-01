@@ -2,7 +2,7 @@ import Style from "../../../../Styles/TableStyle.module.css";
 import { AgGridReact } from "ag-grid-react";
 import { useCallback, useRef } from "react";
 import { useState } from "react";
-import UpdateTempBill from "../../../../Components/modals/billModal/UpdateTempBill";
+import UpdateTempBill from "../../modals/UpdateTempBill";
 import ConfirmationModal from "../../../../Components/modals/ConfirmationModal";
 
 const TempBillTable = ({ data }) => {
@@ -55,11 +55,11 @@ const TempBillTable = ({ data }) => {
     },
     {
       headerName: "Electricity Bill",
-      field: "e_bill",
+      field: "electricity_bill",
       resizable: true,
       width: 100,
     },
-    { headerName: "Others Bill", field: "o_bill", resizable: true, width: 100 },
+    { headerName: "Others Bill", field: "others", resizable: true, width: 100 },
 
     {
       headerName: "Due",

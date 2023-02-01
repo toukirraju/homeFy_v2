@@ -29,7 +29,7 @@ function App() {
       {user ? (
         <>
           {/* if user have role */}
-          {user?.user.role === "owner" && <AppRoutes user={user} />}
+          {user?.user.roles && <AppRoutes user={user} />}
           {/* {user?.user.role === undefined && (
             <Redirect destination="http://localhost:3000" />
           )} */}

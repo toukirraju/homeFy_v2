@@ -10,7 +10,6 @@ import { useSelector } from "react-redux";
 const ProfileCard = ({ data }) => {
   // const isMobile = useMediaQuery("(max-width: 768px)");
   const [modalOpened, setModalOpened] = useState(false);
-  const { user } = useSelector((state) => state.auth);
   return (
     <div className={`card ${Style.profileCard_wrapper}`}>
       <div className={` ${Style.Profile__image__section}`}>
@@ -30,30 +29,42 @@ const ProfileCard = ({ data }) => {
         <ProfileUpdateModal
           modalOpened={modalOpened}
           setModalOpened={setModalOpened}
-          data={user}
+          data={data}
         />
       </div>
       <div className={` ${Style.Profile__info__section}`}>
         <div>
           <span>Name:</span>
-          Mr. Ali
+          {data.firstname} {data.lastname}
         </div>
         <div>
           {" "}
           <span>Phone:</span>
-          019444654434
+          {data.phone}
         </div>
         <div>
           <span>Nid:</span>
-          25346455767
+          {data.nid}
         </div>
         <div>
           <span>Profession:</span>
-          Businessman
+          {data.profession}
         </div>
         <div>
           <span>Role:</span>
-          House Owner
+
+          {data.roles.map((item) => (
+            <span
+              style={{
+                fontSize: "13px",
+                marginRight: "8px",
+                padding: "unset",
+                textTransform: "uppercase",
+              }}
+            >
+              "{item}"
+            </span>
+          ))}
         </div>
       </div>
     </div>

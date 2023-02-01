@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import RenterTable from "./components/tables/RenterTable";
 import "./styles/Renter.css";
-import CreateRenter from "../../Components/modals/renterModal/CreateRenter";
-import LogoSearch from "../../Components/logoSearch/LogoSearch";
+import CreateRenter from "./modals/CreateRenter";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllrenters } from "../../redux/slices/renterSlice";
+import SearchRenter from "./components/renterSearch/SearchRenter";
 
 const Renter = () => {
   const dispatch = useDispatch();
   const [modalOpened, setModalOpened] = useState(false);
 
   const { isReload } = useSelector((state) => state.reload);
-  const { renterData } = useSelector((state) => state.renterInfo);
+  const { renters } = useSelector((state) => state.renterInfo);
   useEffect(() => {
     const fetchRenterInfo = async () => {
       await dispatch(getAllrenters());
@@ -22,7 +22,7 @@ const Renter = () => {
     <>
       <div className="card headerContainer ">
         <h3>Renters</h3>
-        <LogoSearch searchType="renter" />
+        <SearchRenter />
       </div>
       <div className="button__section">
         <button onClick={() => setModalOpened(true)}>Add new</button>
@@ -32,7 +32,7 @@ const Renter = () => {
         />
       </div>
       <div className="">
-        <RenterTable data={renterData} />
+        <RenterTable data={renters} />
       </div>
     </>
   );

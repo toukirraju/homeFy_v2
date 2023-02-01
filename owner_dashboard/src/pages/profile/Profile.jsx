@@ -1,18 +1,32 @@
 import Style from "./styles/Profile.module.css";
 import PostSide from "../../Components/profile/postSide/PostSide";
-import ProfileLeft from "./components/profileLeft/ProfileLeft";
-import { useSelector } from "react-redux";
-import UserBillTable from "../../Components/tables/UserBillTable";
+import { useDispatch, useSelector } from "react-redux";
 import ProfileNav from "../../Components/Navigation/profile_navigation/ProfileNav";
 import { Tabs } from "@mantine/core";
 import ProfileCard from "./components/profileCard/ProfileCard";
 import HomeInfoCard from "./components/homeInfoCard/HomeInfoCard";
 import { useState } from "react";
 import CreateNewHouseIModal from "./modals/CreateNewHouseIModal";
+import ManagersTable from "./components/tables/ManagersTable";
+import SearchOutput from "./components/searchOutputCard/SearchOutput";
+import { useEffect } from "react";
+import {
+  GetHouses,
+  GetManagers,
+  SearchManager,
+} from "../../redux/slices/ownerSlice";
+import SearchSection from "./components/searchSection/SearchSection";
 
 const Profile = () => {
-  const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const { profileData, houses, managers } = useSelector((state) => state.owner);
   const [modalOpened, setModalOpened] = useState(false);
+  // console.log(searchValue);
+  useEffect(() => {
+    dispatch(GetHouses());
+    dispatch(GetManagers());
+  }, []);
+
   return (
     <>
       <div className="headerContainer">
@@ -21,20 +35,14 @@ const Profile = () => {
             <ProfileNav />
           </div>
         </div>
-
-        {/* <div className="Profile-center">
-          <PostSide />
-        </div> */}
-        {/* <div className="Profile__right">
-          <RightSide />
-        </div>
-        <div className="Profile__left">
-          <ProfileLeft />
-        </div> */}
       </div>
       <div className={Style.tab__sections}>
-        <Tabs variant="pills" defaultValue="houseInfo">
+        <Tabs variant="pills" defaultValue="profile">
           <Tabs.List>
+            <Tabs.Tab color="blue" value="profile">
+              Profile
+            </Tabs.Tab>
+
             <Tabs.Tab color="blue" value="houseInfo">
               House Info
             </Tabs.Tab>
@@ -42,10 +50,26 @@ const Profile = () => {
             <Tabs.Tab color="blue" value="post">
               Post
             </Tabs.Tab>
-            <Tabs.Tab color="blue" value="profile">
-              Profile
-            </Tabs.Tab>
           </Tabs.List>
+
+          {/******************  tab panal for profile section  ******************/}
+          <Tabs.Panel value="profile">
+            <div className={` ${Style.profile__sections}`}>
+              <div className={` ${Style.profile_container_1}`}>
+                <div className={` ${Style.profile_left}`}>
+                  <ProfileCard data={profileData} />
+                </div>
+                <div className={` ${Style.profile_right}`}>
+                  <SearchSection />
+                </div>
+              </div>
+              <div className={` ${Style.profile_container_2}`}>
+                <ManagersTable data={managers} />
+              </div>
+            </div>
+          </Tabs.Panel>
+
+          {/******************  tab panal for house section  ******************/}
           <Tabs.Panel value="houseInfo">
             <button
               className={Style.house__create_button}
@@ -58,20 +82,21 @@ const Profile = () => {
               setModalOpened={setModalOpened}
             />
             <div className={Style.house_info_wrapper}>
-              <HomeInfoCard />
-              <HomeInfoCard />
-              <HomeInfoCard />
-            </div>
-          </Tabs.Panel>
-          <Tabs.Panel value="post">
-            <div className={Style.Posts__wrapper}>
-              <PostSide />
+              {houses.map((house, index) => (
+                <div key={index}>
+                  <HomeInfoCard data={house} />
+                </div>
+              ))}
+
+              {/* <HomeInfoCard />
+              <HomeInfoCard /> */}
             </div>
           </Tabs.Panel>
 
-          <Tabs.Panel value="profile">
-            <div className={` ${Style.profile__sections}`}>
-              <ProfileCard />
+          {/******************  tab panal for post section  ******************/}
+          <Tabs.Panel value="post">
+            <div className={Style.Posts__wrapper}>
+              <PostSide />
             </div>
           </Tabs.Panel>
         </Tabs>

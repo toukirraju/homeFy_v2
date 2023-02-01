@@ -19,24 +19,62 @@ const ownerSchema = new Schema(
       type: String,
       require: true,
     },
-    phoneNo: {
+    phone: {
       type: String,
       require: true,
+    },
+    address: {
+      type: String,
+      // require: true,
+    },
+    city: {
+      type: String,
+      // require: true,
+    },
+    area: {
+      type: String,
+      // require: true,
+    },
+    postCode: {
+      type: String,
+      // require: true,
+    },
+    nid: {
+      type: String,
+    },
+    profession: {
+      type: String,
     },
     role: {
       type: String,
       require: true,
     },
     ownerId: {
+      //only for manager
       type: String,
     },
-    isAdmin: {
+    defaultHomeID: {
+      // for owner & manager
+      type: String,
+    },
+    houseName: {
+      // for manager
+      type: String,
+    },
+    isOwner: {
+      type: Boolean,
+      default: true,
+    },
+    isBlocked: {
       type: Boolean,
       default: false,
     },
     profilePicture: String,
-    coverPicture: String,
-    livesin: String,
+    documents: {
+      nid: String,
+      income_tax: String,
+      others_doc: String,
+    },
   },
   { timestamps: true }
 );

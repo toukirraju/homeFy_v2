@@ -5,7 +5,11 @@ const {
   UpdatePersonalProfile,
   UpdateAdminProfile,
   DeleteAdminProfile,
+  GetAllAdmins,
 } = require("../controllers/AdminController");
+
+//********* Get All Admins ************//
+router.get("/all", GetAllAdmins);
 
 //********* Update Personal Profile ************//
 router.put("/personal/update", [authVerify.verifyToken], UpdatePersonalProfile);

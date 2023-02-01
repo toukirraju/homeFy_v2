@@ -13,6 +13,11 @@
   gap: 20px;
   height: 50px;
 }
+.table__alert{
+  /* position:absolute; */
+  margin-top: 60px;
+  color: rgb(247, 120, 70);
+}
 .table__btn {
   margin: 10px;
   padding: 10px 30px;

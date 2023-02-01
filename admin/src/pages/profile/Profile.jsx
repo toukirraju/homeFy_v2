@@ -1,12 +1,10 @@
 import Style from "./styles/Profile.module.css";
 import PostSide from "../../Components/profile/postSide/PostSide";
-import ProfileLeft from "./components/profileLeft/ProfileLeft";
 import { useSelector } from "react-redux";
 import UserBillTable from "../../Components/tables/UserBillTable";
 import ProfileNav from "../../Components/Navigation/profile_navigation/ProfileNav";
 import { Tabs } from "@mantine/core";
 import ProfileCard from "./components/profileCard/ProfileCard";
-import HomeInfoCard from "./components/homeInfoCard/HomeInfoCard";
 import { useState } from "react";
 import CreateSubAdminModal from "./modals/CreateSubAdminModal";
 import HouseInfoTable from "./components/tables/HouseInfoTable";
@@ -29,7 +27,7 @@ import PostListTable from "./components/tables/PostListTable";
 
 const Profile = () => {
   const { user } = useSelector((state) => state.auth);
-  console.log(user);
+  // console.log(user);
   const [modalOpened, setModalOpened] = useState(false);
   return (
     <>
@@ -123,7 +121,7 @@ const Profile = () => {
                     <AdminTable data={adminData} />
                   </div>
                   <div className={` ${Style.right_side}`}>
-                    <ProfileCard />
+                    <ProfileCard data={user?.user} />
                   </div>
                 </div>
                 <div className={` ${Style.container_2}`}>

@@ -9,7 +9,7 @@ const PostSide = () => {
 
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getUserPosts());
+    // dispatch(getUserPosts());
   }, [dispatch]);
   return (
     <>

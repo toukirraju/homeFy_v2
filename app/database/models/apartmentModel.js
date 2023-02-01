@@ -11,48 +11,87 @@ const apartmentSchema = new Schema(
       type: String,
       required: true,
     },
-    allApartments: [
-      {
-        level: {
-          type: String,
-        },
-        apartNo: {
-          type: String,
-        },
-        roomNo: {
-          type: String,
-        },
-        rent: {
-          type: Number,
-        },
-        gasbill: {
-          type: Number,
-        },
-        waterbill: {
-          type: Number,
-        },
-        f_bill: {
-          type: Number,
-        },
-        c_service: {
-          type: Number,
-        },
-        totalRent: {
-          type: Number,
-        },
-        isAvailable: {
-          type: Boolean,
-          default: true,
-        },
-        renterId: {
-          type: String,
-        },
-        renterName: {
-          type: String,
-        },
+    defaultHomeID: {
+      type: String,
+      required: true,
+    },
+    houseName: {
+      type: String,
+      required: true,
+    },
+    apartmentDetails: {
+      apartmentName: {
+        type: String,
       },
-    ],
+      apartment_number: {
+        type: String,
+      },
+      apartmentType: {
+        // "family/bachelor",
+        type: String,
+      },
+      roomNumber: {
+        //if it is bachelor apartment
+        type: String,
+      },
+      floor: {
+        type: Number,
+      },
+      number_of_bed_room: {
+        type: Number,
+      },
+      number_of_kitchen: {
+        type: Number,
+      },
+      number_of_baths: {
+        type: Number,
+      },
+      number_of_balcony: {
+        type: String,
+      },
+      apartment_length: {
+        //sqft
+        type: Number,
+      },
+    },
+    billDetails: {
+      rent: {
+        type: Number,
+      },
+      gas_bill: {
+        type: Number,
+      },
+      water_bill: {
+        type: Number,
+      },
+      electricity_bill: {
+        type: Number,
+      },
+      service_charge: {
+        type: Number,
+      },
+      others: {
+        type: Number,
+      },
+      totalRent: {
+        type: Number,
+      },
+    },
+
+    isAvailable: {
+      type: Boolean,
+      default: true,
+    },
+    renterId: {
+      //after assigning renter
+      type: String,
+    },
+    renterName: {
+      //after assigning renter
+      type: String,
+    },
   },
+
   { timestamps: true }
 );
 

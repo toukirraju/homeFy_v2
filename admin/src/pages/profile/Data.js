@@ -376,7 +376,8 @@ export const adminData = [
     postCode: "1700",
     nid: "45765888",
     isAdmin: true,
-    role: ["admin", "editor", "moderator"],
+    profession: "",
+    roles: ["admin", "editor", "moderator"],
   },
   {
     id: "2",
@@ -401,18 +402,20 @@ export const adminData = [
 export const OwnerData = [
   {
     id: "1",
-    name: "Owner",
+    firstname: "toukir",
+    lastname: "raju",
     phone: "0163457637",
     password: "",
-    email: "Owner@gmail.com",
+    username: "Owner@gmail.com",
     address: "gazipur",
     city: "dhaka",
     area: "gazipur",
     postCode: "1700",
     National_ID_Passport_no: "45765888",
-    role: ["owner", "manager"],
+    role: "owner" / "manager",
     image: "iumg373738.png",
     isBlocked: false,
+    defaultHomeID: "",
     documents: {
       nid: "373738.png",
       income_tax: "373fdsg738.png",
@@ -444,10 +447,12 @@ export const OwnerData = [
 export const UsersData = [
   {
     id: "1",
-    name: "User 1",
+    ownerId: "",
+    firstname: "User 1",
+    lastname: "User ",
     phone: "01893457637",
     password: "",
-    email: "user@gmail.com",
+    username: "user@gmail.com",
     address: "gazipur",
     city: "dhaka",
     area: "gazipur",

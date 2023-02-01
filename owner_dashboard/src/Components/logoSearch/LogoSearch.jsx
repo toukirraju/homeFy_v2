@@ -3,7 +3,7 @@ import "./LogoSearch.css";
 import { UilSearch } from "@iconscout/react-unicons";
 import { useDispatch } from "react-redux";
 import { searchRenter } from "../../redux/slices/renterSlice";
-import SearchPopUp from "../modals/searchModal/SearchPopUp";
+import SearchPopUp from "../../pages/renter/modals/SearchPopUp";
 import LoadingSpinner from "../LoadingSpinner";
 
 const LogoSearch = ({ searchType }) => {

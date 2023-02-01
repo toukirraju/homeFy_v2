@@ -7,6 +7,9 @@ const billSchema = new Schema(
       type: String,
       required: true,
     },
+    defaultHomeID: {
+      type: String,
+    },
     renterId: {
       type: String,
       required: true,
@@ -15,10 +18,22 @@ const billSchema = new Schema(
       type: String,
       required: true,
     },
-    e_bill: {
+    rent: {
       type: Number,
     },
-    o_bill: {
+    gas_bill: {
+      type: Number,
+    },
+    water_bill: {
+      type: Number,
+    },
+    electricity_bill: {
+      type: Number,
+    },
+    service_charge: {
+      type: Number,
+    },
+    others: {
       type: Number,
     },
     totalRent: {
@@ -33,9 +48,15 @@ const billSchema = new Schema(
     due: {
       type: Number,
     },
+    billMonth: {
+      type: Number,
+    },
+    billYear: {
+      type: Number,
+    },
   },
   { timestamps: true }
 );
-
+billSchema.index({ renterId: 1, billMonth: 1, billYear: 1 }, { unique: true });
 const BillModel = mongoose.model("BillModel", billSchema);
 module.exports = BillModel;

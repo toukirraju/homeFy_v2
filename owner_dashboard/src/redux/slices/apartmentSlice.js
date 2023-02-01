@@ -120,7 +120,6 @@ const apartmentSlice = createSlice({
     [allApartments.fulfilled]: (state, action) => {
       state.isSuccess = true;
       state.isPending = false;
-      // state.apartments = action.payload;
       state.apartmentData = action.payload.apartments;
     },
     [allApartments.rejected]: (state, action) => {
