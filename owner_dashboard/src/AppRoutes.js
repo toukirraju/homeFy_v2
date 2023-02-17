@@ -4,7 +4,6 @@ import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import Sidebar from "./Components/Navigation/sidebar/Sidebar";
 import Apartment from "./pages/apartment/Apartment";
 import Dashboard from "./pages/dashboard/Dashboard";
-import Home from "./pages/home/Home";
 import Message from "./pages/message/Message";
 import Profile from "./pages/profile/Profile";
 import Renter from "./pages/renter/Renter";
@@ -58,8 +57,6 @@ const AppRoutes = ({ user }) => {
               path="profile"
               element={user ? <Profile /> : <Navigate to="/auth" />}
             />
-
-            {/* <Route path="/home" element={<Home />} /> */}
 
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

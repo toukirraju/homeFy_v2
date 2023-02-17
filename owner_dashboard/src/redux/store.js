@@ -6,10 +6,8 @@ import apartmentReducer from "./slices/apartmentSlice";
 import renterReducer from "./slices/renterSlice";
 import assignReducer from "./slices/assignRenterSlice";
 import billReducer from "./slices/billSlice";
-import publicReducer from "./slices/publicDataSlice";
 import dashboardReducer from "./slices/dashboardSlice";
 import reloadReducer from "./slices/reloadSlice";
-import roleReducer from "./slices/roleSlice";
 import postReducer from "./slices/postSlice";
 
 export default configureStore({
@@ -22,9 +20,7 @@ export default configureStore({
     renterInfo: renterReducer,
     assingRenter: assignReducer,
     billInfo: billReducer,
-    publicData: publicReducer,
     dashboardData: dashboardReducer,
-    role: roleReducer,
     reload: reloadReducer,
   },
   // devTools: false,

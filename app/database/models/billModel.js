@@ -10,6 +10,12 @@ const billSchema = new Schema(
     defaultHomeID: {
       type: String,
     },
+    renter: {
+      type: mongoose.Types.ObjectId,
+      ref: "RenterInfoModel",
+      default: null,
+      required: true,
+    },
     renterId: {
       type: String,
       required: true,

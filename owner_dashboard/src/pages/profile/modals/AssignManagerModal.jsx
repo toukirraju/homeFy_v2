@@ -36,7 +36,6 @@ function AssignManagerModal({
   const initialValues = {
     ...data,
   };
-
   return (
     <Modal
       overlayColor={
@@ -84,21 +83,21 @@ function AssignManagerModal({
                   <div className={Styles.widget__card__content}>
                     <span>{/* <UilBuilding /> */}</span>
                     <span>Name</span>
-                    <span>Test manager</span>
+                    <span>{data.firstname + " " + data.lastname}</span>
                   </div>
                 </div>
                 <div className={Styles.widget__innerCard}>
                   <div className={Styles.widget__card__content}>
                     <span>{/* <UilBuilding /> */}</span>
                     <span>Phone</span>
-                    <span>01974872364</span>
+                    <span>{data.phone}</span>
                   </div>
                 </div>
                 <div className={Styles.widget__innerCard}>
                   <div className={Styles.widget__card__content}>
                     <span>{/* <UilBuilding /> */}</span>
                     <span>Role</span>
-                    <span>manager</span>
+                    <span>{data.role}</span>
                   </div>
                 </div>
               </div>

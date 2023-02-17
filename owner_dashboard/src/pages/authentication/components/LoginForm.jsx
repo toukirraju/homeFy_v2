@@ -4,10 +4,11 @@ import Style from "../styles/loginForm.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import { login, register } from "../../../redux/slices/auth";
 import { useNavigate } from "react-router-dom";
-import { clearMessage } from "../../../redux/slices/message";
 import LoadingSpinner from "../../../Components/LoadingSpinner";
 import { UilEstate } from "@iconscout/react-unicons";
 import { toast } from "react-toastify";
+import AlertPoPUP from "../../../Components/AlertPoPUP";
+import { clearMessage } from "../../../redux/slices/message";
 
 const initialValues = {
   firstname: "",
@@ -59,6 +60,7 @@ const LoginForm = () => {
         .unwrap()
         .then(() => {
           toast.success("Successfully registred");
+          dispatch(clearMessage());
           navigate("/");
         })
         .catch((error) => {
@@ -69,7 +71,7 @@ const LoginForm = () => {
         .unwrap()
         .then(() => {
           toast.success("Successfully login");
-
+          dispatch(clearMessage());
           navigate("/");
         })
         .catch((error) => {
@@ -97,6 +99,8 @@ const LoginForm = () => {
         } = formik;
         return (
           <div className={Style.container}>
+            {message && <AlertPoPUP message={message} />}
+
             <h3 className={Style.title}>
               {isSignUp
                 ? "Sign up for new account"

@@ -1,8 +1,10 @@
 import axios from "axios";
 import authHeader from "./auth-header";
 
-const API_URL = "http://localhost:4040/api/v1/bill/";
+// const API_URL = "http://localhost:4040/api/v1/bill/";
+const API_URL = "https://api.billfactor.xyz/api/v1/bill/";
 
+/////////////////////// Monthly Bills \\\\\\\\\\\\\\\\\\\\\\\\
 const getMonthlyBill = ({ month, year }) => {
   return axios
     .get(API_URL + `${month}/${year}`, { headers: authHeader() })
@@ -11,6 +13,7 @@ const getMonthlyBill = ({ month, year }) => {
     });
 };
 
+/////////////////////// Payable Renters \\\\\\\\\\\\\\\\\\\\\\\\
 const getPayableRenters = ({ month, year }) => {
   return axios
     .get(API_URL + `payable/${month}/${year}`, { headers: authHeader() })
@@ -19,6 +22,7 @@ const getPayableRenters = ({ month, year }) => {
     });
 };
 
+/////////////////////// Get Temporary Bills \\\\\\\\\\\\\\\\\\\\\\\\
 const getTempBills = () => {
   return axios
     .get(API_URL + `temp`, { headers: authHeader() })
@@ -27,6 +31,7 @@ const getTempBills = () => {
     });
 };
 
+/////////////////////// Get single Temporary Bill \\\\\\\\\\\\\\\\\\\\\\\\
 const getRenterTempBIll = (renterId) => {
   return axios
     .get(API_URL + `/temp/r/${renterId}`, { headers: authHeader() })
@@ -35,6 +40,7 @@ const getRenterTempBIll = (renterId) => {
     });
 };
 
+/////////////////////// Create Monthly Bills \\\\\\\\\\\\\\\\\\\\\\\\
 const createBill = (billData) => {
   return axios
     .post(API_URL + "create", billData, { headers: authHeader() })
@@ -43,6 +49,7 @@ const createBill = (billData) => {
     });
 };
 
+/////////////////////// Create Temporary Bill \\\\\\\\\\\\\\\\\\\\\\\\
 const createTempBill = (tempBillData) => {
   return axios
     .post(API_URL + "temp/create", tempBillData, { headers: authHeader() })
@@ -50,6 +57,8 @@ const createTempBill = (tempBillData) => {
       return response.data;
     });
 };
+
+/////////////////////// Update Temporary Bill \\\\\\\\\\\\\\\\\\\\\\\\
 const updateTempBill = (tempBillData) => {
   return axios
     .post(API_URL + "temp/update", tempBillData, { headers: authHeader() })
@@ -57,6 +66,8 @@ const updateTempBill = (tempBillData) => {
       return response.data;
     });
 };
+
+/////////////////////// Remove Bill \\\\\\\\\\\\\\\\\\\\\\\\
 const removeBill = (id) => {
   return axios
     .delete(API_URL + `delete/${id}`, { headers: authHeader() })
@@ -65,6 +76,7 @@ const removeBill = (id) => {
     });
 };
 
+/////////////////////// Remove Temporary Bill \\\\\\\\\\\\\\\\\\\\\\\\
 const removeTempBill = (id) => {
   return axios
     .delete(API_URL + `temp/delete/${id}`, { headers: authHeader() })

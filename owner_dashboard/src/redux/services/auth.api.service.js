@@ -1,8 +1,9 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:4040/auth/";
-// const API_URL = "https://billapi.billfactor.xyz/api/";
+// const API_URL = "http://localhost:4040/auth/";
+const API_URL = "https://api.billfactor.xyz/auth/";
 
+/////////////////////// Owner Register \\\\\\\\\\\\\\\\\\\\\\\\
 const register = (formData) => {
   return axios.post(API_URL + "owner/signup", formData).then((response) => {
     if (response.data) {
@@ -16,8 +17,9 @@ const register = (formData) => {
     return response.data;
   });
 };
-
 /////////////
+
+/////////////////////// Owner login \\\\\\\\\\\\\\\\\\\\\\\\
 const login = (formData) => {
   return axios.post(API_URL + "owner/signin", formData).then((response) => {
     if (response.data) {
@@ -33,12 +35,12 @@ const login = (formData) => {
 };
 /////////////
 
-/////////////
-
+/////////////////////// Logout \\\\\\\\\\\\\\\\\\\\\\\\
 const logout = () => {
   localStorage.clear();
   window.location.reload();
 };
+/////////////
 
 const authService = {
   register,

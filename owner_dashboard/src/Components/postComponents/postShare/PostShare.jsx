@@ -1,8 +1,9 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import Styles from "../../../Styles/ModalStyle.module.css";
 import "./PostShare.css";
 import ProfileImg from "../../../assets/user.png";
 import { useSelector, useDispatch } from "react-redux";
-import { Modal, useMantineTheme } from "@mantine/core";
+import { Loader, Switch, Modal, useMantineTheme } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import {
   UilScenery,
@@ -10,63 +11,61 @@ import {
   UilLocationPoint,
   UilSchedule,
   UilTimes,
+  UilBookReader,
+  UilBuilding,
+  UilUser,
+  UilSimCard,
+  UilLayerGroup,
+  UilListOl,
+  UilBedDouble,
+  UilBath,
+  UilUtensils,
+  UilLaptopCloud,
+  UilRulerCombined,
+  UilTextFields,
+  UilBill,
+  UilFire,
+  UilTear,
+  UilWrench,
+  UilElipsisDoubleVAlt,
+  UilSigma,
+  UilEllipsisH,
 } from "@iconscout/react-unicons";
 import { createPost } from "../../../redux/slices/postSlice";
 // import { uploadImage, uploadPost } from "../../actions/UploadAction";
 import LoadingSpinner from "../../LoadingSpinner";
+import { toast } from "react-toastify";
 
 const PostShare = ({ postModalOpened, setPostModalOpened, data }) => {
+  const dispatch = useDispatch();
   const theme = useMantineTheme();
   const isMobile = useMediaQuery("(max-width: 600px)");
   const [loading, setLoading] = useState(false);
-  // const loading = useSelector((state) => state.postReducer.uploading);
-  const dispatch = useDispatch();
-  const [image, setImage] = useState(null);
-  const imageRef = useRef();
-  const desc = useRef();
-  const { user } = useSelector((state) => state.auth.user);
 
-  // const serverPublic = process.env.REACT_APP_PUBLIC_FOLDER;
+  const [postData, setPostData] = useState({});
 
-  const onImageChange = (event) => {
-    if (event.target.files && event.target.files[0]) {
-      let img = event.target.files[0];
-      setImage(img);
-    }
-  };
+  const [description, setDescription] = useState("");
+
+  const [state, setState] = useState({
+    checked: true,
+    billChecked: true,
+    updateModalOpened: false,
+    assignModalOpened: false,
+    confirmationPopUp: false,
+    isAssignData: null,
+    removeId: null,
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    const newPost = {
-      ownerId: user._id,
-      apartmentId: data._id,
-      desc: desc.current.value,
-      isVisible: true,
-    };
-
-    console.log(newPost);
-    // if (image) {
-    //   const data = new FormData();
-    //   const filename = Date.now() + image.name;
-    //   data.append("name", filename);
-    //   data.append("file", image);
-    //   newPost.image = filename;
-    //   console.log(newPost);
-    //   try {
-    //     // dispatch(uploadImage(data));
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // }
     setLoading(true);
-    dispatch(createPost(newPost))
+    dispatch(createPost(postData))
       .unwrap()
       .then(() => {
         setPostModalOpened(false);
         setLoading(false);
         // dispatch(setReload());
-        // toast.success("Successfully registered!");
+        toast.success("Post done!");
         // dispatch(clearMessage());
       })
       .catch(() => {
@@ -74,10 +73,18 @@ const PostShare = ({ postModalOpened, setPostModalOpened, data }) => {
       });
     reset();
   };
+  useEffect(() => {
+    setPostData({
+      ...data,
+      description,
+      isVisible: true,
+      isNegotiable: state.billChecked === false ? true : false,
+    });
+  }, [description, state.billChecked, data]);
 
   const reset = () => {
-    setImage(null);
-    desc.current.value = "";
+    setDescription("");
+    setPostData({});
   };
 
   return (
@@ -97,16 +104,16 @@ const PostShare = ({ postModalOpened, setPostModalOpened, data }) => {
         <img src={ProfileImg} alt="" />
         <div>
           <input
-            ref={desc}
-            required
+            // required
             type="text"
             placeholder="Short description"
+            onChange={(e) => setDescription(e.target.value)}
           />
           <div className="postOptions">
             <div
               className="option"
               style={{ color: "var(--photo)" }}
-              onClick={() => imageRef.current.click()}
+              // onClick={() => imageRef.current.click()}
             >
               <UilScenery />
               Photo
@@ -148,6 +155,232 @@ const PostShare = ({ postModalOpened, setPostModalOpened, data }) => {
         )} */}
         </div>
       </div>
+
+      <div className={`card ${Styles.expend_apartment_info}`}>
+        <span>Apartment Informations</span>
+        <Switch
+          onLabel="ON"
+          offLabel="OFF"
+          checked={state.checked}
+          onChange={(event) =>
+            // setChecked(event.currentTarget.checked)
+            setState({
+              ...state,
+              checked: event.currentTarget.checked,
+            })
+          }
+        />
+      </div>
+      {state.checked && (
+        <>
+          <div className={Styles.popUpWindow_container}>
+            <div className={Styles.popUpWindow__innerCard}>
+              <div className={Styles.popUpWindow__card__content}>
+                <span className={Styles.popUpWindow__card__icon}>
+                  <UilLayerGroup />{" "}
+                </span>
+                <div className={Styles.popUpWindow__card__elements}>
+                  <span>Floor</span> <hr />
+                  <span>{data.apartmentDetails.floor}</span>
+                </div>
+              </div>
+            </div>
+            <div className={Styles.popUpWindow__innerCard}>
+              <div className={Styles.popUpWindow__card__content}>
+                <span className={Styles.popUpWindow__card__icon}>
+                  <UilSimCard />{" "}
+                </span>
+                <div className={Styles.popUpWindow__card__elements}>
+                  <span>Name</span>
+                  <span>{data.apartmentDetails.apartmentName}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className={Styles.popUpWindow__innerCard}>
+              <div className={Styles.popUpWindow__card__content}>
+                <span className={Styles.popUpWindow__card__icon}>
+                  <UilListOl />{" "}
+                </span>
+                <div className={Styles.popUpWindow__card__elements}>
+                  <span>Room Number</span>
+                  <span>{data.apartmentDetails.apartment_number}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className={Styles.popUpWindow_container}>
+            <div className={Styles.popUpWindow__innerCard}>
+              <div className={Styles.popUpWindow__card__content}>
+                <span className={Styles.popUpWindow__card__icon}>
+                  <UilTextFields />{" "}
+                </span>
+                <div className={Styles.popUpWindow__card__elements}>
+                  <span>Type</span> <hr />
+                  <span>{data.apartmentDetails.apartmentType}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className={Styles.popUpWindow__innerCard}>
+              <div className={Styles.popUpWindow__card__content}>
+                <span className={Styles.popUpWindow__card__icon}>
+                  <UilBedDouble />{" "}
+                </span>
+                <div className={Styles.popUpWindow__card__elements}>
+                  <span>Bed Room</span>
+                  <span>{data.apartmentDetails.number_of_bed_room}</span>
+                </div>
+              </div>
+            </div>
+            <div className={Styles.popUpWindow__innerCard}>
+              <div className={Styles.popUpWindow__card__content}>
+                <span className={Styles.popUpWindow__card__icon}>
+                  <UilBath />{" "}
+                </span>
+                <div className={Styles.popUpWindow__card__elements}>
+                  <span>Bath</span> <hr />
+                  <span>{data.apartmentDetails.number_of_baths}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className={Styles.popUpWindow_container}>
+            <div className={Styles.popUpWindow__innerCard}>
+              <div className={Styles.popUpWindow__card__content}>
+                <span className={Styles.popUpWindow__card__icon}>
+                  <UilUtensils />{" "}
+                </span>
+                <div className={Styles.popUpWindow__card__elements}>
+                  <span>Kitchen</span>
+                  <span>{data.apartmentDetails.number_of_kitchen}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className={Styles.popUpWindow__innerCard}>
+              <div className={Styles.popUpWindow__card__content}>
+                <span className={Styles.popUpWindow__card__icon}>
+                  <UilLaptopCloud />{" "}
+                </span>
+                <div className={Styles.popUpWindow__card__elements}>
+                  <span>Balcony</span>
+                  <span>{data.apartmentDetails.number_of_balcony}</span>
+                </div>
+              </div>
+            </div>
+            <div className={Styles.popUpWindow__innerCard}>
+              <div className={Styles.popUpWindow__card__content}>
+                <span className={Styles.popUpWindow__card__icon}>
+                  <UilRulerCombined />
+                </span>
+
+                <div className={Styles.popUpWindow__card__elements}>
+                  <span>Length</span>
+
+                  <span>{data.apartmentDetails.apartment_length}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      <div className={`card ${Styles.expend_apartment_info}`}>
+        <span>Bill Informations</span>
+        <Switch
+          onLabel="ON"
+          offLabel="OFF"
+          checked={state.billChecked}
+          onChange={(event) =>
+            // setBillChecked(event.currentTarget.checked)
+            setState({
+              ...state,
+              billChecked: event.currentTarget.checked,
+            })
+          }
+        />
+      </div>
+      {!state.billChecked ? (
+        <h3 className={`card ${Styles.expend_apartment_info}`}>
+          Bills maybe negotiable
+        </h3>
+      ) : (
+        <>
+          <div className={Styles.popUpWindow_container}>
+            <div className={Styles.popUpWindow__innerCard}>
+              <div className={Styles.popUpWindow__card__content}>
+                <span className={Styles.popUpWindow__card__icon}>
+                  <UilBill />{" "}
+                </span>
+                <div className={Styles.popUpWindow__card__elements}>
+                  <span>Rent</span> <hr />
+                  <span>{data.billDetails.rent}</span>
+                </div>
+              </div>
+            </div>
+            <div className={Styles.popUpWindow__innerCard}>
+              <div className={Styles.popUpWindow__card__content}>
+                <span className={Styles.popUpWindow__card__icon}>
+                  <UilFire />{" "}
+                </span>
+                <div className={Styles.popUpWindow__card__elements}>
+                  <span>Gas bill</span>
+                  <span>{data.billDetails.gas_bill}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className={Styles.popUpWindow__innerCard}>
+              <div className={Styles.popUpWindow__card__content}>
+                <span className={Styles.popUpWindow__card__icon}>
+                  <UilTear />{" "}
+                </span>
+                <div className={Styles.popUpWindow__card__elements}>
+                  <span>Water bill</span>
+                  <span>{data.billDetails.water_bill}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className={Styles.popUpWindow_container}>
+            <div className={Styles.popUpWindow__innerCard}>
+              <div className={Styles.popUpWindow__card__content}>
+                <span className={Styles.popUpWindow__card__icon}>
+                  <UilWrench />{" "}
+                </span>
+                <div className={Styles.popUpWindow__card__elements}>
+                  <span>Service charge</span> <hr />
+                  <span>{data.billDetails.service_charge}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className={Styles.popUpWindow__innerCard}>
+              <div className={Styles.popUpWindow__card__content}>
+                <span className={Styles.popUpWindow__card__icon}>
+                  <UilEllipsisH />{" "}
+                </span>
+                <div className={Styles.popUpWindow__card__elements}>
+                  <span>others</span>
+                  <span>{data.billDetails.others}</span>
+                </div>
+              </div>
+            </div>
+            <div className={Styles.popUpWindow__innerCard}>
+              <div className={Styles.popUpWindow__card__content}>
+                <span className={Styles.popUpWindow__card__icon}>
+                  <UilSigma />{" "}
+                </span>
+                <div className={Styles.popUpWindow__card__elements}>
+                  <span>Total </span>
+                  <span>{data.billDetails.totalRent}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </Modal>
   );
 };

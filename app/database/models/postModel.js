@@ -12,10 +12,37 @@ const postSchema = new Schema(
       type: String,
       required: true,
     },
-    desc: {
+    defaultHomeID: {
+      type: String,
+      required: true,
+    },
+    owner: {
+      type: mongoose.Types.ObjectId,
+      ref: "OwnerInfoModel",
+      required: true,
+    },
+    house: {
+      type: mongoose.Types.ObjectId,
+      ref: "HouseInfo",
+      required: true,
+    },
+    apartment: {
+      type: mongoose.Types.ObjectId,
+      ref: "ApartmentModel",
+      required: true,
+    },
+    description: {
       type: String,
     },
     isVisible: {
+      type: Boolean,
+      default: false,
+    },
+    isNegotiable: {
+      type: Boolean,
+      default: false,
+    },
+    isBlock: {
       type: Boolean,
       default: false,
     },

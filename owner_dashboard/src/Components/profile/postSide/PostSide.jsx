@@ -1,15 +1,15 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getUserPosts } from "../../../redux/slices/postSlice";
+import { getSpecificHousePosts } from "../../../redux/slices/postSlice";
 import Posts from "../../postComponents/posts/Posts";
 import "./PostSide.css";
+// import { postData } from "../../../assets/Data";
 
 const PostSide = () => {
-  const { userPosts } = useSelector((state) => state.posts);
-
   const dispatch = useDispatch();
+  const { specificPosts } = useSelector((state) => state.posts);
   useEffect(() => {
-    // dispatch(getUserPosts());
+    dispatch(getSpecificHousePosts());
   }, [dispatch]);
   return (
     <>
@@ -18,7 +18,7 @@ const PostSide = () => {
         <i className="uil uil-angle-double-up scrollUp__icon"></i>
       </div>
       <div className="PostSide">
-        <Posts data={userPosts} />
+        {specificPosts.length !== 0 && <Posts data={specificPosts} />}
       </div>
     </>
   );

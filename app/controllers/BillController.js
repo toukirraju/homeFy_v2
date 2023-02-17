@@ -1,29 +1,29 @@
 const BillModel = require("../database/models/billModel");
 const TempBillModel = require("../database/models/tempBillModel");
 const RenterModel = require("../database/models/renterModel");
-const ApartmentModel = require("../database/models/apartmentModel");
 const mongoose = require("mongoose");
 const { serverError, resourceError } = require("../utils/error");
 // const { sendMessage } = require("../../utils/methods");
 
 const payableRenters = async (req, res) => {
   // let { _id, role, homeId, homeOwner } = req.user;
-  const { _id, defaultHomeID } = req.user;
+  const { _id, defaultHomeID, role } = req.user;
+  const { month, year } = req.params;
 
   const currentMonth = new Date().getMonth() + 1;
   const currentYear = new Date().getFullYear();
 
   try {
     const bills = await BillModel.find({
-      ownerId: _id,
+      ownerId: role === "owner" ? _id : req.user.ownerId,
       defaultHomeID,
-      billMonth: currentMonth,
-      billYear: currentYear,
+      billMonth: month,
+      billYear: year,
     });
     const billRenterIds = bills.map((bill) => bill.renterId);
 
     const nonPaidRenters = await RenterModel.find({
-      ownerId: _id,
+      ownerId: role === "owner" ? _id : req.user.ownerId,
       defaultHomeID,
       _id: {
         $nin: billRenterIds,
@@ -219,108 +219,19 @@ const payableRenters = async (req, res) => {
   // }
 };
 
-const payableRenters2 = async (req, res) => {
-  // let { _id, role, homeId, homeOwner } = req.user;
-  const { _id, defaultHomeID } = req.user;
-  const monthlyBills = await BillModel.aggregate([
-    {
-      $match: {
-        $expr: {
-          $and: [
-            {
-              $eq: [{ $month: "$createdAt" }, parseInt(req.params.month)],
-            },
-            {
-              $eq: [{ $year: "$createdAt" }, parseInt(req.params.year)],
-            },
-          ],
-        },
-        $and: [{ ownerId: _id.toString(), defaultHomeID }],
-      },
-    },
-  ]);
-  const renters = await RenterModel.find({
-    ownerId: _id.toString(),
-    defaultHomeID,
-    apartmentId: { $nin: [null, ""] },
-    // $expr: {
-    //   $and: [
-    //     {
-    //       $lt: [{ $month: "$assignedDate" }, parseInt(req.params.month)],
-    //     },
-    //     {
-    //       $lt: [{ $year: "$assignedDate" }, parseInt(req.params.year)],
-    //     },
-    //   ],
-    // },
-  });
-
-  try {
-    if (renters.length != 0) {
-      let payableRenters = renters;
-
-      for (let i = monthlyBills.length - 1; i >= 0; i--) {
-        for (let j = 0; j < payableRenters.length; j++) {
-          if (monthlyBills[i].renterId === payableRenters[j]._id.toString()) {
-            payableRenters.splice(j, 1);
-          }
-        }
-      }
-
-      let renterDetails = [];
-
-      for (let i = 0; i < payableRenters.length; i++) {
-        try {
-          const apartments = await ApartmentModel.findOne(
-            { ownerId: _id.toString(), defaultHomeID },
-            {
-              allApartments: {
-                $elemMatch: {
-                  _id: new mongoose.Types.ObjectId(
-                    payableRenters[i].apartmentId
-                  ),
-                },
-              },
-            }
-          );
-
-          const apartment = apartments.allApartments[0];
-          renterDetails.push({
-            defaultHomeID: payableRenters[i]._doc.defaultHomeID,
-            apartmentId: payableRenters[i]._doc.apartmentId,
-            ownerId: payableRenters[i]._doc.ownerId,
-            phone: payableRenters[i]._doc.phone,
-
-            apartmentDetails: apartment._doc.apartmentDetails,
-            billDetails: apartment._doc.billDetails,
-            renterId: apartment._doc.renterId,
-            renterName: apartment._doc.renterName,
-          });
-        } catch (error) {
-          res.status(500).json(error);
-        }
-      }
-
-      res.status(200).json(renterDetails);
-    } else {
-      return resourceError(res, "Action forbidden");
-    }
-  } catch (error) {
-    serverError(res, error);
-  }
-};
-
 const createBill = async (req, res) => {
-  const { _id, defaultHomeID } = req.user;
+  const { _id, defaultHomeID, role } = req.user;
   const currentMonth = new Date().getMonth() + 1;
   const currentYear = new Date().getFullYear();
   // const sms = req.body.isSMS;
   // const _id = "1981493110";
   // const name = "ChayaNirr";
+  // console.log(req.body.month);
   try {
     const billData = new BillModel({
-      ownerId: _id.toString(),
+      ownerId: role === "owner" ? _id.toString() : req.user.ownerId,
       defaultHomeID,
+      renter: req.body.renterId,
       renterId: req.body.renterId,
       renterName: req.body.renterName,
 
@@ -337,13 +248,13 @@ const createBill = async (req, res) => {
       paidAmount: req.body.paidAmount,
       due: req.body.due,
 
-      billMonth: currentMonth,
-      billYear: currentYear,
+      billMonth: req.body.month,
+      billYear: req.body.year,
     });
 
     const tempData = new TempBillModel({
       _id: req.body.renterId,
-      ownerId: _id.toString(),
+      ownerId: role === "owner" ? _id.toString() : req.user.ownerId,
       defaultHomeID,
       renterName: req.body.renterName,
       electricity_bill: 0,
@@ -354,17 +265,30 @@ const createBill = async (req, res) => {
     const userBill = await BillModel.aggregate([
       {
         $match: {
-          $expr: {
-            $and: [
-              {
-                $eq: [{ $month: "$createdAt" }, { $month: new Date() }],
-              },
-              {
-                $eq: [{ $year: "$createdAt" }, { $year: new Date() }],
-              },
-            ],
-          },
-          $and: [{ ownerId: _id.toString() }, { renterId: req.body.renterId }],
+          // $expr: {
+          //   $and: [
+          //     {
+          //       $eq: [
+          //         { $month: "$createdAt" },
+          //         parseInt(req.body.month),
+          //       ],
+          //     },
+          //     {
+          //       $eq: [
+          //         { $year: "$createdAt" },
+          //         parseInt(req.body.year),
+          //       ],
+          //     },
+          //   ],
+          // },
+          $and: [
+            { ownerId: role === "owner" ? _id.toString() : req.user.ownerId },
+            { renterId: req.body.renterId },
+            {
+              billMonth: { $eq: parseInt(req.body.month) },
+              billYear: { $eq: parseInt(req.body.year) },
+            },
+          ],
         },
       },
     ]);
@@ -374,7 +298,22 @@ const createBill = async (req, res) => {
     });
 
     if (userBill.length == 0) {
-      await billData.save();
+      //creating bill
+      const createdBill = await billData.save();
+
+      //push bill id on renter bills array
+      await RenterModel.updateOne(
+        {
+          _id: req.body.renterId,
+        },
+        {
+          $push: {
+            bills: createdBill._id,
+          },
+        }
+      );
+
+      //creating temporaray bill
       if (!userTempBill) {
         await tempData.save();
       } else {
@@ -396,12 +335,20 @@ const createBill = async (req, res) => {
 const deleteBill = async (req, res) => {
   const id = req.params.id;
   const { _id } = req.user;
-
+  //need to delete bill from renter bills array
   try {
     const bill = await BillModel.findById(id);
     if (bill) {
       if (bill.ownerId === _id.toString()) {
+        //remove bill from bill collection
         await bill.deleteOne();
+
+        //remove bill from renter collection
+        await RenterModel.updateOne(
+          { _id: mongoose.Types.ObjectId(bill.renterId) },
+          { $pull: { bills: mongoose.Types.ObjectId(id) } }
+        );
+
         res.status(201).json({
           message: "bill deleted successfully",
         });
@@ -417,21 +364,37 @@ const deleteBill = async (req, res) => {
 };
 
 const monthlyBill = async (req, res) => {
-  const { _id, defaultHomeID } = req.user;
+  const { _id, defaultHomeID, role } = req.user;
   const monthlyBills = await BillModel.aggregate([
     {
       $match: {
         $expr: {
           $and: [
-            {
-              $eq: [{ $month: "$createdAt" }, parseInt(req.params.month)],
-            },
-            {
-              $eq: [{ $year: "$createdAt" }, parseInt(req.params.year)],
-            },
+            // {
+            //   $eq: [{ $month: "$createdAt" }, parseInt(req.params.month)],
+            // },
+            //   {
+            //     $eq: [{ $year: "$createdAt" }, parseInt(req.params.year)],
+            //   },
           ],
         },
-        $and: [{ ownerId: _id.toString(), defaultHomeID }],
+
+        $and: [
+          {
+            ownerId: role === "owner" ? _id.toString() : req.user.ownerId,
+            defaultHomeID,
+            billMonth: { $eq: parseInt(req.params.month) },
+            billYear: { $eq: parseInt(req.params.year) },
+          },
+        ],
+        // $and: [
+        //   {
+        //     billMonth: { $eq: parseInt(req.params.month) },
+        //   },
+        //   {
+        //     billYear: { $eq: parseInt(req.params.year) },
+        //   },
+        // ],
       },
     },
   ]);
@@ -440,7 +403,8 @@ const monthlyBill = async (req, res) => {
     if (monthlyBills.length != 0) {
       res.status(200).json(monthlyBills);
     } else {
-      return resourceError(res, "bill not found");
+      // return resourceError(res, { bill_error: "bill not found" });
+      res.status(200).json(monthlyBills);
     }
   } catch (error) {
     serverError(res, error);
@@ -448,10 +412,10 @@ const monthlyBill = async (req, res) => {
 };
 
 const allTempBills = async (req, res) => {
-  const { _id, defaultHomeID } = req.user;
+  const { _id, defaultHomeID, role } = req.user;
 
   const tempBills = await TempBillModel.find({
-    ownerId: _id.toString(),
+    ownerId: role === "owner" ? _id.toString() : req.user.ownerId,
     defaultHomeID,
   });
 
@@ -459,7 +423,8 @@ const allTempBills = async (req, res) => {
     if (tempBills.length != 0) {
       res.status(200).json(tempBills);
     } else {
-      return resourceError(res, "Temporary bill not found");
+      // return resourceError(res, "Temporary bill not found");
+      res.status(200).json(tempBills);
     }
   } catch (error) {
     serverError(res, error);
@@ -467,7 +432,7 @@ const allTempBills = async (req, res) => {
 };
 
 const userTempBill = async (req, res) => {
-  const { _id, defaultHomeID } = req.user;
+  const { _id, defaultHomeID, role } = req.user;
 
   let tempObj = new Object({
     electricity_bill: 0,
@@ -479,7 +444,10 @@ const userTempBill = async (req, res) => {
     {
       $match: {
         $and: [
-          { ownerId: _id.toString(), defaultHomeID },
+          {
+            ownerId: role === "owner" ? _id.toString() : req.user.ownerId,
+            defaultHomeID,
+          },
           { _id: req.params.id },
         ],
       },
@@ -590,6 +558,78 @@ const deleteTempBill = async (req, res) => {
   }
 };
 
+// to be continue........
+const checkForUnbilledRenters = async (req, res) => {
+  const ownerId = "63c77d47acfe53798bd6ce6c";
+  const defaultHomeID = "63c8ef94a26e9c7dd7b0d871";
+  // Get the current date
+  const today = new Date();
+
+  const currentMonth = new Date().getMonth() + 1;
+  const currentYear = new Date().getFullYear();
+  // Get the last day of the month
+  const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+  // Check if it's the last day of the month
+  if (today.getDate() === today.getDate()) {
+    // Get all renters who have not created a bill for the current month
+    // const renters = await RenterModel.find({
+    //   bills: {
+    //     $not: {
+    //       $elemMatch: {
+    //         billMonth: today.getMonth() + 1,
+    //         billYear: today.getFullYear(),
+    //       },
+    //     },
+    //   },
+    //   assignedDate: {
+    //     $lt: new Date(`${today.getFullYear()}-${today.getMonth() + 1}-01`),
+    //   },
+    //   ownerId: ownerId,
+    //   defaultHomeID: defaultHomeID,
+    // });
+
+    const monthlyPaidBills = await BillModel.find({
+      ownerId,
+      defaultHomeID,
+      billMonth: currentMonth,
+      billYear: currentYear,
+    });
+    const paidRenterIds = monthlyPaidBills.map((bill) => bill.renterId);
+
+    const nonPaidRenters = await RenterModel.find({
+      ownerId,
+      defaultHomeID,
+      _id: {
+        $nin: paidRenterIds,
+      },
+      assignedDate: {
+        $lt: new Date(`${parseInt(currentYear)}-${parseInt(currentMonth)}-01`),
+      },
+    });
+
+    // Create a bill for each unbilled renter
+    nonPaidRenters.forEach(async (renter) => {
+      console.log(renter);
+      // const bill = new BillModel({
+      //   ownerId: renter.ownerId,
+      //   defaultHomeID: renter.defaultHomeID,
+      //   renter: renter._id,
+      //   renterId: renter.username,
+      //   renterName: `${renter.firstname} ${renter.lastname}`,
+      //   billMonth: today.getMonth() + 1,
+      //   billYear: today.getFullYear()
+      // });
+      // res.status(200).json(renter);
+      // await bill.save();
+      // renter.bills.push(bill._id);
+      // await renter.save();
+    });
+  } else {
+    res.status(200).json({ message: "today is not last day" });
+  }
+};
+
 module.exports = {
   createBill,
   deleteBill,
@@ -600,4 +640,5 @@ module.exports = {
   updateTempBill,
   payableRenters,
   deleteTempBill,
+  checkForUnbilledRenters,
 };

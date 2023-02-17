@@ -10,7 +10,7 @@ width: 35%;
 
 
 .tab__sections{
-  margin: 5px 15px;
+  margin: 5px 0px;
 }
 
 /* .profile__sections{
@@ -19,13 +19,7 @@ width: 35%;
  
 } */
 
-.Posts__wrapper{
-  height: calc(100vh - 135px);
-    margin-top: 10px;
-    overflow-y: auto;
-    margin-bottom: 10px;
-    border-radius: 10px;
-}
+
 .house_info_wrapper{
   height: calc(100vh - 165px);
     overflow-y: auto;
@@ -127,10 +121,25 @@ margin-top: 10px;
 
 
 
+/****************** Post section start ************************/
+.Posts__wrapper > div {
+  height: calc(100vh - 135px);
+    margin-top: 10px;
+    /* overflow-y: auto; */
+    margin-bottom: 10px;
+    border-radius: 10px;
+    display: grid;
+    grid-template-columns: 2fr 4fr;
+}
 
 
 
+.Posts__container{
+overflow-y: auto;
+/* background: #000; */
+}
 
+/****************** Post section end ************************/
 .scrollUp__icon {
   color: var(--orange);
   font-size: 30px;
@@ -159,14 +168,28 @@ margin-top: 10px;
   width: 100%;
   }
   
-
   .Posts__wrapper{
+    width: calc(100vw );
+    
+  }
+
+  .Posts__wrapper > div{
     height: calc(100vh - 190px);
       margin-top: 10px;
       overflow-y: auto;
+      overflow-x: hidden;
       margin-bottom: 10px;
       border-radius: 10px;
+      grid-template-columns: 1fr;
   }
+  .Posts__widget{
+    /* background: #000; */
+    width: calc(100% - 4%);
+    }
+  .Posts__container{
+    overflow-y: unset;
+    }
+  
 
   .house_info_wrapper{
     height: calc(100vh - 200px);
@@ -186,42 +209,7 @@ margin-top: 10px;
       width: 100%;
       margin-top: 40px;
     }
-  /* .Profile__wrapper {
-    grid-template-columns: 1fr;
-  }
-  .Profile__right {
-    width: 100%;
-    position: fixed;
-    top: 0;
-  }
-  .RightSide {
-    position: fixed;
-    width: 100%;
-    padding: 20px;
-    display: flex;
-    justify-content: space-between;
-    border-radius: 20px;
-  }
-  .navIcons {
-    margin-top: 0rem;
-  }
-  .navIcons > img {
-    cursor: pointer;
-  }
-
-  .navIcons > a > img {
-    width: 1.5rem;
-    height: 1.5rem;
-  }
-  .Profile__left {
-    width: 100%;
-    position: fixed;
-    top: 80px;
-  }
-
-  .Profile-center {
-    margin-top: 300px;
-    height: calc(100vh - 370px);
-    z-index: 5;
-  } */
+  
 }
+
+ 

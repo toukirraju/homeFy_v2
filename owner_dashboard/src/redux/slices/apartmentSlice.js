@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { setMessage } from "./message";
 import ApartmentService from "../services/apartment.api.service";
 
+/////////////////////// Create Apartment \\\\\\\\\\\\\\\\\\\\\\\\
 export const createMultiApartment = createAsyncThunk(
   "apartment/createMultiApartment",
   async (numOfapartment, thunkAPI) => {
@@ -21,6 +22,7 @@ export const createMultiApartment = createAsyncThunk(
   }
 );
 
+/////////////////////// All Apartments \\\\\\\\\\\\\\\\\\\\\\\\
 export const allApartments = createAsyncThunk(
   "apartment/getApartments",
   async (args, thunkAPI) => {
@@ -41,6 +43,7 @@ export const allApartments = createAsyncThunk(
   }
 );
 
+/////////////////////// Update Apartment \\\\\\\\\\\\\\\\\\\\\\\\
 export const update = createAsyncThunk(
   "apartment/updateApartment",
   async (updatedData, thunkAPI) => {
@@ -59,6 +62,7 @@ export const update = createAsyncThunk(
   }
 );
 
+/////////////////////// Remove Apartment \\\\\\\\\\\\\\\\\\\\\\\\
 export const removeLevels = createAsyncThunk(
   "apartment/removeLevels",
   async (apartmentId, thunkAPI) => {
@@ -88,19 +92,20 @@ const apartmentSlice = createSlice({
   name: "apartments",
   initialState,
   extraReducers: {
+    /////////////////////// Create Apartment \\\\\\\\\\\\\\\\\\\\\\\\
     [createMultiApartment.pending]: (state, action) => {
       state.isPending = true;
     },
     [createMultiApartment.fulfilled]: (state, action) => {
       state.isSuccess = true;
       state.isPending = false;
-      // state.apartmentData = action.payload.apartments;
     },
     [createMultiApartment.rejected]: (state, action) => {
       state.isSuccess = false;
       state.apartments = null;
     },
 
+    /////////////////////// Update Apartment \\\\\\\\\\\\\\\\\\\\\\\\
     [update.pending]: (state, action) => {
       state.isPending = true;
       state.isSuccess = false;
@@ -108,11 +113,12 @@ const apartmentSlice = createSlice({
     [update.fulfilled]: (state, action) => {
       state.isSuccess = true;
       state.isPending = false;
-      // state.apartments = action.payload;
     },
     [update.rejected]: (state, action) => {
       state.isSuccess = false;
     },
+
+    /////////////////////// get all Apartment \\\\\\\\\\\\\\\\\\\\\\\\
     [allApartments.pending]: (state, action) => {
       state.isPending = true;
       state.isSuccess = false;
@@ -126,6 +132,8 @@ const apartmentSlice = createSlice({
       state.isSuccess = false;
       state.apartmentData = [];
     },
+
+    /////////////////////// Remove Apartment \\\\\\\\\\\\\\\\\\\\\\\\
     [removeLevels.pending]: (state, action) => {
       state.isPending = true;
       state.isSuccess = false;

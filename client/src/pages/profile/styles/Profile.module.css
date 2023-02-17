@@ -3,7 +3,7 @@
   grid-template-columns: 1fr 2fr 1fr;
   width: 100vw;
   height: 100vh;
-  /* position: relative; */
+  position: relative;
 }
 .Profile__left {
   display: inline-block;
@@ -22,28 +22,156 @@
   overflow: auto;
   border-radius: 10px;
 }
-.center__profile__section{
-  /* background: rgb(102, 72, 72); */
-  
+
+ /* profile information card start */
+.user__profile__section{
+position: relative;
+  background: rgb(250,250,250);
+  background: radial-gradient(circle, rgba(250,250,250,0.9360119047619048) 0%, rgba(239,242,242,0.9864320728291317) 100%);
+  border-radius: 8px;
+  box-shadow: 1px 4px 10px -2px rgba(66,66,66,0.61);
+  -webkit-box-shadow: 1px 4px 10px -2px rgba(66,66,66,0.61);
+  -moz-box-shadow: 1px 4px 10px -2px rgba(66,66,66,0.61);
+}
+.edit__button{
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  cursor: pointer;
+}
+.edit__button:hover{
+  color: var(--btnHoverColor);
+}
+.upper__section {
+  width: 100%;
+  padding: 20px;
+  display: flex;
 
 }
-.user__chart{
-  height: 350px;
+.profile__image__section{
+display: flex;
+justify-content: center;
+align-items: center;
+width: 30%;
+}
+.profile__image__section img{
+  height: 100px;
+  width: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  }
+.intro__section{
+  width: 70%;
+  padding: 0 10px;
+}
+.intro__title{
+font-size: 18px;
+font-weight: 900;
+color: #243b3b;
+}
+.info__content {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgb(86, 91, 92);
+  width: 100%;
+}
+.info__content span:nth-child(2){
+  padding: 0 10px;
+}
+
+.double__info {
+  display: flex;
+  width: 100%;
+}
+
+.bottom__section{
+  width: 100%;
+  padding: 20px;
+}
+.bottom__section__heading{
+  text-align: center;
+  font-weight: bold;
+  color: #676b6b;
+  background: #fcfbfb;
+  padding: 10px 0;
+  border-radius: 10px;
+  box-shadow: 1px 4px 10px -2px rgba(66,66,66,0.61);
+  -webkit-box-shadow: 1px 4px 10px -2px rgba(66,66,66,0.61);
+  -moz-box-shadow: 1px 4px 10px -2px rgba(66,66,66,0.61);
+}
+
+.house__title{
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: .3rem;
+  padding: 10px;
+  font-size: 18px;
+  font-weight: 900;
+  color: rgb(70, 69, 69);
+  border-bottom: 1px solid rgb(146, 146, 146);
 }
+
+.house__container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+
+
+
+ /* profile information card end */
+
+
+ /* user chart start  */
+.user__chart{
+  height: 350px;
+  
+  width: 100%;
+
+
+  background: rgb(250,250,250);
+  background: radial-gradient(circle, rgba(250,250,250,0.9360119047619048) 0%, rgba(239,242,242,0.9864320728291317) 100%);
+  border-radius: 8px;
+  box-shadow: 1px 4px 10px -2px rgba(66,66,66,0.61);
+  -webkit-box-shadow: 1px 4px 10px -2px rgba(66,66,66,0.61);
+  -moz-box-shadow: 1px 4px 10px -2px rgba(66,66,66,0.61);
+}
+
+ /* user chart end  */
+
+  /* user table start  */
 .bill__table{
+  height: 450px;
+  /* background: #000; */
+  width: 100%;
+  padding: 10px;
+
+  
+  background: rgb(250,250,250);
+  background: radial-gradient(circle, rgba(250,250,250,0.9360119047619048) 0%, rgba(239,242,242,0.9864320728291317) 100%);
+  border-radius: 8px;
+  box-shadow: 1px 4px 10px -2px rgba(66,66,66,0.61);
+  -webkit-box-shadow: 1px 4px 10px -2px rgba(66,66,66,0.61);
+  -moz-box-shadow: 1px 4px 10px -2px rgba(66,66,66,0.61);
 }
+
+ /* user table end  */
+
 
 .Profile__right {
   padding: 10px;
-  position: relative;
+  /* position: relative; */
 }
 
 @media screen and (max-width: 768px) {
   .Profile__wrapper {
     grid-template-columns: 1fr;
+    height: 100vh;
   }
 
   .Profile__left {
@@ -53,9 +181,21 @@
   }
   .Profile__center {
     margin-top: 65px;
-    height: calc(100vh - 140px );
-    overflow-y: scroll;
+    max-height: calc(100vh - 150px );
+    overflow-y: auto;
   }
+
+  /* profile information card start */
+
+
+  .profile__image__section img{
+    height: 80px;
+    width: 80px;
+    }
+  .double__info{
+    flex-wrap: wrap;
+  }
+  /* profile information card end */
 
   .user__chart{
     /* overflow: auto; */
@@ -65,8 +205,8 @@
   }
   .Profile__right {
     width: 100%;
-    position: fixed;
-    bottom: -10px;
+    position: absolute;
+    bottom: 0;
     /* margin-left: -10px; */
   }
 }

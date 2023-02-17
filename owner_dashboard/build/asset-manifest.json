@@ -1,0 +1,21 @@
+{
+  "files": {
+    "main.css": "/static/css/main.7ff0211b.css",
+    "main.js": "/static/js/main.a5ffd4ed.js",
+    "static/media/homefyDashboardLogo.png": "/static/media/homefyDashboardLogo.92032e8543f4967e5730.png",
+    "static/media/Billfactor3.png": "/static/media/Billfactor3.5d6126b65597e9a7e281.png",
+    "static/media/userlogo.png": "/static/media/userlogo.81e83b7ad62d996df090.png",
+    "static/media/user.png": "/static/media/user.d54b5cea3dabfb92c990.png",
+    "static/media/email.png": "/static/media/email.b8107c75d310242b849f.png",
+    "static/media/send.png": "/static/media/send.725aac550220edc629f6.png",
+    "static/media/phone-call.png": "/static/media/phone-call.fd7700fa7f9bba0feea9.png",
+    "static/media/homeFylogo.png": "/static/media/homeFylogo.0869bba501fdb9635991.png",
+    "index.html": "/index.html",
+    "main.7ff0211b.css.map": "/static/css/main.7ff0211b.css.map",
+    "main.a5ffd4ed.js.map": "/static/js/main.a5ffd4ed.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.7ff0211b.css",
+    "static/js/main.a5ffd4ed.js"
+  ]
+}

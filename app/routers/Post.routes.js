@@ -1,26 +1,36 @@
 const router = require("express").Router();
 const authenticate = require("../middlewares/authenticate");
 
+const { authVerify } = require("../middlewares/authVerify");
 const {
   createPost,
   getPost,
   updatePost,
   deletePost,
   getTimelinePosts,
-  getUserPost,
+  getSpecificHousePosts,
+  getPostWidget,
 } = require("../controllers/PostController");
 
 //create post Route
-router.post("/create", createPost);
+router.post(
+  "/create",
+  [authVerify.verifyToken, authVerify.isOwner],
+  createPost
+);
 
-router.get("/userposts", authenticate, getUserPost);
+router.get(
+  "/specificposts",
+  [authVerify.verifyToken, authVerify.isOwner],
+  getSpecificHousePosts
+);
 
-router.get("/timeline", getTimelinePosts);
+router.get("/postwidget", [authVerify.verifyToken], getPostWidget);
 
-router.get("/:id", getPost);
+router.delete("/:id", [authVerify.verifyToken, authVerify.isOwner], deletePost);
+
+router.get("/timeline/posts", getTimelinePosts);
 
 router.put("/:id", updatePost);
-
-router.delete("/:id", deletePost);
 
 module.exports = router;

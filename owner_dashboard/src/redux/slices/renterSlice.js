@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { setMessage } from "./message";
 import RenterService from "../services/renter.api.service";
 
+//////////////////////////////////////////    Create  Renter      //////////////////////////////////////////
 export const createRenter = createAsyncThunk(
   "renter/create",
   async (formData, thunkAPI) => {
@@ -21,6 +22,7 @@ export const createRenter = createAsyncThunk(
   }
 );
 
+//////////////////////////////////////////     Get all Renters      //////////////////////////////////////////
 export const getAllrenters = createAsyncThunk(
   "mod/getRenters",
   async (args, thunkAPI) => {
@@ -41,6 +43,30 @@ export const getAllrenters = createAsyncThunk(
   }
 );
 
+export const getAllQueryrenters = createAsyncThunk(
+  "mod/queryRenters",
+  async ({ startRow, endRow }, thunkAPI) => {
+    try {
+      const data = await RenterService.getQueryRenters({
+        startRow,
+        endRow,
+      });
+
+      return { renters: data };
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      thunkAPI.dispatch(setMessage(message));
+      return thunkAPI.rejectWithValue();
+    }
+  }
+);
+
+//////////////////////////////////////////    Search  Renter      //////////////////////////////////////////
 export const searchRenter = createAsyncThunk(
   "renter/getRenter",
   async (searchId, thunkAPI) => {
@@ -61,6 +87,7 @@ export const searchRenter = createAsyncThunk(
   }
 );
 
+//////////////////////////////////////////    Update  Renter      //////////////////////////////////////////
 export const updateRenterInfo = createAsyncThunk(
   "renter/update",
   async (formData, thunkAPI) => {
@@ -79,6 +106,7 @@ export const updateRenterInfo = createAsyncThunk(
   }
 );
 
+//////////////////////////////////////////     Remove Renter      //////////////////////////////////////////
 export const removeRenter = createAsyncThunk(
   "renter/remove",
   async (removeData, thunkAPI) => {
@@ -109,6 +137,7 @@ const renterSlice = createSlice({
   name: "renter",
   initialState,
   extraReducers: {
+    //////////////////////////////////////////    Create  Renter      //////////////////////////////////////////
     [createRenter.pending]: (state, action) => {
       state.isPending = true;
     },
@@ -121,7 +150,7 @@ const renterSlice = createSlice({
       state.isSuccess = false;
       state.isPending = false;
     },
-
+    //////////////////////////////////////////    Update  Renter      //////////////////////////////////////////
     [updateRenterInfo.pending]: (state, action) => {
       state.isPending = true;
     },
@@ -134,6 +163,7 @@ const renterSlice = createSlice({
       state.isSuccess = false;
       state.isPending = false;
     },
+    //////////////////////////////////////////     All Renter      //////////////////////////////////////////
     [getAllrenters.pending]: (state, action) => {
       state.isPending = true;
     },
@@ -146,6 +176,20 @@ const renterSlice = createSlice({
       state.isSuccess = false;
       state.isPending = false;
     },
+    //////////////////////////////////////////     Query Renter      //////////////////////////////////////////
+    [getAllQueryrenters.pending]: (state, action) => {
+      state.isPending = true;
+    },
+    [getAllQueryrenters.fulfilled]: (state, action) => {
+      state.isSuccess = true;
+      state.isPending = false;
+      state.renters = action.payload.renters;
+    },
+    [getAllQueryrenters.rejected]: (state, action) => {
+      state.isSuccess = false;
+      state.isPending = false;
+    },
+    //////////////////////////////////////////     Search Renter      //////////////////////////////////////////
     [searchRenter.pending]: (state, action) => {
       state.isPending = true;
     },
@@ -161,12 +205,17 @@ const renterSlice = createSlice({
     [searchRenter.pending]: (state, action) => {
       state.isPending = true;
     },
+    //////////////////////////////////////////     Remove Renter      //////////////////////////////////////////
+    [removeRenter.pending]: (state, action) => {
+      state.isPending = true;
+    },
     [removeRenter.fulfilled]: (state, action) => {
       state.isSuccess = true;
       state.isPending = false;
     },
     [removeRenter.rejected]: (state, action) => {
       state.isSuccess = false;
+      state.isPending = false;
     },
   },
 });

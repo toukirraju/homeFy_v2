@@ -18,7 +18,6 @@ const UnAssignRenter = ({
 
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
-  const [allApartments, setAllApartments] = useState([]);
   const { user } = useSelector((state) => state.auth.user);
   const [selectedData, setSelectedData] = useState({
     renter: "",
@@ -121,23 +120,6 @@ const UnAssignRenter = ({
                 After unassign you need to re-assign again
               </span>
             </div>
-            {/* <div
-              style={{
-                margin: "20px 30px",
-                padding: "0 30px",
-              }}
-            >
-              <h3
-                className="title"
-                style={{
-                  marginBottom: "30px",
-                }}
-              >
-                
-              </h3>
-
-              <p className="subtitle">After unassign you need to re-assign again</p>
-            </div> */}
 
             <button
               className={`removeButton ${Styles.submit_button}`}

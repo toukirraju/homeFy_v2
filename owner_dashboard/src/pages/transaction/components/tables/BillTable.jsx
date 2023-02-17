@@ -4,11 +4,17 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import ConfirmationModal from "../../../../Components/modals/ConfirmationModal";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 const BillTable = ({ data }) => {
   const gridRef = useRef();
   const { pathname } = useLocation();
+
   const [month, setMonth] = useState(new Date());
+
+  const { profileData } = useSelector((state) => state.owner);
+  // console.log(profileData.role);
+
   const [confirmationPopUp, setConfirmationPopUp] = useState(false);
   const [removeId, setRemoveId] = useState();
   const dateFormatter = (params) => {
@@ -117,16 +123,18 @@ const BillTable = ({ data }) => {
             >
               Print
             </button>
-            <button
-              className="removeButton btns"
-              disabled={
-                new Date(params.data.createdAt).getMonth() + 1 !==
-                new Date().getMonth() + 1
-              }
-              onClick={() => handleRemove(params.data)}
-            >
-              Remove
-            </button>
+            {profileData.role === "owner" && (
+              <button
+                className="removeButton btns"
+                disabled={
+                  new Date(params.data.createdAt).getMonth() + 1 !==
+                  new Date().getMonth() + 1
+                }
+                onClick={() => handleRemove(params.data)}
+              >
+                Remove
+              </button>
+            )}
           </div>
         ),
     },

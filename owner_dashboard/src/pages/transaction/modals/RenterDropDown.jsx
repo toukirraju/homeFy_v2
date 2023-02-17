@@ -6,10 +6,12 @@ import { useDispatch } from "react-redux";
 import CreateTempBill from "./CreateTempBill";
 import { renterTemporaryBill } from "../../../redux/slices/billSlice";
 import LoadingSpinner from "../../../Components/LoadingSpinner";
+import RenterProfile from "../../renter/modals/RenterProfile";
 
 const RenterDropDown = ({
   renterDropDownModalOpened,
   setRenterDropDownModalOpened,
+  popUpType,
   data,
 }) => {
   const dispatch = useDispatch();
@@ -18,6 +20,7 @@ const RenterDropDown = ({
 
   const [renterData, setRenterData] = useState({});
   const [tempData, setTempData] = useState({});
+  const [profileModalOpened, setProfileModalOpened] = useState(false);
   const [createTempBillModalOpened, setCreateTempBillModalOpened] =
     useState(false);
   const [loading, setLoading] = useState(false);
@@ -33,30 +36,46 @@ const RenterDropDown = ({
     e.preventDefault();
     const renter = JSON.parse(selectedData.renter);
     setRenterData(renter);
-    setLoading(true);
-    dispatch(renterTemporaryBill(renter._id))
-      .unwrap()
-      .then((bill) => {
-        setLoading(false);
-        setCreateTempBillModalOpened(true);
-        setRenterDropDownModalOpened(false);
-        setRenterData(renter);
-        setTempData(bill.renterTempBill);
-      })
-      .catch((error) => {
-        setLoading(false);
-        console.log(error);
-      });
+    if (popUpType === "tempBill") {
+      setLoading(true);
+      dispatch(renterTemporaryBill(renter._id))
+        .unwrap()
+        .then((bill) => {
+          setLoading(false);
+          setCreateTempBillModalOpened(true);
+          setRenterDropDownModalOpened(false);
+          setRenterData(renter);
+          setTempData(bill.renterTempBill);
+        })
+        .catch((error) => {
+          setLoading(false);
+          console.log(error);
+        });
+    } else if (popUpType === "renterProfile") {
+      setProfileModalOpened(true);
+      setRenterDropDownModalOpened(false);
+    }
   };
 
   return (
     <>
-      <CreateTempBill
-        createTempBillModalOpened={createTempBillModalOpened}
-        setCreateTempBillModalOpened={setCreateTempBillModalOpened}
-        renterData={renterData}
-        temporaryData={tempData}
-      />
+      {renterData && (
+        <CreateTempBill
+          createTempBillModalOpened={createTempBillModalOpened}
+          setCreateTempBillModalOpened={setCreateTempBillModalOpened}
+          renterData={renterData}
+          temporaryData={tempData}
+        />
+      )}
+
+      {renterData && (
+        <RenterProfile
+          profileModalOpened={profileModalOpened}
+          setProfileModalOpened={setProfileModalOpened}
+          data={renterData}
+        />
+      )}
+
       <Modal
         overlayColor={
           theme.colorScheme === "dark"

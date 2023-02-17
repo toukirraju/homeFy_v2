@@ -2,13 +2,23 @@ import React, { useState } from "react";
 import Style from "./ProfileCard.module.css";
 import Profle from "../../../../assets/userlogo.png";
 import { Link } from "react-router-dom";
-import { UilUserCircle, UilPen } from "@iconscout/react-unicons";
+import {
+  UilHouseUser,
+  UilPhoneAlt,
+  UilUser,
+  UilPen,
+  UilPostcard,
+  UilBriefcaseAlt,
+  UilUserExclamation,
+} from "@iconscout/react-unicons";
 import ProfileUpdateModal from "../../modals/ProfileUpdateModal";
 import { useSelector } from "react-redux";
+import PostWidget from "../../../../Components/postComponents/PostWidget";
 // import { useMediaQuery } from "@mantine/hooks";
 
 const ProfileCard = ({ data }) => {
   // const isMobile = useMediaQuery("(max-width: 768px)");
+  const { widgetData } = useSelector((state) => state.posts);
 
   const [modalOpened, setModalOpened] = useState(false);
   // const { user } = useSelector((state) => state.auth);
@@ -22,6 +32,7 @@ const ProfileCard = ({ data }) => {
           <input type="file" />
         </div>
       </div>
+
       <div className={` ${Style.edit__button}`}>
         <UilPen
           width="2rem"
@@ -34,28 +45,70 @@ const ProfileCard = ({ data }) => {
           data={data}
         />
       </div>
-      <div className={` ${Style.Profile__info__section}`}>
-        <div>
-          <span>Name:</span>
-          {data.firstname + " " + data.lastname}
+
+      <div className={` ${Style.Post__widget__header}`}>
+        <PostWidget data={widgetData} />
+
+        <div className={`${Style.owner__container__body}`}>
+          <div className={`${Style.owner_content}`}>
+            <span>
+              <UilUser />
+            </span>
+            <span>{data.firstname + " " + data.lastname}</span>
+          </div>
+          <div className={`${Style.owner_content}`}>
+            <span>
+              <UilPhoneAlt />{" "}
+            </span>
+            <span> {data.phone}</span>
+          </div>
         </div>
-        <div>
-          {" "}
-          <span>Phone:</span>
-          {data.phone}
+        <div className={`${Style.owner__container__body}`}>
+          <div className={`${Style.owner_content}`}>
+            <span>
+              <UilPostcard />
+            </span>
+            <span>{data.nid}</span>
+          </div>
         </div>
-        <div>
-          <span>Nid:</span>
-          {data.nid}
+        <div className={`${Style.owner__container__body}`}>
+          <div className={`${Style.owner_content}`}>
+            <span>
+              <UilBriefcaseAlt />
+            </span>
+            <span> {data.profession}</span>
+          </div>
+          <div className={`${Style.owner_content}`}>
+            <span>
+              <UilUserExclamation />{" "}
+            </span>
+            <span> {data.role}</span>
+          </div>
         </div>
-        <div>
-          <span>Profession:</span>
-          {data.profession}
-        </div>
-        <div>
-          <span>Role:</span>
-          House {data.role}
-        </div>
+
+        {/* <div className={` ${Style.Profile__info__section}`}>
+          <div>
+            <span>Name:</span>
+            {data.firstname + " " + data.lastname}
+          </div>
+          <div>
+            {"  "}
+            <span>Phone:</span>
+            {data.phone}
+          </div>
+          <div>
+            <span>Nid:</span>
+            {data.nid}
+          </div>
+          <div>
+            <span>Profession:</span>
+            {data.profession}
+          </div>
+          <div>
+            <span>Role:</span>
+            House {data.role}
+          </div>
+        </div> */}
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import Styles from "../../../Styles/ModalStyle.module.css";
-import { Modal, useMantineTheme } from "@mantine/core";
+import { Modal, Switch, useMantineTheme } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,6 +20,8 @@ const UpdateApartment = ({ updateModalOpened, setUpdateModalOpened, data }) => {
   const theme = useMantineTheme();
   const isMobile = useMediaQuery("(max-width: 600px)");
   const dispatch = useDispatch();
+  const [checked, setChecked] = useState(false);
+  const [billChecked, setBillChecked] = useState(true);
   const [loading, setLoading] = useState(false);
   const { user } = useSelector((state) => state.auth.user);
   const [formData, setFormData] = useState(data);
@@ -66,7 +68,7 @@ const UpdateApartment = ({ updateModalOpened, setUpdateModalOpened, data }) => {
         overlayOpacity={0.55}
         overlayBlur={3}
         size="sm"
-        fullScreen={isMobile}
+        // fullScreen={isMobile}
         opened={updateModalOpened}
         onClose={() => setUpdateModalOpened(false)}
       >
@@ -100,235 +102,298 @@ const UpdateApartment = ({ updateModalOpened, setUpdateModalOpened, data }) => {
                   <div className={Styles.widget__card__content}>
                     <span></span>
                     <span>{<UilBuilding />}</span>
-                    <span>Apartment Details</span>
-                  </div>
-                </div>
-                <div className={Styles.address_container}>
-                  <div className={Styles.input__container}>
-                    <label
-                      htmlFor="apartmentName"
-                      className={Styles.input__label}
-                    >
-                      Apartment name
-                    </label>
-                    <Field name="apartmentDetails.apartmentName" />
-                    {errors.apartmentName && touched.apartmentName ? (
-                      <div className={Styles.input__error}>
-                        {errors.apartmentName}
-                      </div>
-                    ) : null}
-                  </div>
-                  <div className={Styles.input__container}>
-                    <label
-                      htmlFor="apartment_number"
-                      className={Styles.input__label}
-                    >
-                      Apartment number
-                    </label>
-                    <Field name="apartmentDetails.apartment_number" />
-                    {errors.apartment_number && touched.apartment_number ? (
-                      <div className={Styles.input__error}>
-                        {errors.apartment_number}
-                      </div>
-                    ) : null}
-                  </div>
-                </div>
 
-                <div className={Styles.address_container}>
-                  <div className={Styles.input__container}>
-                    <label
-                      htmlFor="apartmentType"
-                      className={Styles.input__label}
+                    <span
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        // gap: "5px",
+                        paddingRight: "8px",
+                      }}
                     >
-                      Apartment Type
-                    </label>
-                    <Field
-                      name="apartmentDetails.apartmentType"
-                      component="select"
-                    >
-                      <option value="">Type</option>
-                      <option value="family">Family</option>
-                      <option value="bachelor">Bachelor</option>
-                    </Field>
-                    {errors.apartmentType && touched.apartmentType ? (
-                      <div className={Styles.input__error}>
-                        {errors.apartmentType}
-                      </div>
-                    ) : null}
-                  </div>
-                  <div className={Styles.input__container}>
-                    <label htmlFor="roomNumber" className={Styles.input__label}>
-                      Room no
-                    </label>
-                    <Field name="apartmentDetails.roomNumber" />
-                    {errors.roomNumber && touched.roomNumber ? (
-                      <div className={Styles.input__error}>
-                        {errors.roomNumber}
-                      </div>
-                    ) : null}
+                      Apartment Details{" "}
+                      <Switch
+                        onLabel="ON"
+                        offLabel="OFF"
+                        checked={checked}
+                        onChange={(event) =>
+                          setChecked(event.currentTarget.checked)
+                        }
+                      />
+                    </span>
                   </div>
                 </div>
-
-                <div className={Styles.address_container}>
-                  <div className={Styles.input__container}>
-                    <label
-                      htmlFor="number_of_bed_room"
-                      className={Styles.input__label}
-                    >
-                      Beds
-                    </label>
-                    <Field
-                      name="apartmentDetails.number_of_bed_room"
-                      type="number"
-                    />
-                    {errors.number_of_bed_room && touched.number_of_bed_room ? (
-                      <div className={Styles.input__error}>
-                        {errors.number_of_bed_room}
+                {checked && (
+                  <>
+                    <div className={Styles.address_container}>
+                      <div className={Styles.input__container}>
+                        <label
+                          htmlFor="apartmentName"
+                          className={Styles.input__label}
+                        >
+                          Apartment name
+                        </label>
+                        <Field name="apartmentDetails.apartmentName" />
+                        {errors.apartmentName && touched.apartmentName ? (
+                          <div className={Styles.input__error}>
+                            {errors.apartmentName}
+                          </div>
+                        ) : null}
                       </div>
-                    ) : null}
-                  </div>
-                  <div className={Styles.input__container}>
-                    <label
-                      htmlFor="number_of_balcony"
-                      className={Styles.input__label}
-                    >
-                      Balcony
-                    </label>
-                    <Field
-                      name="apartmentDetails.number_of_balcony"
-                      type="number"
-                    />
-                    {errors.number_of_balcony && touched.number_of_balcony ? (
-                      <div className={Styles.input__error}>
-                        {errors.number_of_balcony}
+                      <div className={Styles.input__container}>
+                        <label
+                          htmlFor="apartment_number"
+                          className={Styles.input__label}
+                        >
+                          Apartment number
+                        </label>
+                        <Field name="apartmentDetails.apartment_number" />
+                        {errors.apartment_number && touched.apartment_number ? (
+                          <div className={Styles.input__error}>
+                            {errors.apartment_number}
+                          </div>
+                        ) : null}
                       </div>
-                    ) : null}
-                  </div>
-                </div>
-
-                <div className={Styles.address_container}>
-                  <div className={Styles.input__container}>
-                    <label
-                      htmlFor="number_of_kitchen"
-                      className={Styles.input__label}
-                    >
-                      Kitchen
-                    </label>
-                    <Field
-                      name="apartmentDetails.number_of_kitchen"
-                      type="number"
-                    />
-                    {errors.number_of_kitchen && touched.number_of_kitchen ? (
-                      <div className={Styles.input__error}>
-                        {errors.number_of_kitchen}
-                      </div>
-                    ) : null}
-                  </div>
-                  <div className={Styles.input__container}>
-                    <label
-                      htmlFor="number_of_baths"
-                      className={Styles.input__label}
-                    >
-                      Bath
-                    </label>
-                    <Field
-                      name="apartmentDetails.number_of_baths"
-                      type="number"
-                    />
-                    {errors.number_of_baths && touched.number_of_baths ? (
-                      <div className={Styles.input__error}>
-                        {errors.number_of_baths}
-                      </div>
-                    ) : null}
-                  </div>
-                </div>
-                <div className={Styles.input__container}>
-                  <label
-                    htmlFor="apartment_length"
-                    className={Styles.input__label}
-                  >
-                    Apartment length
-                  </label>
-                  <Field
-                    name="apartmentDetails.apartment_length"
-                    type="number"
-                  />
-                  {errors.apartment_length && touched.apartment_length ? (
-                    <div className={Styles.input__error}>
-                      {errors.apartment_length}
                     </div>
-                  ) : null}
-                </div>
+
+                    <div className={Styles.address_container}>
+                      <div className={Styles.input__container}>
+                        <label
+                          htmlFor="apartmentType"
+                          className={Styles.input__label}
+                        >
+                          Apartment Type
+                        </label>
+                        <Field
+                          name="apartmentDetails.apartmentType"
+                          component="select"
+                        >
+                          <option value="">Type</option>
+                          <option value="family">Family</option>
+                          <option value="bachelor">Bachelor</option>
+                        </Field>
+                        {errors.apartmentType && touched.apartmentType ? (
+                          <div className={Styles.input__error}>
+                            {errors.apartmentType}
+                          </div>
+                        ) : null}
+                      </div>
+                      <div className={Styles.input__container}>
+                        <label
+                          htmlFor="roomNumber"
+                          className={Styles.input__label}
+                        >
+                          Room no
+                        </label>
+                        <Field name="apartmentDetails.roomNumber" />
+                        {errors.roomNumber && touched.roomNumber ? (
+                          <div className={Styles.input__error}>
+                            {errors.roomNumber}
+                          </div>
+                        ) : null}
+                      </div>
+                    </div>
+
+                    <div className={Styles.address_container}>
+                      <div className={Styles.input__container}>
+                        <label
+                          htmlFor="number_of_bed_room"
+                          className={Styles.input__label}
+                        >
+                          Beds
+                        </label>
+                        <Field
+                          name="apartmentDetails.number_of_bed_room"
+                          type="number"
+                        />
+                        {errors.number_of_bed_room &&
+                        touched.number_of_bed_room ? (
+                          <div className={Styles.input__error}>
+                            {errors.number_of_bed_room}
+                          </div>
+                        ) : null}
+                      </div>
+                      <div className={Styles.input__container}>
+                        <label
+                          htmlFor="number_of_balcony"
+                          className={Styles.input__label}
+                        >
+                          Balcony
+                        </label>
+                        <Field
+                          name="apartmentDetails.number_of_balcony"
+                          type="number"
+                        />
+                        {errors.number_of_balcony &&
+                        touched.number_of_balcony ? (
+                          <div className={Styles.input__error}>
+                            {errors.number_of_balcony}
+                          </div>
+                        ) : null}
+                      </div>
+                    </div>
+
+                    <div className={Styles.address_container}>
+                      <div className={Styles.input__container}>
+                        <label
+                          htmlFor="number_of_kitchen"
+                          className={Styles.input__label}
+                        >
+                          Kitchen
+                        </label>
+                        <Field
+                          name="apartmentDetails.number_of_kitchen"
+                          type="number"
+                        />
+                        {errors.number_of_kitchen &&
+                        touched.number_of_kitchen ? (
+                          <div className={Styles.input__error}>
+                            {errors.number_of_kitchen}
+                          </div>
+                        ) : null}
+                      </div>
+                      <div className={Styles.input__container}>
+                        <label
+                          htmlFor="number_of_baths"
+                          className={Styles.input__label}
+                        >
+                          Bath
+                        </label>
+                        <Field
+                          name="apartmentDetails.number_of_baths"
+                          type="number"
+                        />
+                        {errors.number_of_baths && touched.number_of_baths ? (
+                          <div className={Styles.input__error}>
+                            {errors.number_of_baths}
+                          </div>
+                        ) : null}
+                      </div>
+                    </div>
+                    <div className={Styles.input__container}>
+                      <label
+                        htmlFor="apartment_length"
+                        className={Styles.input__label}
+                      >
+                        Apartment length
+                      </label>
+                      <Field
+                        name="apartmentDetails.apartment_length"
+                        type="number"
+                      />
+                      {errors.apartment_length && touched.apartment_length ? (
+                        <div className={Styles.input__error}>
+                          {errors.apartment_length}
+                        </div>
+                      ) : null}
+                    </div>
+                  </>
+                )}
 
                 {/* bill secton  */}
                 <div className={Styles.widget__innerCard}>
                   <div className={Styles.widget__card__content}>
                     <span></span>
                     <span>{<UilReceipt />}</span>
-                    <span>bill Details</span>
-                  </div>
-                </div>
-
-                <div className={Styles.address_container}>
-                  <div className={Styles.input__container}>
-                    <label htmlFor="rent" className={Styles.input__label}>
-                      Rent
-                    </label>
-                    <Field name="billDetails.rent" type="number" />
-                    {errors.rent && touched.rent ? (
-                      <div className={Styles.input__error}>{errors.rent}</div>
-                    ) : null}
-                  </div>
-                  <div className={Styles.input__container}>
-                    <label htmlFor="gas_bill" className={Styles.input__label}>
-                      Gas bill
-                    </label>
-                    <Field name="billDetails.gas_bill" type="number" />
-                    {errors.gas_bill && touched.gas_bill ? (
-                      <div className={Styles.input__error}>
-                        {errors.gas_bill}
-                      </div>
-                    ) : null}
-                  </div>
-                </div>
-
-                <div className={Styles.address_container}>
-                  <div className={Styles.input__container}>
-                    <label htmlFor="water_bill" className={Styles.input__label}>
-                      Water bill
-                    </label>
-                    <Field name="billDetails.water_bill" type="number" />
-                    {errors.water_bill && touched.water_bill ? (
-                      <div className={Styles.input__error}>
-                        {errors.water_bill}
-                      </div>
-                    ) : null}
-                  </div>
-                  <div className={Styles.input__container}>
-                    <label
-                      htmlFor="service_charge"
-                      className={Styles.input__label}
+                    <span
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        // gap: "5px",
+                        paddingRight: "8px",
+                      }}
                     >
-                      Service charge
-                    </label>
-                    <Field name="billDetails.service_charge" type="number" />
-                    {errors.service_charge && touched.service_charge ? (
-                      <div className={Styles.input__error}>
-                        {errors.service_charge}
-                      </div>
-                    ) : null}
+                      bill Details{" "}
+                      <Switch
+                        onLabel="ON"
+                        offLabel="OFF"
+                        checked={billChecked}
+                        onChange={(event) =>
+                          setBillChecked(event.currentTarget.checked)
+                        }
+                      />
+                    </span>
                   </div>
                 </div>
+                {billChecked && (
+                  <>
+                    <div className={Styles.address_container}>
+                      <div className={Styles.input__container}>
+                        <label htmlFor="rent" className={Styles.input__label}>
+                          Rent
+                        </label>
+                        <Field name="billDetails.rent" type="number" />
+                        {errors.rent && touched.rent ? (
+                          <div className={Styles.input__error}>
+                            {errors.rent}
+                          </div>
+                        ) : null}
+                      </div>
+                      <div className={Styles.input__container}>
+                        <label
+                          htmlFor="gas_bill"
+                          className={Styles.input__label}
+                        >
+                          Gas bill
+                        </label>
+                        <Field name="billDetails.gas_bill" type="number" />
+                        {errors.gas_bill && touched.gas_bill ? (
+                          <div className={Styles.input__error}>
+                            {errors.gas_bill}
+                          </div>
+                        ) : null}
+                      </div>
+                    </div>
 
-                <div className={Styles.input__container}>
-                  <label htmlFor="others" className={Styles.input__label}>
-                    Others
-                  </label>
-                  <Field name="billDetails.others" type="number" />
-                  {errors.others && touched.others ? (
-                    <div className={Styles.input__error}>{errors.others}</div>
-                  ) : null}
-                </div>
+                    <div className={Styles.address_container}>
+                      <div className={Styles.input__container}>
+                        <label
+                          htmlFor="water_bill"
+                          className={Styles.input__label}
+                        >
+                          Water bill
+                        </label>
+                        <Field name="billDetails.water_bill" type="number" />
+                        {errors.water_bill && touched.water_bill ? (
+                          <div className={Styles.input__error}>
+                            {errors.water_bill}
+                          </div>
+                        ) : null}
+                      </div>
+                      <div className={Styles.input__container}>
+                        <label
+                          htmlFor="service_charge"
+                          className={Styles.input__label}
+                        >
+                          Service charge
+                        </label>
+                        <Field
+                          name="billDetails.service_charge"
+                          type="number"
+                        />
+                        {errors.service_charge && touched.service_charge ? (
+                          <div className={Styles.input__error}>
+                            {errors.service_charge}
+                          </div>
+                        ) : null}
+                      </div>
+                    </div>
+
+                    <div className={Styles.input__container}>
+                      <label htmlFor="others" className={Styles.input__label}>
+                        Others
+                      </label>
+                      <Field name="billDetails.others" type="number" />
+                      {errors.others && touched.others ? (
+                        <div className={Styles.input__error}>
+                          {errors.others}
+                        </div>
+                      ) : null}
+                    </div>
+                  </>
+                )}
 
                 <button
                   className={Styles.submit_button}

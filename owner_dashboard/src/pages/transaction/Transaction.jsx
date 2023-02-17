@@ -7,10 +7,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { monthlyBill, temporaryBill } from "../../redux/slices/billSlice";
 
 import TransactionButtons from "./components/buttons/TransactionButtons";
+import AlertPoPUP from "../../Components/AlertPoPUP";
+import { clearMessage } from "../../redux/slices/message";
 
 const Transaction = () => {
   const dispatch = useDispatch();
   const { billData, temporaryData } = useSelector((state) => state.billInfo);
+  const { message } = useSelector((state) => state.message);
   const { isReload } = useSelector((state) => state.reload);
 
   const [date, setDate] = useState(new Date());
@@ -25,11 +28,12 @@ const Transaction = () => {
     dispatch(monthlyBill({ month, year }));
     dispatch(temporaryBill());
   }, [date, isReload, dispatch]);
-
   useEffect(() => {}, [billData, temporaryData]);
 
   return (
     <>
+      {/* <AlertPoPUP /> */}
+      {message && <AlertPoPUP message={message} />}
       <div className="card headerContainer">
         <h3 className="title">Transaction</h3>
         <div className="bulkCreate">

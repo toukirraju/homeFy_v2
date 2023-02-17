@@ -166,7 +166,7 @@ const AddressDropDown = ({ getAddressData }) => {
   //   </>
   // );
 
-  const [{ division, district, upazila, union }, setData] = useState({
+  const [{ division, district, upazila }, setData] = useState({
     division: {
       // bn_name: "চট্টগ্রাম",
       // id: "1",
@@ -174,7 +174,6 @@ const AddressDropDown = ({ getAddressData }) => {
     },
     district: {},
     upazila: {},
-    union: {},
   });
 
   const divisions = Divisions[2].data.map((division) => (
@@ -209,13 +208,13 @@ const AddressDropDown = ({ getAddressData }) => {
       </option>
     ));
 
-  const unions = Unions[2].data
-    .filter((item) => item.upazilla_id === upazila.id)
-    ?.map((union) => (
-      <option key={union.name} value={JSON.stringify(union)}>
-        {union.bn_name}
-      </option>
-    ));
+  // const unions = Unions[2].data
+  //   .filter((item) => item.upazilla_id === upazila.id)
+  //   ?.map((union) => (
+  //     <option key={union.name} value={JSON.stringify(union)}>
+  //       {union.bn_name}
+  //     </option>
+  //   ));
 
   // function handleCountryChange(event) {
   //   setData((data) => ({ district: "", division: event.target.value }));
@@ -225,7 +224,6 @@ const AddressDropDown = ({ getAddressData }) => {
       district: "",
       division: JSON.parse(event.target.value),
       upazila: "",
-      union: "",
     }));
   }
 
@@ -237,13 +235,13 @@ const AddressDropDown = ({ getAddressData }) => {
     setData((data) => ({ ...data, upazila: JSON.parse(event.target.value) }));
   }
 
-  function handleUnionChange(event) {
-    setData((data) => ({ ...data, union: JSON.parse(event.target.value) }));
-  }
+  // function handleUnionChange(event) {
+  //   setData((data) => ({ ...data, union: JSON.parse(event.target.value) }));
+  // }
 
   useEffect(() => {
-    getAddressData({ division, district, upazila, union });
-  }, [division, district, upazila, union]);
+    getAddressData({ division, district, upazila });
+  }, [division, district, upazila]);
   return (
     <>
       <div
@@ -296,7 +294,7 @@ const AddressDropDown = ({ getAddressData }) => {
           </div>
         )}
 
-        {Object.keys(upazila).length !== 0 && (
+        {/* {Object.keys(upazila).length !== 0 && (
           <div className={Styles.input__container}>
             <label htmlFor="union" className={Styles.input__label}>
               Union
@@ -306,11 +304,10 @@ const AddressDropDown = ({ getAddressData }) => {
               value={union.union}
               onChange={handleUnionChange}
             >
-              {/* <option>----select----</option> */}
               {unions}
             </select>
           </div>
-        )}
+        )} */}
 
         {/* <input type="submit" /> */}
       </div>

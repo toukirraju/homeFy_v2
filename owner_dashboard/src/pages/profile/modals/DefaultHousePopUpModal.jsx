@@ -13,6 +13,32 @@ import {
 import { toast } from "react-toastify";
 import { useState } from "react";
 import LoadingSpinner from "../../../Components/LoadingSpinner";
+import {
+  UilBookReader,
+  UilBuilding,
+  UilUser,
+  UilSimCard,
+  UilLayerGroup,
+  UilListOl,
+  UilBedDouble,
+  UilBath,
+  UilUtensils,
+  UilLaptopCloud,
+  UilRulerCombined,
+  UilTextFields,
+  UilBill,
+  UilFire,
+  UilTear,
+  UilWrench,
+  UilElipsisDoubleVAlt,
+  UilSigma,
+  UilListOlAlt,
+  UilPanelAdd,
+} from "@iconscout/react-unicons";
+import {
+  getPostWidget,
+  getSpecificHousePosts,
+} from "../../../redux/slices/postSlice";
 
 const SignupSchema = Yup.object().shape({
   houseName: Yup.string()
@@ -67,6 +93,8 @@ function DefaultHousePopupModal({
                 toast.success("This house is default now");
                 setDefaultPopUpModalOpened(false);
                 dispatch(GetHouses());
+                dispatch(getSpecificHousePosts());
+                dispatch(getPostWidget());
               })
               .catch((err) => toast.error("Somthing went wrong!"));
           }}
@@ -75,7 +103,7 @@ function DefaultHousePopupModal({
             <Form>
               <div className={Styles.widget__innerCard}>
                 <div className={Styles.widget__card__content}>
-                  <span>{/* <UilBuilding /> */}</span>
+                  <span>{<UilBuilding />}</span>
                   <span>House Name</span>
                   <span>{data.houseName}</span>
                 </div>
@@ -83,21 +111,21 @@ function DefaultHousePopupModal({
 
               <div className={Styles.widget__innerCard}>
                 <div className={Styles.widget__card__content}>
-                  <span>{/* <UilBuilding /> */}</span>
+                  <span>{<UilListOlAlt />}</span>
                   <span>House Number</span>
                   <span>{data.houseNo}</span>
                 </div>
               </div>
               <div className={Styles.widget__innerCard}>
                 <div className={Styles.widget__card__content}>
-                  <span>{/* <UilBuilding /> */}</span>
+                  <span>{<UilLayerGroup />}</span>
                   <span>Number of floors</span>
                   <span>{data.number_of_floors}</span>
                 </div>
               </div>
               <div className={Styles.widget__innerCard}>
                 <div className={Styles.widget__card__content}>
-                  <span>{/* <UilBuilding /> */}</span>
+                  <span>{<UilPanelAdd />}</span>
                   <span>Number of apartments</span>
                   <span>{data.number_of_apartments}</span>
                 </div>

@@ -84,11 +84,11 @@ const createMultipleApartment = async (req, res) => {
 };
 
 const getAllApartments = async (req, res) => {
-  const { _id, defaultHomeID } = req.user;
+  const { _id, defaultHomeID, role } = req.user;
   const apartments = await ApartmentModel.find({
-    ownerId: _id,
+    ownerId: role === "owner" ? _id : req.user.ownerId,
     defaultHomeID,
-  }).sort({ floor: 1 });
+  }).sort({ "apartmentDetails.floor": 1 });
   try {
     if (apartments) {
       const groupByApartments = (arr, property) => {
@@ -107,7 +107,7 @@ const getAllApartments = async (req, res) => {
       ) {
         return el != null;
       });
-      res.status(200).json(filtered);
+      res.status(200).json(apartments);
     } else {
       return resourceError(res, "No apartment found");
     }
@@ -120,11 +120,24 @@ const updateApartmentInfo = async (req, res) => {
   //only owner can update apartment
   const { _id } = req.user;
   const apartment = await ApartmentModel.findById(req.body._id);
-  console.log(req.body);
+
   try {
     if (apartment.ownerId == _id) {
       await apartment.updateOne({
         $set: {
+          apartmentDetails: {
+            apartmentName: req.body.apartmentDetails.apartmentName,
+            apartment_number: req.body.apartmentDetails.apartment_number,
+            apartmentType: req.body.apartmentDetails.apartmentType,
+            roomNumber: req.body.apartmentDetails.roomNumber,
+            floor: req.body.apartmentDetails.floor,
+            number_of_bed_room: req.body.apartmentDetails.number_of_bed_room,
+            number_of_kitchen: req.body.apartmentDetails.number_of_kitchen,
+            number_of_baths: req.body.apartmentDetails.number_of_baths,
+            number_of_balcony: req.body.apartmentDetails.number_of_balcony,
+            apartment_length: req.body.apartmentDetails.apartment_length,
+          },
+
           billDetails: {
             // ...req.body,
             rent: req.body.billDetails.rent,

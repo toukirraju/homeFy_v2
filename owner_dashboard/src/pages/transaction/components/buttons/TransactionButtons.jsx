@@ -1,7 +1,7 @@
 import Style from "../../styles/Transaction.module.css";
 import dashStyle from "../../../dashboard/styles/Dashboard.module.css";
 import { DatePicker } from "@mantine/dates";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { payableUsers } from "../../../../redux/slices/billSlice";
 
@@ -11,9 +11,13 @@ import PayableRenters from "../../modals/PayableRenters";
 import RenterDropDown from "../../modals/RenterDropDown";
 const TransactionButtons = () => {
   const dispatch = useDispatch();
+
+  const { profileData } = useSelector((state) => state.owner);
+
   const { payableRenters } = useSelector((state) => state.billInfo);
+
   const [isMakeBillOpen, setIsMakeBillOpen] = useState(false);
-  const [isTempBillOpen, setIsTempBillOpen] = useState(false);
+  const [popUpType, setPopUpType] = useState("");
   const [payableModalOpened, setPayableModalOpened] = useState(false);
   const [renterDropDownModalOpened, setRenterDropDownModalOpened] =
     useState(false);
@@ -26,8 +30,9 @@ const TransactionButtons = () => {
   const handleMakeBillChange = (e) => {
     setIsMakeBillOpen(!isMakeBillOpen);
     setDate(e);
+    // console.log(e);
     setLoading(true);
-    dispatch(payableUsers({ month, year }))
+    dispatch(payableUsers({ month: e.getMonth() + 1, year: e.getFullYear() }))
       .unwrap()
       .then(() => {
         setLoading(false);
@@ -38,8 +43,8 @@ const TransactionButtons = () => {
         console.log(error);
       });
   };
-
-  const rentersPopUp = () => {
+  const rentersPopUp = ({ popUpType }) => {
+    setPopUpType(popUpType);
     setLoading(true);
     dispatch(getAllrenters())
       .unwrap()
@@ -68,13 +73,16 @@ const TransactionButtons = () => {
           value={date}
           onChange={handleMakeBillChange}
         />
-        <button
-          className="tempBill__button"
-          onClick={() => rentersPopUp()}
-          disabled={loading}
-        >
-          Temporary Bill
-        </button>
+        {profileData.role === "owner" && (
+          <button
+            className="tempBill__button"
+            onClick={() => rentersPopUp({ popUpType: "tempBill" })}
+            disabled={loading}
+          >
+            Temporary Bill
+          </button>
+        )}
+
         <button
           className={Style.makeBill__button}
           onClick={() => setIsMakeBillOpen(!isMakeBillOpen)}
@@ -84,7 +92,7 @@ const TransactionButtons = () => {
         </button>
         <button
           className="button "
-          onClick={() => setIsTempBillOpen(!isTempBillOpen)}
+          onClick={() => rentersPopUp({ popUpType: "renterProfile" })}
         >
           Renter profile
         </button>
@@ -92,6 +100,7 @@ const TransactionButtons = () => {
           payableModalOpened={payableModalOpened}
           setPayableModalOpened={setPayableModalOpened}
           data={payableRenters}
+          date={{ month, year }}
         />
 
         {renterData.length !== 0 && (
@@ -99,6 +108,7 @@ const TransactionButtons = () => {
             renterDropDownModalOpened={renterDropDownModalOpened}
             setRenterDropDownModalOpened={setRenterDropDownModalOpened}
             data={renterData}
+            popUpType={popUpType}
           />
         )}
       </div>

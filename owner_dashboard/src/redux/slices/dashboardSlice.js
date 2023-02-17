@@ -2,11 +2,32 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { setMessage } from "./message";
 import DashboardService from "../services/dashboard.service";
 
+/////////////////////////  Activity widget  \\\\\\\\\\\\\\\\\\\\\\\\
+export const getRenterActivity = createAsyncThunk(
+  "dashboard/getRenterActivity",
+  async (args, thunkAPI) => {
+    try {
+      const data = await DashboardService.getRenterActivityWidget();
+      return data;
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      thunkAPI.dispatch(setMessage(message));
+      return thunkAPI.rejectWithValue();
+    }
+  }
+);
+
+/////////////////////////  Apartment widget  \\\\\\\\\\\\\\\\\\\\\\\\
 export const getApartmentWidget = createAsyncThunk(
-  "common/getApartmentWidget",
+  "dashboard/getApartmentWidget",
   async (args, thunkAPI) => {
     try {
-      const data = await DashboardService.getApartmentWidget();
+      const data = await DashboardService.getWidget();
       return data;
     } catch (error) {
       const message =
@@ -21,11 +42,12 @@ export const getApartmentWidget = createAsyncThunk(
   }
 );
 
-export const getRenterWidget = createAsyncThunk(
-  "common/getRenterWidget",
+/////////////////////////   Pie Chart  \\\\\\\\\\\\\\\\\\\\\\\\
+export const getPieChartData = createAsyncThunk(
+  "dashboard/getPieChartData",
   async (args, thunkAPI) => {
     try {
-      const data = await DashboardService.getRenterWidget();
+      const data = await DashboardService.getPieChartData();
       return data;
     } catch (error) {
       const message =
@@ -40,50 +62,13 @@ export const getRenterWidget = createAsyncThunk(
   }
 );
 
-export const getBillWidget = createAsyncThunk(
-  "common/getBillWidget",
-  async (args, thunkAPI) => {
-    try {
-      const data = await DashboardService.getBillWidget();
-      return data;
-    } catch (error) {
-      const message =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
-        error.toString();
-      thunkAPI.dispatch(setMessage(message));
-      return thunkAPI.rejectWithValue();
-    }
-  }
-);
-
+/////////////////////////  Yearly Bills  \\\\\\\\\\\\\\\\\\\\\\\\
 export const getYearlyBills = createAsyncThunk(
-  "common/getYearlyBill",
+  "dashboard/getYearlyBill",
   async (year, thunkAPI) => {
     try {
       const data = await DashboardService.getYearlyBill(year);
       return data;
-    } catch (error) {
-      const message =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
-        error.toString();
-      thunkAPI.dispatch(setMessage(message));
-      return thunkAPI.rejectWithValue();
-    }
-  }
-);
-
-export const setReload = createAsyncThunk(
-  "common/reload",
-  async (args, thunkAPI) => {
-    try {
-      // const data = await DashboardService.getYearlyBill(year);
-      // return data;
     } catch (error) {
       const message =
         (error.response &&
@@ -102,9 +87,9 @@ const initialState = {
   isSuccess: false,
   isPending: false,
   apartmentWidgets: {},
-  renterWidgets: {},
-  billWidgets: {},
   yearlyBills: {},
+  renterActivity: {},
+  pieChartData: {},
 };
 
 const dashboardSlice = createSlice({
@@ -112,6 +97,20 @@ const dashboardSlice = createSlice({
   initialState,
 
   extraReducers: {
+    //////////////////// getRenterActivity /////////////////////
+    [getRenterActivity.pending]: (state, action) => {
+      state.isPending = true;
+    },
+    [getRenterActivity.fulfilled]: (state, action) => {
+      state.isSuccess = true;
+      state.isPending = false;
+      state.renterActivity = action.payload;
+    },
+    [getRenterActivity.rejected]: (state, action) => {
+      state.isSuccess = false;
+      state.isPending = false;
+    },
+
     //////////////////// getApartmentWidget /////////////////////
     [getApartmentWidget.pending]: (state, action) => {
       state.isPending = true;
@@ -126,30 +125,16 @@ const dashboardSlice = createSlice({
       state.isPending = false;
     },
 
-    //////////////////// getRenterWidget /////////////////////
-    [getRenterWidget.pending]: (state, action) => {
+    //////////////////// getPieChartData /////////////////////
+    [getPieChartData.pending]: (state, action) => {
       state.isPending = true;
     },
-    [getRenterWidget.fulfilled]: (state, action) => {
+    [getPieChartData.fulfilled]: (state, action) => {
       state.isSuccess = true;
       state.isPending = false;
-      state.renterWidgets = action.payload;
+      state.pieChartData = action.payload;
     },
-    [getRenterWidget.rejected]: (state, action) => {
-      state.isSuccess = false;
-      state.isPending = false;
-    },
-
-    //////////////////// getBillWidget /////////////////////
-    [getBillWidget.pending]: (state, action) => {
-      state.isPending = true;
-    },
-    [getBillWidget.fulfilled]: (state, action) => {
-      state.isSuccess = true;
-      state.isPending = false;
-      state.billWidgets = action.payload;
-    },
-    [getBillWidget.rejected]: (state, action) => {
+    [getPieChartData.rejected]: (state, action) => {
       state.isSuccess = false;
       state.isPending = false;
     },
@@ -166,20 +151,6 @@ const dashboardSlice = createSlice({
     [getYearlyBills.rejected]: (state, action) => {
       state.isSuccess = false;
       state.isPending = false;
-    },
-
-    ////////////////// setReload /////////////////////
-    [setReload.pending]: (state, action) => {
-      state.isPending = true;
-      state.isReload = false;
-    },
-    [setReload.fulfilled]: (state, action) => {
-      state.isPending = false;
-      state.isReload = true;
-    },
-    [setReload.rejected]: (state, action) => {
-      state.isPending = false;
-      state.isReload = false;
     },
   },
 });

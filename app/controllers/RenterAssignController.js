@@ -4,7 +4,7 @@ const RenterModel = require("../database/models/renterModel");
 const { serverError, resourceError } = require("../utils/error");
 
 const assignRenter = async (req, res) => {
-  const { ownerId, renterId, renterName, apartmentId } = req.body;
+  const { renterId, renterName, apartmentId } = req.body;
   const { _id, defaultHomeID } = req.user;
   //update apartment
 
@@ -13,7 +13,7 @@ const assignRenter = async (req, res) => {
   try {
     if (!apartment) return resourceError(res, "Apartment not found");
     if (!renter) return resourceError(res, "Renter not found");
-    if (apartment.ownerId == _id) {
+    if (apartment.ownerId === _id.toString()) {
       await apartment.updateOne({
         $set: {
           isAvailable: false,
@@ -25,16 +25,16 @@ const assignRenter = async (req, res) => {
       return resourceError(res, "Action forbidden");
     }
 
-    if (renter.ownerId == _id) {
+    if (renter.apartmentId === "" && renter.apartment === null) {
       await renter.updateOne({
         $set: {
-          ownerId: ownerId,
+          ownerId: _id,
           defaultHomeID: defaultHomeID,
           apartmentId: req.body.apartmentId,
           apartment_number: req.body.apartment_number,
           roomNumber: req.body.roomNumber,
-          assignedDate: new Date(),
           apartment: req.body.apartmentId,
+          assignedDate: new Date(),
         },
       });
       res.status(200).json({

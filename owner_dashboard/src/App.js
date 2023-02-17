@@ -1,6 +1,7 @@
 import "./App.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import "react-datepicker/dist/react-datepicker.css";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Authentication from "./pages/authentication/Authentication";
 import AppRoutes from "./AppRoutes";
@@ -15,7 +16,7 @@ function App() {
       <AuthVerify />
       <ToastContainer
         position="top-right"
-        autoClose={5000}
+        autoClose={3000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick

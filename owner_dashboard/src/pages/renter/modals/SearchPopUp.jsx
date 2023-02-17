@@ -68,7 +68,7 @@ function SearchPopUp({ searchPopUp, setSearchPopUp, data }) {
             assignModalOpened={assignModalOpened}
             setAssignModalOpened={setAssignModalOpened}
             renterData={data}
-            searchPopUp={true}
+            renterPopUp={true}
           />
         </>
       )}

@@ -4,10 +4,15 @@ import { useCallback, useRef } from "react";
 import { useState } from "react";
 import UpdateTempBill from "../../modals/UpdateTempBill";
 import ConfirmationModal from "../../../../Components/modals/ConfirmationModal";
+import { useSelector } from "react-redux";
 
 const TempBillTable = ({ data }) => {
   const [tempData, setTempData] = useState({});
   const [removeId, setRemoveId] = useState();
+
+  const { profileData } = useSelector((state) => state.owner);
+  // console.log(profileData.role);
+
   const [confirmationPopUp, setConfirmationPopUp] = useState(false);
   const [updateTempBillModalOpened, setUpdateTempBillModalOpened] =
     useState(false);
@@ -85,7 +90,7 @@ const TempBillTable = ({ data }) => {
       resizable: true,
       width: 150,
     },
-    {
+    profileData.role === "owner" && {
       headerName: "Actions",
       field: "_id",
       resizable: true,
@@ -98,6 +103,7 @@ const TempBillTable = ({ data }) => {
           >
             update
           </button>
+
           <button
             className="removeButton btns"
             onClick={() => handleRemove(params.data)}

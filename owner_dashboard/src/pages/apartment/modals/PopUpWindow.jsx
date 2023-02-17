@@ -1,37 +1,73 @@
 import { Loader, Switch, Modal, useMantineTheme } from "@mantine/core";
 import Styles from "../../../Styles/ModalStyle.module.css";
 import { useMediaQuery } from "@mantine/hooks";
-import { UilBookReader, UilBuilding, UilUser } from "@iconscout/react-unicons";
+import {
+  UilBookReader,
+  UilBuilding,
+  UilUser,
+  UilSimCard,
+  UilLayerGroup,
+  UilListOl,
+  UilBedDouble,
+  UilBath,
+  UilUtensils,
+  UilLaptopCloud,
+  UilRulerCombined,
+  UilTextFields,
+  UilBill,
+  UilFire,
+  UilTear,
+  UilWrench,
+  UilElipsisDoubleVAlt,
+  UilSigma,
+  UilEllipsisH,
+} from "@iconscout/react-unicons";
 import { useState } from "react";
 import UpdateApartment from "./UpdateApartment";
 import ConfirmationModal from "../../../Components/modals/ConfirmationModal";
+import AssignRenter from "../../../Components/modals/renterModal/AssignRenter";
+import PostShare from "../../../Components/postComponents/postShare/PostShare";
+import { useSelector } from "react-redux";
 const PopUpWindow = ({ popUpModalOpened, setPopUpModalOpened, data }) => {
   const theme = useMantineTheme();
   const isMobile = useMediaQuery("(max-width: 600px)");
 
-  const [checked, setChecked] = useState(false);
-  const [billChecked, setBillChecked] = useState(true);
+  const { profileData } = useSelector((state) => state.owner);
+  // console.log(profileData.role);
 
   const [updateModalOpened, setUpdateModalOpened] = useState(false);
-
+  const [assignModalOpened, setAssignModalOpened] = useState(false);
   const [confirmationPopUp, setConfirmationPopUp] = useState(false);
+  const [postModalOpened, setPostModalOpened] = useState(false);
 
-  const [isAssignData, setIsAssignData] = useState();
-  const [removeId, setRemoveId] = useState();
+  const [state, setState] = useState({
+    checked: false,
+    billChecked: true,
+    updateModalOpened: false,
+    assignModalOpened: false,
+    confirmationPopUp: false,
+    isAssignData: null,
+    removeId: null,
+  });
 
-  //apartment remove function
   const handleRemove = (apartment) => {
     if (apartment.isAvailable === true) {
-      setConfirmationPopUp(true);
-      setRemoveId(apartment._id);
-      setIsAssignData(null);
-    } else {
-      setConfirmationPopUp(true);
-      setRemoveId(null);
-      setIsAssignData({
-        apartmentId: apartment._id,
-        _id: apartment.renterId,
+      setState({
+        ...state,
+        removeId: apartment._id,
+        isAssignData: null,
       });
+      setConfirmationPopUp(true);
+    } else {
+      setState({
+        ...state,
+        removeId: null,
+        isAssignData: {
+          apartmentId: apartment._id,
+          _id: apartment.renterId,
+        },
+      });
+      setConfirmationPopUp(true);
     }
   };
 
@@ -96,19 +132,23 @@ const PopUpWindow = ({ popUpModalOpened, setPopUpModalOpened, data }) => {
                   <Switch
                     onLabel="ON"
                     offLabel="OFF"
-                    checked={checked}
+                    checked={state.checked}
                     onChange={(event) =>
-                      setChecked(event.currentTarget.checked)
+                      // setChecked(event.currentTarget.checked)
+                      setState({
+                        ...state,
+                        checked: event.currentTarget.checked,
+                      })
                     }
                   />
                 </div>
-                {checked && (
+                {state.checked && (
                   <>
                     <div className={Styles.popUpWindow_container}>
                       <div className={Styles.popUpWindow__innerCard}>
                         <div className={Styles.popUpWindow__card__content}>
                           <span className={Styles.popUpWindow__card__icon}>
-                            <UilBookReader />{" "}
+                            <UilLayerGroup />{" "}
                           </span>
                           <div className={Styles.popUpWindow__card__elements}>
                             <span>Floor</span> <hr />
@@ -119,7 +159,7 @@ const PopUpWindow = ({ popUpModalOpened, setPopUpModalOpened, data }) => {
                       <div className={Styles.popUpWindow__innerCard}>
                         <div className={Styles.popUpWindow__card__content}>
                           <span className={Styles.popUpWindow__card__icon}>
-                            <UilBuilding />{" "}
+                            <UilSimCard />{" "}
                           </span>
                           <div className={Styles.popUpWindow__card__elements}>
                             <span>Name</span>
@@ -131,7 +171,7 @@ const PopUpWindow = ({ popUpModalOpened, setPopUpModalOpened, data }) => {
                       <div className={Styles.popUpWindow__innerCard}>
                         <div className={Styles.popUpWindow__card__content}>
                           <span className={Styles.popUpWindow__card__icon}>
-                            <UilUser />{" "}
+                            <UilListOl />{" "}
                           </span>
                           <div className={Styles.popUpWindow__card__elements}>
                             <span>Room Number</span>
@@ -146,7 +186,7 @@ const PopUpWindow = ({ popUpModalOpened, setPopUpModalOpened, data }) => {
                       <div className={Styles.popUpWindow__innerCard}>
                         <div className={Styles.popUpWindow__card__content}>
                           <span className={Styles.popUpWindow__card__icon}>
-                            <UilBookReader />{" "}
+                            <UilTextFields />{" "}
                           </span>
                           <div className={Styles.popUpWindow__card__elements}>
                             <span>Type</span> <hr />
@@ -158,7 +198,7 @@ const PopUpWindow = ({ popUpModalOpened, setPopUpModalOpened, data }) => {
                       <div className={Styles.popUpWindow__innerCard}>
                         <div className={Styles.popUpWindow__card__content}>
                           <span className={Styles.popUpWindow__card__icon}>
-                            <UilBuilding />{" "}
+                            <UilBedDouble />{" "}
                           </span>
                           <div className={Styles.popUpWindow__card__elements}>
                             <span>Bed Room</span>
@@ -171,7 +211,7 @@ const PopUpWindow = ({ popUpModalOpened, setPopUpModalOpened, data }) => {
                       <div className={Styles.popUpWindow__innerCard}>
                         <div className={Styles.popUpWindow__card__content}>
                           <span className={Styles.popUpWindow__card__icon}>
-                            <UilBookReader />{" "}
+                            <UilBath />{" "}
                           </span>
                           <div className={Styles.popUpWindow__card__elements}>
                             <span>Bath</span> <hr />
@@ -184,7 +224,7 @@ const PopUpWindow = ({ popUpModalOpened, setPopUpModalOpened, data }) => {
                       <div className={Styles.popUpWindow__innerCard}>
                         <div className={Styles.popUpWindow__card__content}>
                           <span className={Styles.popUpWindow__card__icon}>
-                            <UilBuilding />{" "}
+                            <UilUtensils />{" "}
                           </span>
                           <div className={Styles.popUpWindow__card__elements}>
                             <span>Kitchen</span>
@@ -198,7 +238,7 @@ const PopUpWindow = ({ popUpModalOpened, setPopUpModalOpened, data }) => {
                       <div className={Styles.popUpWindow__innerCard}>
                         <div className={Styles.popUpWindow__card__content}>
                           <span className={Styles.popUpWindow__card__icon}>
-                            <UilUser />{" "}
+                            <UilLaptopCloud />{" "}
                           </span>
                           <div className={Styles.popUpWindow__card__elements}>
                             <span>Balcony</span>
@@ -211,7 +251,7 @@ const PopUpWindow = ({ popUpModalOpened, setPopUpModalOpened, data }) => {
                       <div className={Styles.popUpWindow__innerCard}>
                         <div className={Styles.popUpWindow__card__content}>
                           <span className={Styles.popUpWindow__card__icon}>
-                            <UilUser />
+                            <UilRulerCombined />
                           </span>
 
                           <div className={Styles.popUpWindow__card__elements}>
@@ -232,19 +272,23 @@ const PopUpWindow = ({ popUpModalOpened, setPopUpModalOpened, data }) => {
                   <Switch
                     onLabel="ON"
                     offLabel="OFF"
-                    checked={billChecked}
+                    checked={state.billChecked}
                     onChange={(event) =>
-                      setBillChecked(event.currentTarget.checked)
+                      // setBillChecked(event.currentTarget.checked)
+                      setState({
+                        ...state,
+                        billChecked: event.currentTarget.checked,
+                      })
                     }
                   />
                 </div>
-                {billChecked && (
+                {state.billChecked && (
                   <>
                     <div className={Styles.popUpWindow_container}>
                       <div className={Styles.popUpWindow__innerCard}>
                         <div className={Styles.popUpWindow__card__content}>
                           <span className={Styles.popUpWindow__card__icon}>
-                            <UilBookReader />{" "}
+                            <UilBill />{" "}
                           </span>
                           <div className={Styles.popUpWindow__card__elements}>
                             <span>Rent</span> <hr />
@@ -255,7 +299,7 @@ const PopUpWindow = ({ popUpModalOpened, setPopUpModalOpened, data }) => {
                       <div className={Styles.popUpWindow__innerCard}>
                         <div className={Styles.popUpWindow__card__content}>
                           <span className={Styles.popUpWindow__card__icon}>
-                            <UilBuilding />{" "}
+                            <UilFire />{" "}
                           </span>
                           <div className={Styles.popUpWindow__card__elements}>
                             <span>Gas bill</span>
@@ -267,7 +311,7 @@ const PopUpWindow = ({ popUpModalOpened, setPopUpModalOpened, data }) => {
                       <div className={Styles.popUpWindow__innerCard}>
                         <div className={Styles.popUpWindow__card__content}>
                           <span className={Styles.popUpWindow__card__icon}>
-                            <UilUser />{" "}
+                            <UilTear />{" "}
                           </span>
                           <div className={Styles.popUpWindow__card__elements}>
                             <span>Water bill</span>
@@ -280,7 +324,7 @@ const PopUpWindow = ({ popUpModalOpened, setPopUpModalOpened, data }) => {
                       <div className={Styles.popUpWindow__innerCard}>
                         <div className={Styles.popUpWindow__card__content}>
                           <span className={Styles.popUpWindow__card__icon}>
-                            <UilBookReader />{" "}
+                            <UilWrench />{" "}
                           </span>
                           <div className={Styles.popUpWindow__card__elements}>
                             <span>Service charge</span> <hr />
@@ -292,7 +336,7 @@ const PopUpWindow = ({ popUpModalOpened, setPopUpModalOpened, data }) => {
                       <div className={Styles.popUpWindow__innerCard}>
                         <div className={Styles.popUpWindow__card__content}>
                           <span className={Styles.popUpWindow__card__icon}>
-                            <UilBuilding />{" "}
+                            <UilEllipsisH />{" "}
                           </span>
                           <div className={Styles.popUpWindow__card__elements}>
                             <span>others</span>
@@ -303,7 +347,7 @@ const PopUpWindow = ({ popUpModalOpened, setPopUpModalOpened, data }) => {
                       <div className={Styles.popUpWindow__innerCard}>
                         <div className={Styles.popUpWindow__card__content}>
                           <span className={Styles.popUpWindow__card__icon}>
-                            <UilBookReader />{" "}
+                            <UilSigma />{" "}
                           </span>
                           <div className={Styles.popUpWindow__card__elements}>
                             <span>Total </span>
@@ -317,22 +361,39 @@ const PopUpWindow = ({ popUpModalOpened, setPopUpModalOpened, data }) => {
               </div>
             </div>
 
-            <div className={`card ${Styles.Modal_button_container}`}>
-              <button
-                className="removeButton btns"
-                onClick={() => handleRemove(data)}
-              >
-                remove
-              </button>
-              <button className="button btns">Post</button>
-              <button className="submit_button btns">Assign</button>
-              <button
-                className="updateButton btns"
-                onClick={() => setUpdateModalOpened(true)}
-              >
-                Update
-              </button>
-            </div>
+            {profileData.role === "owner" && (
+              <div className={`card ${Styles.Modal_button_container}`}>
+                <button
+                  className="removeButton btns"
+                  onClick={() => handleRemove(data)}
+                >
+                  remove
+                </button>
+                {data.renterId === "" && data.renterName === "" && (
+                  <>
+                    <button
+                      className=" btns"
+                      onClick={() => setPostModalOpened(true)}
+                    >
+                      Post
+                    </button>
+                    <button
+                      className="submit_button btns"
+                      onClick={() => setAssignModalOpened(true)}
+                    >
+                      Assign
+                    </button>
+                  </>
+                )}
+
+                <button
+                  className="updateButton btns"
+                  onClick={() => setUpdateModalOpened(true)}
+                >
+                  Update
+                </button>
+              </div>
+            )}
           </>
         ) : (
           <div className="loading__screen">
@@ -346,12 +407,32 @@ const PopUpWindow = ({ popUpModalOpened, setPopUpModalOpened, data }) => {
         setUpdateModalOpened={setUpdateModalOpened}
         data={data}
       />
+
+      {data && (
+        <AssignRenter
+          assignModalOpened={assignModalOpened}
+          setAssignModalOpened={setAssignModalOpened}
+          // renterData={data}
+          renterPopUp={false}
+          apartmentData={data}
+          apartmentPopUp={true}
+        />
+      )}
+
+      {data && (
+        <PostShare
+          postModalOpened={postModalOpened}
+          setPostModalOpened={setPostModalOpened}
+          data={data}
+        />
+      )}
+
       <ConfirmationModal
         confirmationPopUp={confirmationPopUp}
         setConfirmationPopUp={setConfirmationPopUp}
-        data={removeId}
+        data={state.removeId}
         popUp_type="Remove_Apartment"
-        isAssignData={isAssignData}
+        isAssignData={state.isAssignData}
       />
     </>
   );

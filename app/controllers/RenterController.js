@@ -51,14 +51,73 @@ const createRenter = async (req, res) => {
 
 //************* Get all renter ***************\\
 const getAllRenters = async (req, res) => {
+  let { _id, defaultHomeID, role } = req.user;
+  // adminId: role === "" || role === undefined ? _id : homeId,
+  // ownerId: role === "owner" ? _id : ownerId,
+
+  let renters = await RenterInfoModel.find({
+    ownerId: role === "owner" ? _id : req.user.ownerId,
+    defaultHomeID,
+  }).populate([
+    {
+      path: "apartment",
+      model: "ApartmentModel",
+    },
+    {
+      path: "bills",
+      model: "BillModel",
+      // options: {
+      //   limit: pageSize,
+      //   skip: (pageNumber - 1) * pageSize,
+      // },
+    },
+  ]);
+  // console.log(renters);
+  try {
+    if (renters) {
+      renters = renters.map((renter) => {
+        const { password, ...otherDetails } = renter._doc;
+        return otherDetails;
+      });
+      res.status(200).json(renters);
+    } else {
+      return resourceError(res, "No renter found");
+    }
+  } catch (error) {
+    serverError(res, error);
+  }
+};
+
+//************* Get Query renter ***************\\
+const getQueryRenters = async (req, res) => {
   let { _id, defaultHomeID } = req.user;
+  // const {pageSize,pageNumber} = req.query;
+
+  const startRow = req.query.s_page;
+  const endRow = req.query.e_page;
   // adminId: role === "" || role === undefined ? _id : homeId,
   // ownerId: role === "owner" ? _id : ownerId,
 
   let renters = await RenterInfoModel.find({
     ownerId: _id,
     defaultHomeID,
-  }).populate("apartment");
+  })
+    .limit(endRow)
+    .skip((startRow - 1) * endRow)
+    .populate([
+      {
+        path: "apartment",
+        model: "ApartmentModel",
+      },
+      {
+        path: "bills",
+        model: "BillModel",
+        // options: {
+        //   limit: endRow,
+        //   skip: (startRow - 1) * endRow,
+        // },
+      },
+    ]);
   // console.log(renters);
   try {
     if (renters) {
@@ -191,6 +250,7 @@ const deleteRenter = async (req, res) => {
 module.exports = {
   createRenter,
   getAllRenters,
+  getQueryRenters,
   findRenter,
   updateRenter,
   removeRenterFromHome,

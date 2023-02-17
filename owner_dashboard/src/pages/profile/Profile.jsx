@@ -2,7 +2,7 @@ import Style from "./styles/Profile.module.css";
 import PostSide from "../../Components/profile/postSide/PostSide";
 import { useDispatch, useSelector } from "react-redux";
 import ProfileNav from "../../Components/Navigation/profile_navigation/ProfileNav";
-import { Tabs } from "@mantine/core";
+import { Box, Tabs } from "@mantine/core";
 import ProfileCard from "./components/profileCard/ProfileCard";
 import HomeInfoCard from "./components/homeInfoCard/HomeInfoCard";
 import { useState } from "react";
@@ -16,19 +16,31 @@ import {
   SearchManager,
 } from "../../redux/slices/ownerSlice";
 import SearchSection from "./components/searchSection/SearchSection";
+import AlertPoPUP from "../../Components/AlertPoPUP";
+import PostWidget from "../../Components/postComponents/PostWidget";
+import { getPostWidget } from "../../redux/slices/postSlice";
 
 const Profile = () => {
   const dispatch = useDispatch();
   const { profileData, houses, managers } = useSelector((state) => state.owner);
+  // console.log(profileData.role);
+  const { widgetData } = useSelector((state) => state.posts);
+  const { message } = useSelector((state) => state.message);
   const [modalOpened, setModalOpened] = useState(false);
-  // console.log(searchValue);
+  // console.log(profileData);
   useEffect(() => {
-    dispatch(GetHouses());
-    dispatch(GetManagers());
+    if (profileData.role === "owner") {
+      dispatch(GetHouses());
+      dispatch(GetManagers());
+      // dispatch(getPostWidget());
+    }
+    dispatch(getPostWidget());
   }, []);
 
   return (
     <>
+      {/* <AlertPoPUP /> */}
+      {message && <AlertPoPUP message={message} />}
       <div className="headerContainer">
         <div className={`card  ${Style.profile_Header}`}>
           <div className={Style.profile__nav}>
@@ -43,13 +55,17 @@ const Profile = () => {
               Profile
             </Tabs.Tab>
 
-            <Tabs.Tab color="blue" value="houseInfo">
-              House Info
-            </Tabs.Tab>
+            {profileData.role === "owner" && (
+              <>
+                <Tabs.Tab color="blue" value="houseInfo">
+                  House Info
+                </Tabs.Tab>
 
-            <Tabs.Tab color="blue" value="post">
-              Post
-            </Tabs.Tab>
+                <Tabs.Tab color="blue" value="post">
+                  Post
+                </Tabs.Tab>
+              </>
+            )}
           </Tabs.List>
 
           {/******************  tab panal for profile section  ******************/}
@@ -59,46 +75,61 @@ const Profile = () => {
                 <div className={` ${Style.profile_left}`}>
                   <ProfileCard data={profileData} />
                 </div>
-                <div className={` ${Style.profile_right}`}>
-                  <SearchSection />
+                {profileData.role === "owner" && (
+                  <div className={` ${Style.profile_right}`}>
+                    <SearchSection />
+                  </div>
+                )}
+              </div>
+              {profileData.role === "owner" && (
+                <div className={` ${Style.profile_container_2}`}>
+                  <ManagersTable data={managers} />
                 </div>
-              </div>
-              <div className={` ${Style.profile_container_2}`}>
-                <ManagersTable data={managers} />
-              </div>
+              )}
             </div>
           </Tabs.Panel>
 
-          {/******************  tab panal for house section  ******************/}
-          <Tabs.Panel value="houseInfo">
-            <button
-              className={Style.house__create_button}
-              onClick={() => setModalOpened(true)}
-            >
-              create new house
-            </button>
-            <CreateNewHouseIModal
-              modalOpened={modalOpened}
-              setModalOpened={setModalOpened}
-            />
-            <div className={Style.house_info_wrapper}>
-              {houses.map((house, index) => (
-                <div key={index}>
-                  <HomeInfoCard data={house} />
-                </div>
-              ))}
+          {profileData.role === "owner" && (
+            <>
+              {/******************  tab panal for house section  ******************/}
+              <Tabs.Panel value="houseInfo">
+                <button
+                  className={Style.house__create_button}
+                  onClick={() => setModalOpened(true)}
+                >
+                  create new house
+                </button>
+                <CreateNewHouseIModal
+                  modalOpened={modalOpened}
+                  setModalOpened={setModalOpened}
+                />
+                <div className={Style.house_info_wrapper}>
+                  {houses.map((house, index) => (
+                    <div key={index}>
+                      <HomeInfoCard data={house} />
+                    </div>
+                  ))}
 
-              {/* <HomeInfoCard />
+                  {/* <HomeInfoCard />
               <HomeInfoCard /> */}
-            </div>
-          </Tabs.Panel>
+                </div>
+              </Tabs.Panel>
 
-          {/******************  tab panal for post section  ******************/}
-          <Tabs.Panel value="post">
-            <div className={Style.Posts__wrapper}>
-              <PostSide />
-            </div>
-          </Tabs.Panel>
+              {/******************  tab panal for post section  ******************/}
+              <Tabs.Panel value="post">
+                <div className={Style.Posts__wrapper}>
+                  <div>
+                    <div className={Style.Posts__widget}>
+                      <PostWidget data={widgetData} />
+                    </div>
+                    <div className={Style.Posts__container}>
+                      <PostSide />
+                    </div>
+                  </div>
+                </div>
+              </Tabs.Panel>
+            </>
+          )}
         </Tabs>
       </div>
     </>

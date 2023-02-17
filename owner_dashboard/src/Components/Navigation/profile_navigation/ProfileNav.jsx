@@ -8,9 +8,12 @@ import Comment from "../../../assets/comment.png";
 import { UilSetting, UilSignOutAlt } from "@iconscout/react-unicons";
 
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "../../../redux/slices/auth";
 
 const ProfileNav = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   return (
     <div className={`${Style.RightSide}`}>
       <div className={Style.navIcons}>
@@ -24,7 +27,7 @@ const ProfileNav = () => {
         <img src={Noti} alt="" />
         <img src={Comment} alt="" onClick={() => navigate("/message")} />
         <span>
-          <UilSignOutAlt />
+          <UilSignOutAlt onClick={() => dispatch(logout())} />
         </span>
       </div>
     </div>

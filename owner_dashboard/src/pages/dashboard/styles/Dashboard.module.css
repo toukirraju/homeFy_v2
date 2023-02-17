@@ -17,20 +17,25 @@ z-index: 99999999;
     background: rgb(255, 255, 255);
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     border-radius: 10px;
-    height: 210px;
+    height: 220px;
     
 }
 .circular_charts{
-    display: grid;
+    /* display: grid; */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
     /* width: 100%; */
-    grid-template-columns: auto auto auto auto;
+    /* grid-template-columns: auto auto auto auto; */
     /* align-items: center; */
     /* justify-content: center; */
     /* gap: 1rem; */
-    grid-gap: 10px;
-  justify-items: center;
+    /* grid-gap: 10px; */
+  
+    justify-content: space-around;
   /* align-items: center; */
-    margin:  10px 0;
+    /* margin:  10px 0; */
+    padding: 10px 0;
     
 }
 
@@ -68,6 +73,9 @@ font-weight: 900;
 }
 .widget_footer{
 margin-top: 10px;
+display: flex;
+justify-content: space-around;
+color: gray;
 }
 
 .circular_pie{
@@ -80,23 +88,32 @@ margin-top: 10px;
 @media screen and (max-width: 769px) {
     .main__section{
         width: 100%;
-        height: calc(100vh - 225px);
+        height: calc(100vh - 170px);
+        overflow-x: hidden;
     }
 
     
     .circular_charts{
-        grid-template-columns: auto auto ;
-       grid-gap: 10px;
+        /* grid-template-columns: auto auto ; */
+        /* display: flex; */
+        /* flex-direction: column; */
+       /* grid-gap: 10px; */
     }
 
     /* circular progress bar */
     .progress{
         
         height: 160px;
-        width: 167px;
+        width: 130px;
+        /* width: auto; */
+        /* padding: 10px; */
     }
+    .progress:nth-child(1){
+        padding: 10px;
+    }
+    
     .widget_header{
-        margin: 5px 0;
+        margin: 2px 0;
         
     }
     .widget_header h5{
@@ -107,17 +124,21 @@ margin-top: 10px;
         font-weight: 900;
         }
     .circular_progress{
-        width: 43%;
-        height: 35%;
+        width: 55%;
+        height: 20%;
     }
     .widget_footer{
-        margin-top: 8px;
+        margin-top: 5px;
+        text-align: center;
         }
 
         /* Pie Chart */
     .circular_pie{
         height: 160px;
-        width: 167px;
+        width: 135px;
+    }
+    .bar_chart{
+        margin: 10px 0;
     }
     
 }

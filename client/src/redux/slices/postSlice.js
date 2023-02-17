@@ -2,69 +2,14 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { setMessage } from "./message";
 import PostService from "../services/post.api.service";
 
-export const createPost = createAsyncThunk(
-  "post/create",
-  async (post, thunkAPI) => {
+export const getTimelinePosts = createAsyncThunk(
+  "post/Timeline",
+  async (lastPostId, thunkAPI) => {
+    // console.log(lastPostId);
     try {
-      const data = await PostService.createPost(post);
-      return { apartments: data };
-    } catch (error) {
-      const message =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
-        error.toString();
-      thunkAPI.dispatch(setMessage(message));
-      return thunkAPI.rejectWithValue();
-    }
-  }
-);
-
-export const getUserPosts = createAsyncThunk(
-  "post/UserPosts",
-  async (args, thunkAPI) => {
-    try {
-      const data = await PostService.getUserPost();
-
-      return { posts: data };
-    } catch (error) {
-      const message =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
-        error.toString();
-      thunkAPI.dispatch(setMessage(message));
-      return thunkAPI.rejectWithValue();
-    }
-  }
-);
-
-export const update = createAsyncThunk(
-  "apartment/updateApartment",
-  async (updatedData, thunkAPI) => {
-    try {
-      await PostService.updateApartment(updatedData);
-    } catch (error) {
-      const message =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
-        error.toString();
-      thunkAPI.dispatch(setMessage(message));
-      return thunkAPI.rejectWithValue();
-    }
-  }
-);
-
-export const removeLevels = createAsyncThunk(
-  "apartment/removeLevels",
-  async (apartmentId, thunkAPI) => {
-    try {
-      await PostService.removeApartment(apartmentId);
-      // return { apartments: data };
+      const data = await PostService.getTimelinePost(lastPostId);
+      // console.log(data);
+      return data;
     } catch (error) {
       const message =
         (error.response &&
@@ -79,68 +24,50 @@ export const removeLevels = createAsyncThunk(
 );
 
 const initialState = {
-  isSuccess: false,
-  isPending: false,
-  userPosts: [],
+  posts: [],
+  status: "idle",
+  error: null,
+  hasMore: true,
+  lastPostId: null,
+  limit: 4, // set initial limit here
 };
 
 const postSlice = createSlice({
   name: "post",
   initialState,
-  extraReducers: {
-    [createPost.pending]: (state, action) => {
-      state.isPending = true;
+  reducers: {
+    resetPosts: (state) => {
+      state.posts = [];
+      state.status = "idle";
+      state.error = null;
+      state.hasMore = true;
+      state.lastPostId = null;
+      state.limit = 4; // reset limit when posts are reset
     },
-    [createPost.fulfilled]: (state, action) => {
-      state.isSuccess = true;
-      state.isPending = false;
-      // state.apartmentData = action.payload.apartments;
-    },
-    [createPost.rejected]: (state, action) => {
-      state.isSuccess = false;
-      state.isPending = false;
-    },
-
-    [update.pending]: (state, action) => {
-      state.isPending = true;
-      state.isSuccess = false;
-    },
-    [update.fulfilled]: (state, action) => {
-      state.isSuccess = true;
-      state.isPending = false;
-      // state.apartments = action.payload;
-    },
-    [update.rejected]: (state, action) => {
-      state.isSuccess = false;
-    },
-    [getUserPosts.pending]: (state, action) => {
-      state.isPending = true;
-      state.isSuccess = false;
-    },
-    [getUserPosts.fulfilled]: (state, action) => {
-      state.isSuccess = true;
-      state.isPending = false;
-      // state.apartments = action.payload;
-      state.userPosts = action.payload.posts;
-    },
-    [getUserPosts.rejected]: (state, action) => {
-      state.isSuccess = false;
-      state.apartmentData = [];
-    },
-    [removeLevels.pending]: (state, action) => {
-      state.isPending = true;
-      state.isSuccess = false;
-    },
-    [removeLevels.fulfilled]: (state, action) => {
-      state.isSuccess = true;
-      state.isPending = false;
-    },
-    [removeLevels.rejected]: (state, action) => {
-      state.isSuccess = false;
-      state.isPending = false;
-    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(getTimelinePosts.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(getTimelinePosts.fulfilled, (state, action) => {
+        // console.log(state.posts);
+        state.status = "succeeded";
+        state.posts = [...state.posts, ...action.payload.posts];
+        if (action.payload.posts.length === 0) {
+          state.hasMore = false;
+        } else {
+          state.lastPostId =
+            action.payload.posts[action.payload.posts.length - 1]._id;
+        }
+      })
+      .addCase(getTimelinePosts.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      });
   },
 });
 
+export const { resetPosts } = postSlice.actions;
 const { reducer } = postSlice;
 export default reducer;

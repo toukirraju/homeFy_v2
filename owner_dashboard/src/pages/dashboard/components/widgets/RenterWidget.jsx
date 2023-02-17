@@ -1,11 +1,11 @@
 import Style from "./style/widgets.module.css";
 import {
-  UilBuilding,
-  UilBedDouble,
-  UilTimesCircle,
-  UilCheckCircle,
+  UilUsersAlt,
+  UilUserCheck,
+  UilUserTimes,
 } from "@iconscout/react-unicons";
-const RenterWidget = () => {
+import { Badge } from "@mantine/core";
+const RenterWidget = ({ data }) => {
   return (
     <>
       <div className={Style.widget__wrapper}>
@@ -16,28 +16,46 @@ const RenterWidget = () => {
           <div className={Style.widget__innerCard}>
             <div className={Style.widget__card__content}>
               <span>
-                <UilBuilding />
+                <UilUsersAlt />
               </span>
-              <span>Total Renter</span>
-              <span>30</span>
+              <span>Total Renters</span>
+              <span>
+                {parseInt(data.activeRenters) + parseInt(data.inactiveRenters)}
+              </span>
+            </div>
+          </div>
+
+          <div className={Style.widget__innerCard}>
+            <div className={Style.widget__card__content}>
+              <span>
+                <Badge
+                  variant="gradient"
+                  gradient={{ from: "teal", to: "blue", deg: 60 }}
+                >
+                  New
+                </Badge>
+              </span>
+              <span style={{ marginLeft: "5px" }}> New Renters</span>
+              <span>{parseInt(data.newRenters)}</span>
+            </div>
+          </div>
+
+          <div className={Style.widget__innerCard}>
+            <div className={Style.widget__card__content}>
+              <span>
+                <UilUserCheck />
+              </span>
+              <span>Active renters</span>
+              <span>{data.activeRenters}</span>
             </div>
           </div>
           <div className={Style.widget__innerCard}>
             <div className={Style.widget__card__content}>
               <span>
-                <UilBedDouble />
+                <UilUserTimes />
               </span>
-              <span>Active renter</span>
-              <span>30</span>
-            </div>
-          </div>
-          <div className={Style.widget__innerCard}>
-            <div className={Style.widget__card__content}>
-              <span>
-                <UilCheckCircle />
-              </span>
-              <span>Inactive renter</span>
-              <span>30</span>
+              <span>Inactive renters</span>
+              <span>{data.inactiveRenters}</span>
             </div>
           </div>
         </div>

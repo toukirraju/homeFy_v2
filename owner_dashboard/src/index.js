@@ -25,9 +25,19 @@ root.render(
         colorScheme={colorScheme}
         toggleColorScheme={toggleColorScheme}
       > */}
-      {/* <MantineProvider theme={{ colorScheme }}> */}
-      <App />
-      {/* </MantineProvider> */}
+      <MantineProvider
+        theme={{
+          breakpoints: {
+            xs: 500,
+            sm: 800,
+            md: 1000,
+            lg: 1200,
+            xl: 1400,
+          },
+        }}
+      >
+        <App />
+      </MantineProvider>
       {/* </ColorSchemeProvider> */}
     </BrowserRouter>
   </Provider>

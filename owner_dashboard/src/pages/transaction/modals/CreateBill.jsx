@@ -1,5 +1,5 @@
 import Styles from "../../../Styles/ModalStyle.module.css";
-import { Modal, useMantineTheme } from "@mantine/core";
+import { Loader, Switch, Modal, useMantineTheme } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useState } from "react";
 import LoadingSpinner from "../../../Components/LoadingSpinner";
@@ -16,8 +16,10 @@ const CreateBill = ({
   const isMobile = useMediaQuery("(max-width: 600px)");
 
   const [isSwitchOn, setIsSwitchOn] = useState(false);
+  const [isSMSOn, setIsSMSOn] = useState(true);
 
   const {
+    error,
     total,
     newDue,
     formValue,
@@ -26,7 +28,7 @@ const CreateBill = ({
     handleChange,
     confirmationPopUp,
     setConfirmationPopUp,
-  } = useBillMaker(setBillModalOpened, temporaryBill, data);
+  } = useBillMaker(setBillModalOpened, temporaryBill, data, isSMSOn);
 
   return (
     <>
@@ -113,23 +115,28 @@ const CreateBill = ({
 
             <form>
               <div className={Styles.switch}>
-                <label>Manual add bill</label>
-                <span
-                  style={{
-                    fontSize: "20px",
-                    cursor: "pointer",
-                    color: "#5bc8ab",
-                  }}
-                  onClick={() => {
-                    setIsSwitchOn((prev) => !prev);
-                  }}
-                >
-                  {isSwitchOn ? (
-                    <i className="uil uil-toggle-on "></i>
-                  ) : (
-                    <i className="uil uil-toggle-off off__btn"></i>
-                  )}
-                </span>
+                <div>
+                  <span>Manual add bill</span>
+                  <Switch
+                    onLabel="ON"
+                    offLabel="OFF"
+                    checked={isSwitchOn}
+                    onChange={(event) =>
+                      setIsSwitchOn(event.currentTarget.checked)
+                    }
+                  />
+                </div>
+                <div className={Styles.switch}>
+                  <span>SMS</span>
+                  <Switch
+                    onLabel="ON"
+                    offLabel="OFF"
+                    checked={isSMSOn}
+                    onChange={(event) =>
+                      setIsSMSOn(event.currentTarget.checked)
+                    }
+                  />
+                </div>
               </div>
 
               {isSwitchOn && (
@@ -175,8 +182,13 @@ const CreateBill = ({
                   onFocus={(e) => (e.target.value = "")}
                   required
                 />
+                {error && <div className={Styles.input__error}>{error}</div>}
               </div>
-              <button className={Styles.submit_button} onClick={onSubmit}>
+              <button
+                className={Styles.submit_button}
+                disabled={error}
+                onClick={onSubmit}
+              >
                 submit
               </button>
             </form>

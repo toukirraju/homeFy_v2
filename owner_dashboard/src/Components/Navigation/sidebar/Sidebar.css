@@ -132,31 +132,34 @@ ul {
     color: hsl(250, 8%, 15%);
   }
 
-  .nav__profile {
+  .nav__profile  {
     position: fixed;
-    bottom: 14px;
+    bottom: 5px;
     left: 47%;
   }
+  
   .circle {
     position: fixed;
-    bottom: 25px;
-    left: 45%;
-    height: 4rem;
-    width: 4rem;
+    bottom: 21px;
+    left: 46%;
+    height: 3.2rem;
+    width: 3.2rem;
     background: rgb(255, 255, 255);
-    /* box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); */
+    /* background: #000; */
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
     border-radius: 50%;
     z-index: -66;
   }
   .profile__image {
     /* visibility: hidden; */
-    /* bottom: 25px;
-    left: 40%; */
-
+    /* bottom: 10px; */
+    /* left: 40%; */
+    position: fixed;
+    bottom: 23px;
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
     object-fit: cover;
-    height: 3rem;
-    width: 3rem;
+    height: 2.8rem;
+    width: 2.8rem;
     border-radius: 50%;
     cursor: pointer;
     /* margin-right: 50px; */

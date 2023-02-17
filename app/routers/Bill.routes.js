@@ -13,6 +13,7 @@ const {
   updateTempBill,
   payableRenters,
   deleteTempBill,
+  checkForUnbilledRenters,
 } = require("../controllers/billController");
 
 //create bill Route
@@ -51,5 +52,8 @@ router.delete(
 
 //get payable renter Route
 router.get("/payable/:month/:year", [authVerify.verifyToken], payableRenters);
+
+//check unbilled renter on lastday of month
+router.get("/unbilled", checkForUnbilledRenters);
 
 module.exports = router;

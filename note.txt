@@ -71,6 +71,20 @@ You can initialize this repository with code from a Subversion, Mercurial, or TF
 
 
 //***********************************FAQ**********************************\\
+short description:
+HomeFy is a real esteate app .. which have two user end .. one is like social media.. here normal user can see
+ home owner rental post and who need home for rent then he/she can contact with home owner by his post . normal 
+ user can contact with by call,email & by message with creating a user account.
+
+then other user end is Owner dashboard where home owner can store all information about home , apartment, bills, 
+and renter. besides he can make every month bill invoice for renter.then this bill information can store on 
+database and send instance sms by renter contact number..and on the dashboard section he can see all graphical 
+view for his home informations..on the other side if owner need a manager for his home to controll his dashbord
+then he can assign a manager for his home. and if he have multiple house then he can create multiple house 
+instance... all bills and renter, manager can be assign on spesific house.
+
+
+
 ==>> Why i'm select mongodb in my web project ?
 Ans:
 MongoDB is a popular NoSQL database that is well-suited for web projects because of its scalability,

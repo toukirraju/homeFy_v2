@@ -1,0 +1,57 @@
+.image__container{
+    position: relative;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
+.arrow__buttons{
+    position: absolute;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    top: 48%;
+    padding: 0 20px;
+}
+
+.arrow__buttons > span{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: white;
+    cursor: pointer;
+    opacity: 0.5;
+}
+
+.arrow__buttons > span:hover{
+    opacity: 0.8;
+    transition: all 0.5s ease-out;
+}
+
+ /* Modal design  */
+.modal__Body{
+    background: transparent;
+}
+.modal__title{
+    color: aliceblue;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 0 20px;
+}
+.modal__close{
+    background: rgb(255, 255, 255);
+    border-radius: 50%;
+}
+.modal__close:hover{
+    color: rgb(153, 0, 0);
+}

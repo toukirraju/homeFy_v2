@@ -2,12 +2,12 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { setMessage } from "./message";
 import PostService from "../services/post.api.service";
 
+////////////////////// Create Post \\\\\\\\\\\\\\\\\\\\\\\
 export const createPost = createAsyncThunk(
   "post/create",
   async (post, thunkAPI) => {
     try {
-      const data = await PostService.createPost(post);
-      return { apartments: data };
+      await PostService.createPost(post);
     } catch (error) {
       const message =
         (error.response &&
@@ -20,12 +20,12 @@ export const createPost = createAsyncThunk(
     }
   }
 );
-
-export const getUserPosts = createAsyncThunk(
+////////////////////// Get Specific Houses Post \\\\\\\\\\\\\\\\\\\\\\\
+export const getSpecificHousePosts = createAsyncThunk(
   "post/UserPosts",
   async (args, thunkAPI) => {
     try {
-      const data = await PostService.getUserPost();
+      const data = await PostService.getSpecificHousePosts();
 
       return { posts: data };
     } catch (error) {
@@ -41,11 +41,13 @@ export const getUserPosts = createAsyncThunk(
   }
 );
 
-export const update = createAsyncThunk(
-  "apartment/updateApartment",
-  async (updatedData, thunkAPI) => {
+////////////////////// Post Widget \\\\\\\\\\\\\\\\\\\\\\\
+export const getPostWidget = createAsyncThunk(
+  "post/widget",
+  async (args, thunkAPI) => {
     try {
-      await PostService.updateApartment(updatedData);
+      const data = await PostService.postWidget();
+      return { widgets: data };
     } catch (error) {
       const message =
         (error.response &&
@@ -58,12 +60,12 @@ export const update = createAsyncThunk(
     }
   }
 );
-
-export const removeLevels = createAsyncThunk(
-  "apartment/removeLevels",
-  async (apartmentId, thunkAPI) => {
+////////////////////// Delete Post \\\\\\\\\\\\\\\\\\\\\\\
+export const deletePost = createAsyncThunk(
+  "apartment/deletePost",
+  async (postId, thunkAPI) => {
     try {
-      await PostService.removeApartment(apartmentId);
+      await PostService.deletePost(postId);
       // return { apartments: data };
     } catch (error) {
       const message =
@@ -81,61 +83,64 @@ export const removeLevels = createAsyncThunk(
 const initialState = {
   isSuccess: false,
   isPending: false,
-  userPosts: [],
+  specificPosts: [],
+  widgetData: {},
 };
 
 const postSlice = createSlice({
   name: "post",
   initialState,
   extraReducers: {
+    ////////////////////// Create Post \\\\\\\\\\\\\\\\\\\\\\\
     [createPost.pending]: (state, action) => {
       state.isPending = true;
     },
     [createPost.fulfilled]: (state, action) => {
       state.isSuccess = true;
       state.isPending = false;
-      // state.apartmentData = action.payload.apartments;
     },
     [createPost.rejected]: (state, action) => {
       state.isSuccess = false;
       state.isPending = false;
     },
-
-    [update.pending]: (state, action) => {
+    ////////////////////// Post Widget \\\\\\\\\\\\\\\\\\\\\\\
+    [getPostWidget.pending]: (state, action) => {
       state.isPending = true;
       state.isSuccess = false;
     },
-    [update.fulfilled]: (state, action) => {
+    [getPostWidget.fulfilled]: (state, action) => {
       state.isSuccess = true;
       state.isPending = false;
-      // state.apartments = action.payload;
+      state.widgetData = action.payload.widgets;
     },
-    [update.rejected]: (state, action) => {
+    [getPostWidget.rejected]: (state, action) => {
       state.isSuccess = false;
+      state.widgetData = {};
     },
-    [getUserPosts.pending]: (state, action) => {
+    ////////////////////// Get Specific Houses Post \\\\\\\\\\\\\\\\\\\\\\\
+    [getSpecificHousePosts.pending]: (state, action) => {
       state.isPending = true;
       state.isSuccess = false;
     },
-    [getUserPosts.fulfilled]: (state, action) => {
+    [getSpecificHousePosts.fulfilled]: (state, action) => {
       state.isSuccess = true;
       state.isPending = false;
-      // state.apartments = action.payload;
-      state.userPosts = action.payload.posts;
+      state.specificPosts = action.payload.posts;
     },
-    [getUserPosts.rejected]: (state, action) => {
+    [getSpecificHousePosts.rejected]: (state, action) => {
       state.isSuccess = false;
       state.apartmentData = [];
     },
-    [removeLevels.pending]: (state, action) => {
+    ////////////////////// Delete Post \\\\\\\\\\\\\\\\\\\\\\\
+    [deletePost.pending]: (state, action) => {
       state.isPending = true;
       state.isSuccess = false;
     },
-    [removeLevels.fulfilled]: (state, action) => {
+    [deletePost.fulfilled]: (state, action) => {
       state.isSuccess = true;
       state.isPending = false;
     },
-    [removeLevels.rejected]: (state, action) => {
+    [deletePost.rejected]: (state, action) => {
       state.isSuccess = false;
       state.isPending = false;
     },

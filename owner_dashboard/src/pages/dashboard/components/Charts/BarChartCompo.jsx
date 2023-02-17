@@ -1,127 +1,86 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "chart.js/auto";
-import { DatePicker } from "@mantine/dates";
+import DatePicker from "react-datepicker";
 import Style from "../../styles/Dashboard.module.css";
 import { Bar } from "react-chartjs-2";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useMediaQuery } from "@mantine/hooks";
+import { getYearlyBills } from "../../../../redux/slices/dashboardSlice";
 
-const BarChartCompo = () => {
+const BarChartCompo = (props) => {
   const dispatch = useDispatch();
   const isMobile = useMediaQuery("(max-width: 768px)");
-  const [date, setDate] = React.useState(new Date());
-  // const [startDate, setStartDate] = React.useState(new Date());
-  // const { yearlyBills, isPending, isReload } = useSelector(
-  //   (state) => state.dashboardData
-  // );
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
-  // const year = startDate.getFullYear();
-
-  const handleDateChange = (value) => {
-    setDate(value);
+  const data = {
+    labels: [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ],
+    datasets: [
+      {
+        label: "Total Rent",
+        data: Object.values(props.data).map(
+          (monthNumber) => monthNumber.totalRent
+        ),
+        backgroundColor: "rgba(255, 99, 132, 0.2)",
+        borderColor: "rgba(255, 99, 132, 1)",
+        borderWidth: 1,
+      },
+      {
+        label: "Payable Amount",
+        data: Object.values(props.data).map(
+          (monthNumber) => monthNumber.payableAmount
+        ),
+        backgroundColor: "rgba(54, 162, 235, 0.2)",
+        borderColor: "rgba(54, 162, 235, 1)",
+        borderWidth: 1,
+      },
+      {
+        label: "Paid Amount",
+        data: Object.values(props.data).map(
+          (monthNumber) => monthNumber.paidAmount
+        ),
+        backgroundColor: "rgba(255, 206, 86, 0.2)",
+        borderColor: "rgba(255, 206, 86, 1)",
+        borderWidth: 1,
+      },
+    ],
   };
-  // useEffect(() => {
-  //   dispatch(getYearlyBills(year));
-  // }, [year, isReload, dispatch]);
+
+  useEffect(() => {
+    dispatch(getYearlyBills(selectedDate.getFullYear()));
+  }, [selectedDate]);
+
   return (
     <div className={`${Style.bar_chart}`}>
       <div>
         <DatePicker
-          // className={Style.makeBill__button}
-          defaultValue={new Date()}
-          placeholder="Pick date"
-          dropdownType="modal"
-          // withinPortal
-          variant="unstyled"
-          size="xs"
-          inputFormat={"MMMM-YYYY"}
-          clearable={false}
-          value={date}
-          onChange={(value) => handleDateChange(value)}
+          selected={selectedDate}
+          onChange={(date) => setSelectedDate(date)}
+          customInput={<CustomInput />}
+          withPortal
+          style={customStyles}
+          maxDate={new Date()}
+          showYearPicker
+          dateFormat="MMM-yyyy"
         />
       </div>
       <div>
         <Bar
-          data={{
-            labels: [
-              // "January",
-              // "February",
-              // "March",
-              // "April",
-              // "May",
-              // "June",
-              // "July",
-              // "August",
-              // "September",
-              // "October",
-              // "November",
-              // "December",
-              "Jan",
-              "Feb",
-              "Mar",
-              "Apr",
-              "May",
-              "Jun",
-              "Jul",
-              "Aug",
-              "Sep",
-              "Oct",
-              "Nov",
-              "Dec",
-            ],
-            datasets: [
-              {
-                label: ["Total"],
-                data: [
-                  75345, 54562, 83452, 93452, 74235, 84523, 66452, 93424, 2343,
-                  // yearlyBills.January,
-                  // yearlyBills.February,
-                  // yearlyBills.March,
-                  // yearlyBills.April,
-                  // yearlyBills.May,
-                  // yearlyBills.June,
-                  // yearlyBills.July,
-                  // yearlyBills.August,
-                  // yearlyBills.September,
-                  // yearlyBills.October,
-                  // yearlyBills.November,
-                  // yearlyBills.December,
-                ],
-                backgroundColor: [
-                  "rgba(255, 99, 132, 0.2)",
-                  "rgba(54, 162, 235, 0.2)",
-                  "rgba(255, 206, 86, 0.2)",
-                  "rgba(75, 192, 192, 0.2)",
-                  "rgba(153, 102, 255, 0.2)",
-                  "rgba(255, 159, 64, 0.2)",
-                  "rgba(144, 70, 39, 0.2)",
-                  "rgba(204, 201, 51, 0.2)",
-                  "rgba(20, 235, 173, 0.2)",
-                  "rgba(155, 100, 149, 0.2)",
-                  "rgba(66, 252, 158, 0.2)",
-                  "rgba(195, 52, 120, 0.2)",
-                ],
-                borderColor: [
-                  "rgba(255, 99, 132, 1)",
-                  "rgba(54, 162, 235, 1)",
-                  "rgba(255, 206, 86, 1)",
-                  "rgba(75, 192, 192, 1)",
-                  "rgba(153, 102, 255, 1)",
-                  "rgba(255, 159, 64, 1)",
-                  "rgba(144, 70, 39, 1)",
-                  "rgba(204, 201, 51, 1)",
-                  "rgba(20, 235, 173, 1)",
-                  "rgba(155, 100, 149, 1)",
-                  "rgba(66, 252, 158, 1)",
-                  "rgba(195, 52, 120, 1)",
-                ],
-
-                borderWidth: 3,
-              },
-            ],
-          }}
+          data={data}
           height={180}
           // width={600}
           plugins={[ChartDataLabels]}
@@ -134,7 +93,7 @@ const BarChartCompo = () => {
 
             plugins: {
               legend: {
-                display: false,
+                // display: false,
                 labels: {
                   color: "gray",
                   font: {
@@ -147,19 +106,17 @@ const BarChartCompo = () => {
                 labels: {
                   title: {
                     font: {
-                      weight: "bold",
+                      weight: isMobile ? "bold" : "normal",
+                      size: isMobile ? 7 : 10,
                     },
                   },
                 },
                 formatter: function (value, context) {
                   return value + " /-";
                 },
-                anchor: "middel",
-                align: "center",
+                anchor: "start",
+                align: "end",
                 rotation: isMobile ? -90 : -45,
-                // display: function (context) {
-                //   return context.dataIndex % 2;
-                // },
               },
             },
           }}
@@ -170,3 +127,24 @@ const BarChartCompo = () => {
 };
 
 export default BarChartCompo;
+
+const customStyles = {
+  dateInput: {
+    background: "lightgray",
+    border: "1px solid gray",
+    borderRadius: "5px",
+  },
+  input: {
+    color: "gray",
+    fontSize: "16px",
+    padding: "6px",
+    border: "none",
+    width: "100%",
+    background: "none",
+  },
+};
+const CustomInput = React.forwardRef(({ value, onClick }, ref) => (
+  <button style={customStyles.input} onClick={onClick} ref={ref}>
+    {value} 🔰
+  </button>
+));

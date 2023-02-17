@@ -1,7 +1,7 @@
 import axios from "axios";
 import authHeader from "./auth-header";
 
-const API_URL = "http://localhost:4040/api/post/";
+const API_URL = "http://localhost:4040/api/v1/post/";
 // const API_URL = "https://bill-factor-final.herokuapp.com/api/";
 // const API_URL = "https://billapi.billfactor.xyz/api/";
 
@@ -14,11 +14,15 @@ const createPost = (post) => {
     });
 };
 
-/////////////
+/////// `timeline/posts?lastPostId=${lastPostId}//////
 
-const getUserPost = () => {
+const getTimelinePost = ({ lastPostId, limit }) => {
+  // console.log(lastPostId);
   return axios
-    .get(API_URL + "userposts", { headers: authHeader() })
+    .get(API_URL + `timeline/posts?lastPostId=${lastPostId}&limit=${limit}`, {
+      // params: { limit },
+      headers: authHeader(),
+    })
     .then((response) => {
       return response.data;
     });
@@ -60,7 +64,7 @@ const removeApartment = (apartmentId) => {
 
 const postService = {
   createPost,
-  getUserPost,
+  getTimelinePost,
   updatePost,
   hidePost,
   updateApartment,

@@ -24,6 +24,7 @@ import {
 } from "../../redux/slices/billSlice";
 import LoadingSpinner from "../LoadingSpinner";
 import { toast } from "react-toastify";
+import { clearMessage } from "../../redux/slices/message";
 // import { uploadImage } from "../../actions/UploadAction";
 // import { updateUser } from "../../actions/UserAction";
 
@@ -86,6 +87,7 @@ function ConfirmationModal({
             setConfirmationPopUp(false);
             dispatch(monthlyBill({ month, year }));
             dispatch(temporaryBill());
+            dispatch(clearMessage());
             // dispatch(setReload());
           })
           .catch(() => {

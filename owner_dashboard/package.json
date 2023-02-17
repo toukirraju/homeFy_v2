@@ -1,5 +1,6 @@
 {
-  "name": "client",
+  "name": "owner_dashboard",
+  "homepage": "https://dashboard.homefy.billfactor.xyz",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -21,10 +22,13 @@
     "dayjs": "^1.11.7",
     "formik": "^2.2.9",
     "jwt-decode": "^3.1.2",
+    "mantine-datatable": "^1.7.39",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.1.0",
     "react-circular-progressbar": "^2.1.0",
+    "react-datepicker": "^4.10.0",
     "react-dom": "^18.2.0",
+    "react-grid-gallery": "^1.0.0",
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.6.1",
     "react-scripts": "5.0.1",

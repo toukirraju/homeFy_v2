@@ -228,46 +228,6 @@ export const RemoveRole = createAsyncThunk(
   }
 );
 
-// export const OwnerInfo = createAsyncThunk(
-//   "house/OwnerInfo",
-//   async (formData, thunkAPI) => {
-//     try {
-//       const data = await ownerService.getHouseInfo(formData);
-//       // thunkAPI.dispatch(setMessage(data.message));
-
-//       return { houseData: data };
-//     } catch (error) {
-//       const message =
-//         (error.response && error.response.data.message) ||
-//         error.response.data ||
-//         error.message ||
-//         error.toString();
-//       thunkAPI.dispatch(setMessage(message));
-//       return thunkAPI.rejectWithValue();
-//     }
-//   }
-// );
-
-// export const updateHouseInfo = createAsyncThunk(
-//   "house/updateInfo",
-//   async (formData, thunkAPI) => {
-//     try {
-//       const data = await ownerService.updateHouseInfo(formData);
-//       return { houseData: data };
-//     } catch (error) {
-//       const message =
-//         (error.response &&
-//           error.response.data &&
-//           error.response.data.message) ||
-//         error.message ||
-//         error.toString();
-
-//       thunkAPI.dispatch(setMessage(message));
-//       return thunkAPI.rejectWithValue();
-//     }
-//   }
-// );
-
 const initialState = {
   isPending: false,
   success: false,
@@ -424,31 +384,6 @@ const ownerSlice = createSlice({
       state.isPending = false;
       state.success = false;
     },
-
-    // [OwnerInfo.pending]: (state, action) => {
-    //   state.isPending = true;
-    // },
-    // [OwnerInfo.fulfilled]: (state, action) => {
-    //   state.isPending = false;
-    //   state.success = true;
-    //   state.houseData = action.payload.houseData;
-    // },
-    // [OwnerInfo.rejected]: (state, action) => {
-    //   state.isPending = false;
-    //   state.success = false;
-    // },
-    // [updateHouseInfo.pending]: (state, action) => {
-    //   state.isPending = true;
-    // },
-    // [updateHouseInfo.fulfilled]: (state, action) => {
-    //   state.success = true;
-    //   state.isPending = false;
-    //   state.houseData = action.payload.houseData;
-    // },
-    // [updateHouseInfo.rejected]: (state, action) => {
-    //   state.isPending = false;
-    //   state.success = false;
-    // },
   },
 });
 

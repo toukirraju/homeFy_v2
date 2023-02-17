@@ -1,11 +1,11 @@
 import axios from "axios";
 import authHeader from "./auth-header";
 
-const API_URL = "http://localhost:4040/api/post/";
+// const API_URL = "http://localhost:4040/api/v1/post/";
 // const API_URL = "https://bill-factor-final.herokuapp.com/api/";
-// const API_URL = "https://billapi.billfactor.xyz/api/";
+const API_URL = "https://api.billfactor.xyz/api/v1/post/";
 
-/////////////
+////////////////////// Create Post \\\\\\\\\\\\\\\\\\\\\\\
 const createPost = (post) => {
   return axios
     .post(API_URL + "create", post, { headers: authHeader() })
@@ -13,21 +13,26 @@ const createPost = (post) => {
       return response.data;
     });
 };
-
 /////////////
-
-const getUserPost = () => {
+////////////////////// Get Specific Houses Post \\\\\\\\\\\\\\\\\\\\\\\
+const getSpecificHousePosts = () => {
   return axios
-    .get(API_URL + "userposts", { headers: authHeader() })
+    .get(API_URL + "specificposts", { headers: authHeader() })
     .then((response) => {
       return response.data;
     });
 };
-/////////////
 
-const updatePost = ({ _id, post }) => {
+/////////////
+////////////////////// Delete Post \\\\\\\\\\\\\\\\\\\\\\\
+const deletePost = (postId) => {
+  return axios.delete(API_URL + `${postId}`, { headers: authHeader() });
+};
+/////////////
+////////////////////// Post  Widget \\\\\\\\\\\\\\\\\\\\\\\
+const postWidget = () => {
   return axios
-    .put(API_URL + _id, post, {
+    .get(API_URL + "postwidget", {
       headers: authHeader(),
     })
     .then((response) => {
@@ -36,35 +41,12 @@ const updatePost = ({ _id, post }) => {
 };
 
 /////////////
-const hidePost = (id) => {
-  return axios.put(API_URL + id, { headers: authHeader() }).then((response) => {
-    return response.data;
-  });
-};
-
-/////////////
-const updateApartment = (updatedData) => {
-  return axios
-    .post(API_URL + "update", updatedData, { headers: authHeader() })
-    .then((response) => {
-      return response.data;
-    });
-};
-/////////////
-
-/////////////
-const removeApartment = (apartmentId) => {
-  return axios.delete(API_URL + `${apartmentId}`, { headers: authHeader() });
-};
-/////////////
 
 const postService = {
   createPost,
-  getUserPost,
-  updatePost,
-  hidePost,
-  updateApartment,
-  removeApartment,
+  getSpecificHousePosts,
+  postWidget,
+  deletePost,
 };
 
 export default postService;

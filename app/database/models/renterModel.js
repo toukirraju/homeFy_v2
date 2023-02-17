@@ -13,9 +13,11 @@ const renterSchema = new Schema(
     apartment: {
       type: mongoose.Types.ObjectId,
       ref: "ApartmentModel",
+      default: null,
     },
     apartmentId: {
       type: String,
+      default: "",
     },
     apartment_number: {
       type: String,
@@ -33,6 +35,13 @@ const renterSchema = new Schema(
     billingDate: {
       type: Date,
     },
+    bills: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "BillModel",
+        default: null,
+      },
+    ],
     username: {
       type: String,
       require: true,

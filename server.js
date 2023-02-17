@@ -27,9 +27,8 @@ app.use("/api/v1/owner", require("./app/routers/Owner.routes"));
 app.use("/api/v1/apartment", require("./app/routers/Apartment.routes"));
 app.use("/api/v1/renter", require("./app/routers/Renter.routes"));
 app.use("/api/v1/bill", require("./app/routers/Bill.routes"));
-
-// app.use("/api/house", require("./app/routers/HouseInfo.routes"));
-app.use("/api/post", require("./app/routers/Post.routes"));
+app.use("/api/v1/dashboard", require("./app/routers/Dashboard.routes"));
+app.use("/api/v1/post", require("./app/routers/Post.routes"));
 
 ///////************************End Points End******************************\\\\\\
 

@@ -1,93 +1,141 @@
 const ApartmentModel = require("../database/models/apartmentModel");
-const HouseInfo = require("../database/models/houseInfoModel");
+const HouseModel = require("../database/models/houseInfoModel");
 const PostModel = require("../database/models/postModel");
 const { serverError, resourceError } = require("../utils/error");
 
+///////////////////////////// post created  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 const createPost = async (req, res) => {
-  const { ownerId, apartmentId } = req.body;
-
+  const { ownerId, defaultHomeID } = req.body;
+  // console.log(req.body);
   try {
-    // const houseInfo = await HouseInfo.findById(ownerId);
-    const post = await PostModel.findById({ _id: apartmentId });
-
-    const apartmentInfo = await ApartmentModel.findOne(
-      { ownerId: ownerId },
-      { allApartments: { $elemMatch: { _id: apartmentId } } }
-    );
-
-    const apartment = apartmentInfo.allApartments[0];
-    //  res.status(200).json(!apartment.isAvailable);
+    const post = await PostModel.findById({ _id: req.body._id });
 
     const newPost = new PostModel({
-      _id: apartmentId,
+      _id: req.body._id,
       ownerId: ownerId,
-      desc: req.body.desc,
+      defaultHomeID,
+      owner: ownerId,
+      house: defaultHomeID,
+      apartment: req.body._id,
+      description: req.body.description,
       isVisible: req.body.isVisible,
-      //   ratings: {
-      //     userId: req.body.userId,
-      //     rating: req.body.rating,
-      //   },
-      //   comments: {
-      //     userId: req.body.userId,
-      //     comment: req.body.comment,
-      //     isVisible: true,
-      //   },
     });
-    if (apartment.isAvailable) {
+    if (req.body.isAvailable || req.body.apartment.isAvailable) {
       if (post) {
         await post.updateOne({ $set: req.body });
-        res.status(200).json({ message: "post is updated successfully" });
+        res.status(200).json({ message: "post  updated " });
       } else {
-        try {
-          await newPost.save();
-          res.status(200).json(newPost);
-        } catch (error) {
-          serverError(res, error);
-        }
+        await newPost.save();
+        res.status(200).json({ message: "post created" });
       }
     } else {
-      return resourceError(res, "Apartment not available");
+      return resourceError(res, "Apartment is not available for post");
     }
   } catch (error) {
     serverError(res, error);
   }
 };
 
-//get user post
-const getUserPost = async (req, res) => {
-  const { _id } = req.user;
+//////////////////////////// get specific house posts  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+const getSpecificHousePosts = async (req, res) => {
+  const { _id, defaultHomeID } = req.user;
 
+  // const ownerId = "63c77d47acfe53798bd6ce6c";
+  // const defaultHomeID = "63c8ef94a26e9c7dd7b0d871";
+  // .sort({ "apartmentDetails.floor": 1 })
   try {
-    const userPosts = await PostModel.find({ ownerId: _id });
+    const Posts = await PostModel.find({
+      ownerId: _id.toString(),
+      defaultHomeID,
+    })
 
-    let posts = [];
+      .populate([
+        {
+          path: "owner",
+          model: "OwnerInfoModel",
+          select: "-password",
+        },
+        {
+          path: "house",
+          model: "HouseInfo",
+        },
+        {
+          path: "apartment",
+          model: "ApartmentModel",
+        },
+      ])
+      .sort({ "apartmentDetails.floor": 1 });
 
-    for (let i = 0; i < userPosts.length; i++) {
-      try {
-        const apartments = await ApartmentModel.findOne(
-          { ownerId: _id },
-          { allApartments: { $elemMatch: { _id: userPosts[i]._id } } }
-        );
-
-        const apartment = apartments.allApartments[0];
-        posts.push({ ...userPosts[i]._doc, ...apartment._doc });
-      } catch (error) {
-        res.status(500).json(error);
-      }
-    }
-    res.status(200).json(posts);
+    res.status(200).json(Posts);
   } catch (error) {
     res.status(500).json(error);
   }
 };
 
-//get post
-const getPost = async (req, res) => {
+/////////////////////////// get post widget data \\\\\\\\\\\\\\\\\\\\\\\\\\\\
+const getPostWidget = async (req, res) => {
+  const { _id, defaultHomeID, role } = req.user;
+
+  // const ownerId = "63c77d47acfe53798bd6ce6c";
+  // const defaultHomeID = "63c8ef94a26e9c7dd7b0d871";
+  // .sort({ "apartmentDetails.floor": 1 })
+  try {
+    const house = await HouseModel.findOne({
+      _id: defaultHomeID,
+      ownerId: role === "owner" ? _id.toString() : req.user.ownerId,
+    });
+    const postInfo = await PostModel.aggregate([
+      {
+        $match: {
+          ownerId: role === "owner" ? _id.toString() : req.user.ownerId,
+          defaultHomeID,
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalPost: { $sum: 1 },
+          activePost: {
+            $sum: {
+              $cond: [{ $eq: ["$isVisible", true] }, 1, 0],
+            },
+          },
+          inactivePost: {
+            $sum: {
+              $cond: [{ $eq: ["$isVisible", false] }, 1, 0],
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          totalPost: 1,
+          activePost: 1,
+          inactivePost: 1,
+        },
+      },
+    ]);
+
+    res.status(200).json({ ...postInfo[0], ...house._doc });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+///////////////////////////  delete post  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+const deletePost = async (req, res) => {
   const id = req.params.id;
+  const { _id } = req.user;
 
   try {
     const post = await PostModel.findById(id);
-    res.status(200).json(post);
+    if (post.ownerId === _id.toString()) {
+      await post.deleteOne();
+      res.status(200).json("Post deleted successfully");
+    } else {
+      res.status(403).json("Action forbidden");
+    }
   } catch (error) {
     res.status(500).json(error);
   }
@@ -112,55 +160,77 @@ const updatePost = async (req, res) => {
   }
 };
 
-//delete post
-const deletePost = async (req, res) => {
-  const id = req.params.id;
-  const { ownerId } = req.body;
-
-  try {
-    const post = await PostModel.findById(id);
-    if (post.ownerId === ownerId) {
-      await post.deleteOne();
-      res.status(200).json("Post deleted successfully");
-    } else {
-      res.status(403).json("Action forbidden");
-    }
-  } catch (error) {
-    res.status(500).json(error);
-  }
-};
-
 //get timeline posts
 
 const getTimelinePosts = async (req, res) => {
-  const ownerId = req.params.id;
-
   try {
-    const currentUserPosts = await PostModel.find({ ownerId: ownerId });
+    const { lastPostId, limit } = req.query;
 
-    const allPosts = await PostModel.find({});
-    //   res.status(200).json(
-    //     currentUserPosts
-    //       .concat(...followingPosts[0].followingPosts)
-    //       .sort((a, b) => {
-    //         return b.updatedAt - a.updatedAt;
-    //       })
-    //   );
+    let query = { isVisible: true, isBlock: false };
+    if (lastPostId) {
+      query._id = { $lt: lastPostId };
+    }
+    const [recentlyUpdatedAt, recentlyCreatedAt] = ["updatedAt", "createdAt"];
+    const posts = await PostModel.find(query)
+      .sort([
+        [recentlyUpdatedAt, -1],
+        [recentlyCreatedAt, -1],
+      ])
+      .limit(parseInt(limit))
+      .populate("owner")
+      .populate("house")
+      .populate("apartment");
 
-    res.status(200).json(
-      allPosts.sort((a, b) => {
-        return b.updatedAt - a.updatedAt;
-      })
-    );
+    const hasMore = posts.length === parseInt(limit);
+
+    const response = {
+      posts,
+      hasMore,
+      lastPostId: hasMore ? posts[posts.length - 1]._id : null,
+    };
+
+    res.json(response);
+    // const { lastPostId } = req.query;
+
+    // const limit = 4; // Set your desired limit here
+
+    // let query = {};
+    // if (lastPostId) {
+    //   query._id = { $lt: lastPostId };
+    // }
+    // console.log(req.params);
+    // const posts = await PostModel.find({ ...query, ...filter })
+    //   .sort({ createdAt: -1 })
+    //   .limit(req.params.limit)
+    //   .populate("owner", "firstName lastName")
+    //   .populate("house", "name")
+    //   .populate("apartment", "name");
+    // res.json(posts);
   } catch (error) {
-    res.status(500).json(error);
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
+//   try {
+//     const currentUserPosts = await PostModel.find({ ownerId: ownerId });
+
+//     const allPosts = await PostModel.find({});
+
+//     res.status(200).json(
+//       allPosts.sort((a, b) => {
+//         return b.updatedAt - a.updatedAt;
+//       })
+//     );
+//   } catch (error) {
+//     res.status(500).json(error);
+//   }
+// };
+
 module.exports = {
   createPost,
-  getUserPost,
-  getPost,
+  getSpecificHousePosts,
+  getPostWidget,
   updatePost,
   deletePost,
   getTimelinePosts,

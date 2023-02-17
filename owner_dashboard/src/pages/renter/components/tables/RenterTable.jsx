@@ -3,12 +3,19 @@ import { AgGridReact } from "ag-grid-react";
 import AssignRenter from "../../../../Components/modals/renterModal/AssignRenter";
 import { useCallback, useRef, useState } from "react";
 import UnAssignRenter from "../../../../Components/modals/renterModal/UnAssignRenter";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import UpdateRenter from "../../modals/UpdateRenter";
 import ConfirmationModal from "../../../../Components/modals/ConfirmationModal";
+import PopUpWindow from "../../modals/PopUpWindow";
+import { clearMessage } from "../../../../redux/slices/message";
+import { getAllQueryrenters } from "../../../../redux/slices/renterSlice";
+import { useEffect } from "react";
+import RenterTableNew from "./RenterTableNew";
 
 const RenterTable = ({ data }) => {
   const gridRef = useRef();
+  const dispatch = useDispatch();
+
   const [isAssignData, setIsAssignData] = useState();
   const [removeData, setRemoveData] = useState();
   const [updateModalOpened, setUpdateModalOpened] = useState(false);
@@ -16,6 +23,9 @@ const RenterTable = ({ data }) => {
   const [confirmationPopUp, setConfirmationPopUp] = useState(false);
   const [assignModalOpened, setAssignModalOpened] = useState(false);
   const [unAssignModalOpened, setUnAssignModalOpened] = useState(false);
+
+  const [popUpModalOpened, setPopUpModalOpened] = useState(false);
+  const [popUpData, setPopUpData] = useState({});
 
   const { user } = useSelector((state) => state.auth.user);
 
@@ -193,6 +203,11 @@ const RenterTable = ({ data }) => {
     },
   ];
 
+  const handlePopUpOn = (rowData) => {
+    setPopUpModalOpened(true);
+    setPopUpData(rowData);
+  };
+
   const sizeToFit = useCallback(() => {
     gridRef.current.api.sizeColumnsToFit();
   }, []);
@@ -203,6 +218,22 @@ const RenterTable = ({ data }) => {
     });
     gridRef.current.columnApi.autoSizeColumns(allColumnIds, skipHeader);
   }, []);
+
+  // useEffect(() => {
+  //   dispatch(
+  //     getAllQueryrenters({
+  //       startRow: 1,
+  //       endRow: 5,
+  //     })
+  //   )
+  //     .then((response) => {
+  //       // params.successCallback(response.rows, response.lastRow);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //       // params.failCallback();
+  //     });
+  // }, []);
   return (
     <>
       <div className={`card ${Style.table_container}`}>
@@ -218,6 +249,7 @@ const RenterTable = ({ data }) => {
             setAssignModalOpened={setAssignModalOpened}
             renterData={data}
             searchPopUp={false}
+            apartmentPopUp={false}
           />
           <button
             className={`removeButton  ${Style.table__btn}`}
@@ -231,6 +263,7 @@ const RenterTable = ({ data }) => {
             renterData={data}
           />
         </div>
+
         <div
           className="ag-theme-alpine"
           style={{ height: "64vh", width: "100%" }}
@@ -240,6 +273,12 @@ const RenterTable = ({ data }) => {
             rowData={data}
             columnDefs={renterColumns}
             defaultColDef={defaultColDef}
+            pagination={true}
+            // paginationPageSize={3}
+            gridOptions={{
+              onRowDoubleClicked: (event) => handlePopUpOn(event.data),
+              suppressCellFocus: true,
+            }}
           />
         </div>
         <div className={Style.table_resize_buttons}>
@@ -275,6 +314,13 @@ const RenterTable = ({ data }) => {
         popUp_type="Remove_Renter"
         isAssignData={isAssignData}
       />
+      {Object.keys(popUpData) != 0 && (
+        <PopUpWindow
+          popUpModalOpened={popUpModalOpened}
+          setPopUpModalOpened={setPopUpModalOpened}
+          data={popUpData}
+        />
+      )}
     </>
   );
 };

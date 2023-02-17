@@ -12,6 +12,7 @@ const {
   deleteRenter,
   findRenter,
   removeRenterFromHome,
+  getQueryRenters,
 } = require("../controllers/RenterController");
 
 //create renter Route
@@ -22,6 +23,8 @@ router.post(
 );
 //get all renter Route
 router.get("/getAll", [authVerify.verifyToken], getAllRenters);
+//get all renter Route
+router.get("/all", [authVerify.verifyToken], getQueryRenters);
 //find renter Route
 router.get("/find/:searchId", [authVerify.verifyToken], findRenter);
 //update renter Route

@@ -1,7 +1,8 @@
 import axios from "axios";
 import authHeader from "./auth-header";
 
-const API_URL = "http://localhost:4040/api/v1/owner";
+// const API_URL = "http://localhost:4040/api/v1/owner";
+const API_URL = "https://api.billfactor.xyz/api/v1/owner";
 
 ////********* Get Personal info ************\\\\
 const getPersonalInfo = () => {
@@ -111,22 +112,6 @@ const removeRole = (formData) => {
       return response.data;
     });
 };
-
-// const getHouseInfo = (formData) => {
-//   return axios
-//     .get(API_URL + `info/${formData._id}`, { headers: authHeader() })
-//     .then((response) => {
-//       return response.data;
-//     });
-// };
-
-// const updateHouseInfo = (formData) => {
-//   return axios
-//     .post(API_URL + "info", formData, { headers: authHeader() })
-//     .then((response) => {
-//       return response.data;
-//     });
-// };
 
 const houseService = {
   getPersonalInfo,

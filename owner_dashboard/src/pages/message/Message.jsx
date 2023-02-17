@@ -1,4 +1,5 @@
 import React from "react";
+import ResizableDiv from "./ResizableDiv";
 
 const Message = () => {
   return (
@@ -9,6 +10,8 @@ const Message = () => {
           <button className="button create__btn">Create</button>
         </div>
       </div>
+
+      <ResizableDiv />
     </>
   );
 };

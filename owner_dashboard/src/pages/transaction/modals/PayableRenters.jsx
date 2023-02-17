@@ -11,6 +11,7 @@ const PayableRenters = ({
   payableModalOpened,
   setPayableModalOpened,
   data,
+  date,
 }) => {
   const dispatch = useDispatch();
   const theme = useMantineTheme();
@@ -23,7 +24,6 @@ const PayableRenters = ({
   const [selectedData, setSelectedData] = useState({
     renter: "",
   });
-
   const handleChange = (e) => {
     setSelectedData({ ...selectedData, [e.target.name]: e.target.value });
   };
@@ -39,7 +39,7 @@ const PayableRenters = ({
         setLoading(false);
         setPayableModalOpened(false);
         setBillModalOpened(true);
-        setRenterData(renter);
+        setRenterData({ ...renter, ...date });
         setTempData(bill.renterTempBill);
       })
       .catch((error) => {

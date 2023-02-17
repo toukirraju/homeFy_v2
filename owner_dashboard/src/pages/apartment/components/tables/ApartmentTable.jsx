@@ -11,7 +11,6 @@ import { setReload } from "../../../../redux/slices/reloadSlice";
 import LoadingSpinner from "../../../../Components/LoadingSpinner";
 import ConfirmationModal from "../../../../Components/modals/ConfirmationModal";
 import UpdateApartment from "../../modals/UpdateApartment";
-import CreatePost from "../../../../Components/modals/postModal/CreatePost";
 import PostShare from "../../../../Components/postComponents/postShare/PostShare";
 import { toast } from "react-toastify";
 import PopUpWindow from "../../modals/PopUpWindow";

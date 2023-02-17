@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 
-const useBillMaker = (setBillModalOpened, temporaryBill, data) => {
+const useBillMaker = (setBillModalOpened, temporaryBill, data, isSMSOn) => {
   const [confirmationPopUp, setConfirmationPopUp] = useState(false);
-
+  const [error, setError] = useState(null);
   // initial form value
   const [formValue, setFormValue] = useState({
     renterId: "",
@@ -20,6 +20,8 @@ const useBillMaker = (setBillModalOpened, temporaryBill, data) => {
     payableAmount: 0,
     paidAmount: "",
     due: 0,
+    month: data.month,
+    year: data.year,
   });
 
   //calculate total amount
@@ -50,27 +52,34 @@ const useBillMaker = (setBillModalOpened, temporaryBill, data) => {
   // form submit function
   const onSubmit = (e) => {
     e.preventDefault();
-    setSubmitedData({
-      ...formValue,
-      renterId: formValue.renterId,
-      renterName: formValue.renterName,
 
-      phone: data.phone,
+    if (formValue.paidAmount === "") {
+      setError("Required!");
+    } else {
+      setSubmitedData({
+        ...formValue,
+        renterId: formValue.renterId,
+        renterName: formValue.renterName,
 
-      electricity_bill: formValue.electricity_bill,
-      others: formValue.others,
-      totalRent: formValue.totalRent,
-      payableAmount: total,
-      paidAmount: formValue.paidAmount,
-      due: newDue > 0 ? newDue : 0,
-    });
-    setConfirmationPopUp(true);
-    setBillModalOpened(false);
+        phone: data.phone,
+
+        electricity_bill: formValue.electricity_bill,
+        others: formValue.others,
+        totalRent: formValue.totalRent,
+        payableAmount: total,
+        paidAmount: formValue.paidAmount,
+        due: newDue > 0 ? newDue : 0,
+        isSMSOn,
+      });
+      setConfirmationPopUp(true);
+      setBillModalOpened(false);
+    }
   };
 
   // form input value change
   const handleChange = (e) => {
     setFormValue({ ...formValue, [e.target.name]: e.target.value });
+    setError(null);
   };
 
   useEffect(() => {
@@ -92,10 +101,13 @@ const useBillMaker = (setBillModalOpened, temporaryBill, data) => {
       payableAmount: total,
       paidAmount: "",
       due: temporaryBill.tempDue ? temporaryBill.tempDue : 0,
+      month: data.month,
+      year: data.year,
     });
   }, [temporaryBill, data]);
 
   return {
+    error,
     total,
     newDue,
     onSubmit,

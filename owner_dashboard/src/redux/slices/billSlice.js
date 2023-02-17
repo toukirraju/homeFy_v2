@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { setMessage } from "./message";
 import billService from "../services/bills.api.service";
 
+/////////////////////// Payable Renters \\\\\\\\\\\\\\\\\\\\\\\\
 export const payableUsers = createAsyncThunk(
   "bill/payableUsers",
   async ({ month, year }, thunkAPI) => {
@@ -21,6 +22,7 @@ export const payableUsers = createAsyncThunk(
   }
 );
 
+/////////////////////// Monthly Bills \\\\\\\\\\\\\\\\\\\\\\\\
 export const monthlyBill = createAsyncThunk(
   "bill/monthly",
   async ({ month, year }, thunkAPI) => {
@@ -40,6 +42,7 @@ export const monthlyBill = createAsyncThunk(
   }
 );
 
+/////////////////////// Get Temporary Bills \\\\\\\\\\\\\\\\\\\\\\\\
 export const temporaryBill = createAsyncThunk(
   "bill/temporary",
   async (args, thunkAPI) => {
@@ -58,7 +61,7 @@ export const temporaryBill = createAsyncThunk(
     }
   }
 );
-
+/////////////////////// Get single Temporary Bill \\\\\\\\\\\\\\\\\\\\\\\\
 export const renterTemporaryBill = createAsyncThunk(
   "bill/renterTemporary",
   async (renterId, thunkAPI) => {
@@ -77,7 +80,7 @@ export const renterTemporaryBill = createAsyncThunk(
     }
   }
 );
-
+/////////////////////// Create Monthly Bills \\\\\\\\\\\\\\\\\\\\\\\\
 export const createBill = createAsyncThunk(
   "bill/create",
   async (billData, thunkAPI) => {
@@ -94,7 +97,7 @@ export const createBill = createAsyncThunk(
     }
   }
 );
-
+/////////////////////// Create Temporary Bill \\\\\\\\\\\\\\\\\\\\\\\\
 export const createTemporaryBill = createAsyncThunk(
   "bill/tempCreate",
   async (tempBillData, thunkAPI) => {
@@ -111,7 +114,7 @@ export const createTemporaryBill = createAsyncThunk(
     }
   }
 );
-
+/////////////////////// Update Temporary Bill \\\\\\\\\\\\\\\\\\\\\\\\
 export const updateTemporaryBill = createAsyncThunk(
   "bill/tempUpdate",
   async (tempBillData, thunkAPI) => {
@@ -128,7 +131,7 @@ export const updateTemporaryBill = createAsyncThunk(
     }
   }
 );
-
+/////////////////////// Remove Bill \\\\\\\\\\\\\\\\\\\\\\\\
 export const removeBill = createAsyncThunk(
   "bill/remove",
   async (id, thunkAPI) => {
@@ -147,7 +150,7 @@ export const removeBill = createAsyncThunk(
     }
   }
 );
-
+/////////////////////// Remove Temporary Bill \\\\\\\\\\\\\\\\\\\\\\\\
 export const removeTemporaryBill = createAsyncThunk(
   "temporaryBill/remove",
   async (id, thunkAPI) => {
@@ -180,6 +183,7 @@ const billSlice = createSlice({
   name: "bill",
   initialState,
   extraReducers: {
+    /////// Payable Renters \\\\\\\\
     [payableUsers.pending]: (state, action) => {
       state.isPending = true;
     },
@@ -192,7 +196,7 @@ const billSlice = createSlice({
       state.isPending = false;
       state.success = false;
     },
-
+    /////// Monthly Bills \\\\\\\\\\
     [monthlyBill.pending]: (state, action) => {
       state.isPending = true;
     },
@@ -205,6 +209,7 @@ const billSlice = createSlice({
       state.isPending = false;
       state.success = false;
     },
+    /////////// Get Temporary Bills \\\\\\\\\
     [temporaryBill.pending]: (state, action) => {
       state.isPending = true;
     },
@@ -217,6 +222,7 @@ const billSlice = createSlice({
       state.isPending = false;
       state.success = false;
     },
+    ////////// Get single Temporary Bill \\\\\\\\\
     [renterTemporaryBill.pending]: (state, action) => {
       state.isPending = true;
     },
@@ -229,6 +235,7 @@ const billSlice = createSlice({
       state.isPending = false;
       state.success = false;
     },
+    //////////// Create Monthly Bills \\\\\\\\\\\\
     [createBill.pending]: (state, action) => {
       state.isPending = true;
     },
@@ -240,7 +247,7 @@ const billSlice = createSlice({
       state.isPending = false;
       state.success = false;
     },
-
+    ///////////// Create Temporary Bill \\\\\\\\\\\\\
     [createTemporaryBill.pending]: (state, action) => {
       state.isPending = true;
     },
@@ -252,7 +259,7 @@ const billSlice = createSlice({
       state.isPending = false;
       state.success = false;
     },
-
+    /////////// Update Temporary Bill \\\\\\\\\\\\\
     [updateTemporaryBill.pending]: (state, action) => {
       state.isPending = true;
     },
@@ -264,7 +271,7 @@ const billSlice = createSlice({
       state.isPending = false;
       state.success = false;
     },
-
+    ///////////// Remove Bill \\\\\\\\\\\\\\\
     [removeBill.pending]: (state, action) => {
       state.isPending = true;
     },
@@ -276,7 +283,7 @@ const billSlice = createSlice({
       state.isPending = false;
       state.success = false;
     },
-
+    ///////////// Remove Temporary Bill \\\\\\\\\\\\
     [removeTemporaryBill.pending]: (state, action) => {
       state.isPending = true;
     },

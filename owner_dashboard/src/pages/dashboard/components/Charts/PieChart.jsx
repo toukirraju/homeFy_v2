@@ -3,20 +3,10 @@ import "chart.js/auto";
 import Style from "../../styles/Dashboard.module.css";
 import { Chart } from "react-chartjs-2";
 import ChartDataLabels from "chartjs-plugin-datalabels";
-import { useDispatch, useSelector } from "react-redux";
 import { useMediaQuery } from "@mantine/hooks";
-// import { getBillWidget } from "../../../redux/slices/dashboardSlice";
 
-const PieChart = () => {
-  const dispatch = useDispatch();
+const PieChart = ({ data }) => {
   const isMobile = useMediaQuery("(max-width: 768px)");
-  // const {  billWidgets,  isReload } =
-  //   useSelector((state) => state.dashboardData);
-  // // console.log(billWidgets);
-
-  // useEffect(() => {
-  //   dispatch(getBillWidget());
-  // }, [isReload, dispatch]);
   return (
     <>
       <div className={`${Style.circular_pie}`}>
@@ -27,12 +17,7 @@ const PieChart = () => {
             datasets: [
               {
                 label: "Dataset 1",
-                data: [
-                  43, 534, 344,
-                  // billWidgets.totalPayable,
-                  // billWidgets.totalPaidBill,
-                  // billWidgets.remainingBill,
-                ],
+                data: [data.payable, data.paid, data.remaining],
                 backgroundColor: [
                   "rgba(255, 99, 132, 0.4)",
                   "rgba(54, 162, 235, 0.4)",
@@ -63,7 +48,7 @@ const PieChart = () => {
                 },
               },
               datalabels: {
-                color: "white",
+                color: "gray",
                 labels: {
                   title: {
                     font: {

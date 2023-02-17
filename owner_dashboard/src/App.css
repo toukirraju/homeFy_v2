@@ -35,6 +35,7 @@
     height: 100vh;
     flex: 1;
     margin: 0 10px 0;
+    /* overflow-x: hidden; */
   }
   .body__wrapper {
     height: 87%;
@@ -203,6 +204,9 @@ button:disabled {
   text-decoration: none;
 }
 
+
+
+
 /* .removeButton {
   display: flex;
   align-items: center;
@@ -228,9 +232,9 @@ button:disabled {
 .warningButton {
   background-image: linear-gradient(
     to right,
-    #ff8008 0%,
-    #ffc837 51%,
-    #ff8008 100%
+    #0cffae 0%,
+    #1ab5fd 51%,
+    #08ffea 100%
   );
   /* margin: 10px;
   padding: 15px 45px; */
@@ -303,11 +307,13 @@ button:disabled {
 .headerContainer {
   display: flex;
   justify-content: space-between;
-  color: gray;
-  margin-top: 18px;
-  padding: 10px;
-  height: 50px;
   align-items: center;
+  color: gray;
+  
+  /* padding: 10px; */
+  height: 50px;
+ margin: 10px 15px;
+ 
 }
 
 
@@ -414,8 +420,8 @@ button:disabled {
 }
 
 /* Dark mode */
-/* 
-@media (prefers-color-scheme: dark) {
+
+/* @media (prefers-color-scheme: dark) {
   .App {
     background-color: black;
     color: #f3f3f3;

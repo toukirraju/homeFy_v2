@@ -3,6 +3,7 @@
 display: flex;
 /* justify-content: space-between; */
 width: 600px;
+position: relative;
 }
 .Profile__image__section{
 display: flex;
@@ -45,12 +46,14 @@ padding: 0 30px;
 }
 
 .edit__button{
+  position: absolute;
   display: flex;
   align-items: center;
-  position: fixed;
+  /* position: fixed; */
   top: 10px;
   right: 10px;
   padding: 5px 10px;
+  z-index: 2007;
 }
 
 
@@ -59,4 +62,17 @@ padding: 0 30px;
     flex-direction: column;
     width: 100%
   }
+  .Profile__image__section{
+    justify-content: center;
+    align-items: center;
+    }
+    .Profile__image__section img{
+      width: 250px;
+      height: 200px;
+    }
+    .profile_image{
+      background: rgb(234, 238, 237);
+      border-radius: 10px;
+      height: 200px;
+    }
 }
