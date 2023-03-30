@@ -1,36 +1,46 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./Posts.css";
 import Post from "../Post/Post";
-import { useDispatch, useSelector } from "react-redux";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { getTimelinePosts, resetPosts } from "../../../redux/slices/postSlice";
 import ActionButton from "../../UI/ActionButtons/ActionButton";
 import { Loader } from "@mantine/core";
 import { UilRedo, UilArrowCircleUp } from "@iconscout/react-unicons";
+import { useDispatch } from "react-redux";
+import {
+  fetchMorePosts,
+  fetchPosts,
+} from "../../../redux/features/posts/postSlice";
 
-const Posts = () => {
+const Posts = ({ posts, totalPosts }) => {
   const dispatch = useDispatch();
-
   const [refreshButton, setrefreshButton] = useState(false);
-
-  const { posts, status, error, hasMore, lastPostId, limit } = useSelector(
-    (state) => state.posts
-  );
-
-  // get some post for first render
-  useEffect(() => {
-    dispatch(getTimelinePosts({ limit, lastPostId }));
-
-    return () => {
-      dispatch(resetPosts());
-    };
-  }, [dispatch]);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(1);
 
   //  after scrolling load more  post
   const loadMorePosts = () => {
-    if (status === "succeeded" && hasMore) {
-      dispatch(getTimelinePosts({ limit, lastPostId }));
+    setPage((prevPage) => prevPage + 1);
+  };
+
+  useEffect(() => {
+    if (page > 1) {
+      dispatch(fetchMorePosts(page));
     }
+  }, [dispatch, page]);
+
+  useEffect(() => {
+    if (totalPosts > 0) {
+      const more =
+        Math.ceil(totalPosts / Number(process.env.REACT_APP_POSTS_PER_PAGE)) >
+        page;
+      setHasMore(more);
+    }
+  }, [totalPosts, page]);
+
+  //refresh post
+  const onRefresh = async () => {
+    setPage(1);
+    await dispatch(fetchPosts());
   };
 
   //set back to top and refresh button
@@ -48,24 +58,6 @@ const Posts = () => {
       .addEventListener("scroll", handleScroll);
   }, []);
 
-  //refresh post
-  const onRefresh = async () => {
-    dispatch(resetPosts());
-    await dispatch(getTimelinePosts({ limit: 4, lastPostId: null }));
-  };
-
-  if (status === "loading" && posts.length === 0) {
-    return (
-      <div style={{ textAlign: "center" }}>
-        <Loader color="cyan" variant="dots" />
-      </div>
-    );
-  }
-
-  if (status === "failed" && posts.length === 0) {
-    return <div>{error}</div>;
-  }
-
   const scrollToTop = () => {
     document.querySelector("#scrollableDiv").scrollTo({
       top: 0,
@@ -76,18 +68,25 @@ const Posts = () => {
   return (
     <div id="scrollableDiv" className="Posts">
       <InfiniteScroll
+        // key={posts.length}
         dataLength={posts.length}
         next={loadMorePosts}
         hasMore={hasMore}
         loader={
           <div style={{ textAlign: "center" }}>
             <Loader color="cyan" />
+            {/* <b>Not more posts available</b> */}
           </div>
         }
         scrollableTarget="scrollableDiv"
         endMessage={
-          <p style={{ textAlign: "center" }}>
-            <b>Yay! You have seen it all</b>
+          <p
+            style={{
+              textAlign: "center",
+              color: "white",
+            }}
+          >
+            <b>Not more posts available</b>
           </p>
         }
         refreshFunction={onRefresh}

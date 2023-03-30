@@ -1,0 +1,30 @@
+.popover-container {
+  /* width: 95%; */
+  position: absolute;
+  z-index: 12;
+  right: 10px;
+}
+.popover__buttons {
+  margin-bottom: 5px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 5px 20px;
+  cursor: pointer;
+}
+.popover__buttons:hover {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+@media screen and (max-width: 768px) {
+  .popover-container {
+    position: absolute;
+
+    position: fixed;
+    bottom: 80px;
+    /* left: 0;
+        right: 0; */
+    top: auto;
+  }
+}

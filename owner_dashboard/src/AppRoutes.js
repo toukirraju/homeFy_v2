@@ -18,6 +18,7 @@ const AppRoutes = ({ user }) => {
   useEffect(() => {
     dispatch(GetProfileInfo());
   }, [success]);
+
   return (
     <>
       <div className="App">

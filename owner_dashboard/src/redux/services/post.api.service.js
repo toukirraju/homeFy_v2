@@ -1,9 +1,8 @@
 import axios from "axios";
 import authHeader from "./auth-header";
 
-// const API_URL = "http://localhost:4040/api/v1/post/";
-// const API_URL = "https://bill-factor-final.herokuapp.com/api/";
-const API_URL = "https://api.billfactor.xyz/api/v1/post/";
+const API_URL = "http://localhost:4040/api/v1/post/";
+// const API_URL = "https://api.billfactor.xyz/api/v1/post/";
 
 ////////////////////// Create Post \\\\\\\\\\\\\\\\\\\\\\\
 const createPost = (post) => {
@@ -42,11 +41,24 @@ const postWidget = () => {
 
 /////////////
 
+const getPostAddress = () => {
+  // console.log(lastPostId);
+  return axios
+    .get(API_URL + `address`, {
+      // params: { limit },
+      headers: authHeader(),
+    })
+    .then((response) => {
+      return response.data;
+    });
+};
+
 const postService = {
   createPost,
   getSpecificHousePosts,
   postWidget,
   deletePost,
+  getPostAddress,
 };
 
 export default postService;

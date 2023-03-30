@@ -47,9 +47,11 @@ const AssignRenter = ({
       >
         <div className={Styles.Modal_header}>
           <h3 className={Styles.Modal_header_title}>Assign Renter</h3>
-          <span className={Styles.Modal_header_subtitle}>
-            * assign the renter to his apartment
-          </span>
+          {fatchApartments?.length === 0 && (
+            <span className={Styles.Modal_header_subtitle}>
+              * Apartment not available
+            </span>
+          )}
         </div>
         <form>
           <div className={Styles.input__container}>

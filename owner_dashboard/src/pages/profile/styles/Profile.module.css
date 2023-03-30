@@ -54,9 +54,9 @@ margin: auto;
 .search_button{
   position: absolute;
   right: 0;
-  height: 35px;
+  height: 39px;
   width: 50px;
-  border: none;
+  /* border: none; */
 }
 
 /*************** right search output start ******************/

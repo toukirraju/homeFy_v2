@@ -1,5 +1,4 @@
 import styles from "./style/Apartment.module.css";
-import ApartmentTable from "./components/tables/ApartmentTable";
 import CreateBulkApartment from "./modals/CreateBulkApartment";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,6 +8,8 @@ import AlertPoPUP from "../../Components/AlertPoPUP";
 import { clearMessage } from "../../redux/slices/message";
 import ApartmentTableNew from "./components/tables/ApartmentTableNew";
 import { Loader } from "@mantine/core";
+import DefaultHouseGuideline from "../../Components/UI/guidlines/DefaultHouseGuideline";
+import CreateApartmentGuideline from "../../Components/UI/guidlines/CreateApartmentGuideline";
 
 const Apartment = () => {
   const dispatch = useDispatch();
@@ -16,9 +17,11 @@ const Apartment = () => {
 
   const { isReload } = useSelector((state) => state.reload);
   const { message } = useSelector((state) => state.message);
-  const { apartmentData } = useSelector((state) => state.apartmentInfo);
+  const { apartmentData, loading } = useSelector(
+    (state) => state.apartmentInfo
+  );
   const { profileData } = useSelector((state) => state.owner);
-  // console.log(profileData.role);
+
   useEffect(() => {
     const fetchApartmentInfo = async () => {
       await dispatch(allApartments())
@@ -27,6 +30,27 @@ const Apartment = () => {
     };
     fetchApartmentInfo();
   }, [isReload]);
+
+  let content = null;
+
+  if (loading)
+    content = (
+      <div className="loading__screen">
+        <Loader color="cyan" variant="bars" />
+      </div>
+    );
+
+  if (apartmentData?.length === 0) {
+    content = <CreateApartmentGuideline />;
+  }
+
+  if (profileData.defaultHomeID === "") {
+    content = <DefaultHouseGuideline />;
+  }
+
+  if (apartmentData?.length > 0) {
+    content = <ApartmentTableNew data={apartmentData} />;
+  }
   return (
     <>
       {message && <AlertPoPUP message={message} />}
@@ -35,6 +59,7 @@ const Apartment = () => {
         {profileData.role === "owner" && (
           <div className="bulkCreate">
             <button
+              disabled={profileData.defaultHomeID === ""}
               className={`button ${styles.create__btn}`}
               onClick={() => setModalOpened(true)}
             >
@@ -50,14 +75,14 @@ const Apartment = () => {
 
       <div>
         <Fragment key={uuidv4()}>
-          {/* <ApartmentTable data={apartmentData} /> */}
-          {apartmentData.length !== 0 ? (
+          {/* {apartmentData.length !== 0 ? (
             <ApartmentTableNew data={apartmentData} />
           ) : (
             <div className="loading__screen">
               <Loader color="cyan" variant="bars" />
             </div>
-          )}
+          )} */}
+          {content}
         </Fragment>
       </div>
     </>

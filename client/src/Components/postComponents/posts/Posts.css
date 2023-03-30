@@ -1,11 +1,14 @@
 .Posts {
-  /* display: flex;
-  flex-direction: column;
-  gap: 1rem; */
-        height: calc(100vh - 20px);
+        height: calc(100vh - 10px);
         overflow-y: scroll;
-        /* display: flex;
-        flex-direction: column;
-        gap: 1rem; */
-        
+        border-radius: 10px;
+}
+
+
+@media screen and (max-width: 768px) {
+  .Posts {
+    height: calc(100vh - 253px);
+    
+    
+}
 }

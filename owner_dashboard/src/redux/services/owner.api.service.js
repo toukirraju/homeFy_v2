@@ -1,8 +1,8 @@
 import axios from "axios";
 import authHeader from "./auth-header";
 
-// const API_URL = "http://localhost:4040/api/v1/owner";
-const API_URL = "https://api.billfactor.xyz/api/v1/owner";
+const API_URL = "http://localhost:4040/api/v1/owner";
+// const API_URL = "https://api.billfactor.xyz/api/v1/owner";
 
 ////********* Get Personal info ************\\\\
 const getPersonalInfo = () => {

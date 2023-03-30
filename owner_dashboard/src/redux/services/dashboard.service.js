@@ -1,9 +1,8 @@
 import axios from "axios";
 import authHeader from "./auth-header";
 
-// const API_URL = "http://localhost:4040/api/v1/dashboard/";
-// const API_URL = "https://bill-factor-final.herokuapp.com/api/common/dashboard/";
-const API_URL = "https://api.billfactor.xyz/api/v1/dashboard/";
+const API_URL = "http://localhost:4040/api/v1/dashboard/";
+// const API_URL = "https://api.billfactor.xyz/api/v1/dashboard/";
 
 ///////////////////////////////////////////////////////// Dashboard ///////////////////////////////////////////////
 

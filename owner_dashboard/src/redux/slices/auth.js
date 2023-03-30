@@ -8,7 +8,7 @@ export const register = createAsyncThunk(
     try {
       const data = await AuthService.register(formData);
       // thunkAPI.dispatch(setMessage(data.message));
-      return { user: data };
+      // return { user: data };
     } catch (error) {
       const message =
         (error.response && error.response.data.message) ||
@@ -88,7 +88,7 @@ const authSlice = createSlice({
     [register.fulfilled]: (state, action) => {
       state.isLoggedIn = false;
       state.isPending = false;
-      state.user = action.payload.user;
+      // state.user = action.payload.user;
     },
     [register.rejected]: (state, action) => {
       state.isLoggedIn = false;

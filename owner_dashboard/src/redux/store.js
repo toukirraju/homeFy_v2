@@ -9,6 +9,7 @@ import billReducer from "./slices/billSlice";
 import dashboardReducer from "./slices/dashboardSlice";
 import reloadReducer from "./slices/reloadSlice";
 import postReducer from "./slices/postSlice";
+import mapReducer from "./features/map/mapSlice";
 
 export default configureStore({
   reducer: {
@@ -22,6 +23,7 @@ export default configureStore({
     billInfo: billReducer,
     dashboardData: dashboardReducer,
     reload: reloadReducer,
+    map: mapReducer,
   },
   // devTools: false,
 });

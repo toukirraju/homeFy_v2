@@ -13,6 +13,9 @@ const {
   findRenter,
   removeRenterFromHome,
   getQueryRenters,
+  PersonalProfile,
+  TemporaryBill,
+  updateProfile,
 } = require("../controllers/RenterController");
 
 //create renter Route
@@ -23,6 +26,15 @@ router.post(
 );
 //get all renter Route
 router.get("/getAll", [authVerify.verifyToken], getAllRenters);
+
+//get renter personal profile Route
+router.get("/profile", [authVerify.verifyToken], PersonalProfile);
+//get renter personal profile Route
+router.patch("/profile/:id", [authVerify.verifyToken], updateProfile);
+
+//get renter personal profile Route
+router.get("/temp-bill", [authVerify.verifyToken], TemporaryBill);
+
 //get all renter Route
 router.get("/all", [authVerify.verifyToken], getQueryRenters);
 //find renter Route

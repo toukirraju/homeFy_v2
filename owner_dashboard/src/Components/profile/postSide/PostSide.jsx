@@ -8,6 +8,7 @@ import "./PostSide.css";
 const PostSide = () => {
   const dispatch = useDispatch();
   const { specificPosts } = useSelector((state) => state.posts);
+
   useEffect(() => {
     dispatch(getSpecificHousePosts());
   }, [dispatch]);

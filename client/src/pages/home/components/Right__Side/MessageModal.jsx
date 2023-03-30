@@ -1,14 +1,7 @@
 import RightStyle from "../../../../Styles/Right__side.module.css";
 
 const MessageModal = () => {
-  return (
-    <div
-      style={{ display: "flex" }}
-      className={`card ${RightStyle.message__container}`}
-    >
-      massage
-    </div>
-  );
+  return <div className={`card ${RightStyle.message__container}`}>message</div>;
 };
 
 export default MessageModal;

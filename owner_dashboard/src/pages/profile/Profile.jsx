@@ -23,8 +23,8 @@ import { getPostWidget } from "../../redux/slices/postSlice";
 const Profile = () => {
   const dispatch = useDispatch();
   const { profileData, houses, managers } = useSelector((state) => state.owner);
-  // console.log(profileData.role);
-  const { widgetData } = useSelector((state) => state.posts);
+  // console.log(houses);
+  const { widgetData, specificPosts } = useSelector((state) => state.posts);
   const { message } = useSelector((state) => state.message);
   const [modalOpened, setModalOpened] = useState(false);
   // console.log(profileData);
@@ -32,11 +32,11 @@ const Profile = () => {
     if (profileData.role === "owner") {
       dispatch(GetHouses());
       dispatch(GetManagers());
-      // dispatch(getPostWidget());
     }
-    dispatch(getPostWidget());
-  }, []);
-
+    if (houses?.length !== 0 && specificPosts?.length !== 0) {
+      dispatch(getPostWidget());
+    }
+  }, [dispatch, profileData, houses]);
   return (
     <>
       {/* <AlertPoPUP /> */}
@@ -103,15 +103,25 @@ const Profile = () => {
                   modalOpened={modalOpened}
                   setModalOpened={setModalOpened}
                 />
-                <div className={Style.house_info_wrapper}>
-                  {houses.map((house, index) => (
-                    <div key={index}>
-                      <HomeInfoCard data={house} />
-                    </div>
-                  ))}
 
-                  {/* <HomeInfoCard />
-              <HomeInfoCard /> */}
+                <div className={Style.house_info_wrapper}>
+                  {houses?.length !== 0 ? (
+                    houses?.map((house, index) => (
+                      <div key={index}>
+                        <HomeInfoCard data={house} />
+                      </div>
+                    ))
+                  ) : (
+                    <h3
+                      style={{
+                        padding: "20px",
+                        textAlign: "center",
+                        color: "gray",
+                      }}
+                    >
+                      House not found
+                    </h3>
+                  )}
                 </div>
               </Tabs.Panel>
 

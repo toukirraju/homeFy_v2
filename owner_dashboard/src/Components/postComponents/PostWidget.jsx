@@ -7,14 +7,14 @@ import {
 } from "@iconscout/react-unicons";
 
 const PostWidget = ({ data }) => {
+  console.log(data?.address?.address_display_name);
   return (
     <div>
       <div className={`card ${Styles.Post__widget__wrapper}`}>
         <div className={`card ${Styles.Post__widget__header}`}>
           <h3 className={`${Styles.header__title}`}>{data.houseName}</h3>
           <span className={`${Styles.header__subtitle}`}>
-            <UilMapMarker />{" "}
-            {`${data.houseNo}, ${data.area},${data.city},${data.postCode}`}
+            <UilMapMarker /> {data?.address?.address_display_name}
           </span>
           <div className={`${Styles.owner__container__body}`}>
             <div className={`${Styles.owner_content}`}>
@@ -46,13 +46,6 @@ const PostWidget = ({ data }) => {
               <span>{data.inactivePost}</span>
             </div>
           </div>
-          {/* <div className={`card ${Styles.Post__dropdown}`}>
-            <select name="posts" id="">
-              <option value="">Posts</option>
-              <option value="">Post 1</option>
-              <option value="">Post 2</option>
-            </select>
-          </div> */}
         </div>
       </div>
     </div>

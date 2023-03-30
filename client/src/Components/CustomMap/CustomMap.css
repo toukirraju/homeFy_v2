@@ -1,0 +1,109 @@
+.customMap__wrapper {
+  position: relative;
+
+  /* width: 100%; */
+  z-index: 1;
+  height: 455px;
+}
+/* leaflet inner css start  */
+.leaflet-container {
+  position: unset;
+  height: 100%;
+  border-radius: 10px;
+}
+
+.leaflet-top {
+  top: unset;
+  bottom: 25px;
+}
+/* leaflet inner css end  */
+
+/* user location button start  */
+.current__location {
+  position: absolute;
+  bottom: 25px;
+  right: 10px;
+  z-index: 665;
+}
+/* user location button start  */
+
+/* map search input start  */
+.search-box {
+  position: absolute;
+  /* left: 35%; */
+  /* padding: 7px 5px; */
+  /* margin: 5px 0; */
+  width: inherit 100%;
+  background: rgba(251, 252, 252, 0.9);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  -webkit-box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  -moz-box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  display: flex;
+
+  z-index: 665;
+  /* padding: 5px; */
+}
+
+.search-box form {
+  background: rgb(240, 238, 238);
+  width: 75%;
+  display: flex;
+  border-radius: 10px;
+  margin: auto;
+}
+
+.search-box span {
+  color: red;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.search-box input {
+  padding: 5px 10px;
+  font-weight: bold;
+}
+
+/* map search input end  */
+
+/* map search output start  */
+.search__results {
+  position: absolute;
+  top: 35px;
+  width: 100%;
+  z-index: 665;
+  padding: 5px 0;
+}
+.search__list {
+  list-style-type: none;
+  padding: 0 25px;
+  border-radius: 10px;
+  background: #ffffff;
+  border-radius: 10px;
+}
+.search__list li {
+  border-bottom: 1px solid rgb(175, 163, 163);
+}
+.search__list li:hover {
+  color: #000;
+  font-weight: bolder;
+}
+/* map search output end  */
+
+@media screen and (max-width: 768px) {
+  .map {
+    z-index: 1;
+  }
+}
+
+/* Dark mode */
+
+@media (prefers-color-scheme: dark) {
+  .search-box {
+    background-color: rgb(119, 136, 145);
+  }
+
+  .search__list {
+    background-color: rgb(188, 197, 202);
+  }
+}

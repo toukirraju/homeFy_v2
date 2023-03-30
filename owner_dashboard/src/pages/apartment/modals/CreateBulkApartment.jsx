@@ -91,7 +91,9 @@ const CreateBulkApartment = ({ modalOpened, setModalOpened }) => {
               </div>
               <div className={Styles.input__container}>
                 <label htmlFor="numOfFloors" className={Styles.input__label}>
-                  Number of Floor
+                  {apartmentData.length === 0
+                    ? "Enter Number of Floor's"
+                    : "Enter floor number"}
                 </label>
                 <Field
                   name="numOfFloors"

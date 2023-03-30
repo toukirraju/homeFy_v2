@@ -100,7 +100,7 @@ function ProfileUpdateModal({ modalOpened, setModalOpened, data }) {
                 ) : null}
               </div>
 
-              <div className={Styles.input__container}>
+              {/* <div className={Styles.input__container}>
                 <label htmlFor="address" className={Styles.input__label}>
                   Address
                 </label>
@@ -137,7 +137,7 @@ function ProfileUpdateModal({ modalOpened, setModalOpened, data }) {
                     <div className={Styles.input__error}>{errors.postCode}</div>
                   ) : null}
                 </div>
-              </div>
+              </div> */}
               <div className={Styles.input__container}>
                 <label htmlFor="nid" className={Styles.input__label}>
                   National id number

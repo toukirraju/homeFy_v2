@@ -105,7 +105,7 @@ z-index: 99999999;
 
 input,
 select {
-  border: none;
+  /* border: none; */
   outline: none;
   background-color: var(--inputColor);
   border-radius: 8px;

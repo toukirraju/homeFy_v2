@@ -129,6 +129,7 @@ export const removeRenter = createAsyncThunk(
 const initialState = {
   isSuccess: false,
   isPending: false,
+  loading: false,
   renters: [],
   searchData: null,
 };
@@ -166,14 +167,17 @@ const renterSlice = createSlice({
     //////////////////////////////////////////     All Renter      //////////////////////////////////////////
     [getAllrenters.pending]: (state, action) => {
       state.isPending = true;
+      state.loading = true;
     },
     [getAllrenters.fulfilled]: (state, action) => {
       state.isSuccess = true;
       state.isPending = false;
+      state.loading = false;
       state.renters = action.payload.renters;
     },
     [getAllrenters.rejected]: (state, action) => {
       state.isSuccess = false;
+      state.loading = false;
       state.isPending = false;
     },
     //////////////////////////////////////////     Query Renter      //////////////////////////////////////////

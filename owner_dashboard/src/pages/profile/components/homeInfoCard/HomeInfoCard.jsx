@@ -17,7 +17,7 @@ const HomeInfoCard = ({ data }) => {
   const [modalOpened, setModalOpened] = useState(false);
   const [defaultPopUpModalOpened, setDefaultPopUpModalOpened] = useState(false);
   const [isVerified, setisVerified] = useState(true);
-  const [isDefault, setisDefault] = useState(false);
+  // console.log(data?.address);
   return (
     <div className="card ProfileCard_wrapper">
       <div className="Profile__image__section">
@@ -76,19 +76,19 @@ const HomeInfoCard = ({ data }) => {
         </div>
         <div>
           <span>Address:</span>
-          {data.address}
+          {data?.address?.address_display_name}
         </div>
         <div>
-          <span>Area:</span>
-          {data.area}
+          <span>Division:</span>
+          {data?.address?.state}
         </div>
         <div>
-          <span>City/Town:</span>
-          {data.city}
+          <span>District:</span>
+          {data?.address?.state_district}
         </div>
         <div>
           <span>Postcode:</span>
-          {data.postCode}
+          {data?.address?.postCode ? data?.address?.postCode : ""}
         </div>
 
         <div>

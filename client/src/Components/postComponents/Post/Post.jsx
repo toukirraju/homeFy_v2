@@ -147,8 +147,7 @@ const Post = ({ data }) => {
           <div className="Post__innerCard__container">
             <h2 className="innerCard__title">{data.house.houseName}</h2>
             <h4 className="innerCard__subtitle">
-              <UilMapMarker />{" "}
-              {`${data.house.houseNo}, ${data.house.area}, ${data.house.city}, ${data.house.postCode}`}
+              <UilMapMarker /> {data?.address?.address_display_name}
             </h4>
             <div className="owner__container__body">
               <div className="owner_content">
@@ -171,12 +170,14 @@ const Post = ({ data }) => {
       {/*************************  Button section start *************************/}
       <div className="postReact">
         <div>
-          <img
-            src={Call}
-            alt=""
-            style={{ height: "30px", cursor: "pointer" }}
-            // onClick={handleLike}
-          />
+          <a href={`tel:+88${data?.house?.ownerPhone}`}>
+            <img
+              src={Call}
+              alt=""
+              style={{ height: "30px", cursor: "pointer" }}
+              // onClick={handleLike}
+            />
+          </a>
           <span
             style={{
               color: "var(--gray)",

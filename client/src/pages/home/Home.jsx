@@ -2,34 +2,75 @@ import HomeStyle from "./styles/Home.module.css";
 import RightNavBar from "../../Components/navigationBar/RightNavBar";
 import PostSearchBar from "./components/Left__Side/PostSearchBar";
 import ProfileCard from "../profile/components/profileCard/ProfileCard";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import LeftTitleHeader from "../../Components/leftSide/LeftTitleHeader";
 import { useMediaQuery } from "@mantine/hooks";
 import Posts from "../../Components/postComponents/posts/Posts";
+import CustomMap from "../../Components/UI/CustomMap/CustomMap";
+import { useEffect } from "react";
+import { fetchPosts } from "../../redux/features/posts/postSlice";
+import useAuth from "../../hooks/useAuth";
+import PostLoader from "../../Components/loader/PostLoader";
 const Home = () => {
   const isMobile = useMediaQuery("(max-width: 768px)");
-  const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const isLoggedIn = useAuth();
+  const { postResponse, isLoading, isError } = useSelector(
+    (state) => state.post
+  );
 
+  useEffect(() => {
+    dispatch(fetchPosts());
+  }, []);
+
+  let content = null;
+  if (isLoading && !isError) {
+    content = (
+      <>
+        <PostLoader />
+        <PostLoader />
+        <PostLoader />
+        <PostLoader />
+      </>
+    );
+  }
+  if (!isLoading && isError) {
+    content = <h4>Somthing want wrong!</h4>;
+  }
+
+  if (!isLoading && !isError && postResponse?.posts?.length === 0) {
+    content = <h3>Post not found</h3>;
+  }
+  if (!isLoading && !isError && postResponse?.posts?.length > 0) {
+    content = (
+      <Posts
+        posts={postResponse?.posts}
+        totalPosts={postResponse?.totalPosts}
+      />
+    );
+  }
   return (
     <>
-      <div className={`noselect ${HomeStyle.homeWrapper}`}>
+      <div className={` ${HomeStyle.homeWrapper}`}>
         <div className={HomeStyle.leftSide__wrapper}>
-          {/* header */}
+          {/* left header */}
           <LeftTitleHeader />
-          {/* search component */}
+          {/*post search component */}
           <div className={`${HomeStyle.leftSide__container}`}>
             <PostSearchBar />
           </div>
+          {/* Map  */}
+          {!isMobile && <CustomMap />}
         </div>
         <div className={HomeStyle.postSide__wrapper}>
           {/* Post Side */}
-
-          <Posts />
+          {content}
         </div>
         <div className={HomeStyle.rightSide__wrapper}>
           {/* right side */}
           <RightNavBar />
-          {!isMobile && user && <ProfileCard />}
+          {/* right profile card */}
+          {!isMobile && isLoggedIn && <ProfileCard />}
         </div>
       </div>
     </>

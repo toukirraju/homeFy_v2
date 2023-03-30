@@ -6,9 +6,16 @@ const renterSchema = new Schema(
     // those fields are used when user was assigned on apartment  \\//
     ownerId: {
       type: String,
+      default: null,
     },
     defaultHomeID: {
       type: String,
+      default: null,
+    },
+    house: {
+      type: mongoose.Types.ObjectId,
+      ref: "HouseInfo",
+      default: null,
     },
     apartment: {
       type: mongoose.Types.ObjectId,
@@ -50,33 +57,28 @@ const renterSchema = new Schema(
       type: String,
       require: true,
     },
-    firstname: {
+    fullname: {
       type: String,
     },
-    lastname: {
-      type: String,
-    },
+
     phone: {
       type: String,
       require: true,
     },
-    address: {
+    permanent_address: {
       type: String,
       // require: true,
     },
-    city: {
+    street_no: {
       type: String,
       // require: true,
     },
-    area: {
+
+    postcode: {
       type: String,
       // require: true,
     },
-    postCode: {
-      type: String,
-      // require: true,
-    },
-    National_ID_Passport_no: {
+    NID_no: {
       type: String,
     },
 

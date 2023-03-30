@@ -1,7 +1,9 @@
 const ApartmentModel = require("../database/models/apartmentModel");
 const HouseModel = require("../database/models/houseInfoModel");
 const PostModel = require("../database/models/postModel");
+const AddressModel = require("../database/models/addressModel");
 const { serverError, resourceError } = require("../utils/error");
+const { default: mongoose } = require("mongoose");
 
 ///////////////////////////// post created  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 const createPost = async (req, res) => {
@@ -83,7 +85,12 @@ const getPostWidget = async (req, res) => {
     const house = await HouseModel.findOne({
       _id: defaultHomeID,
       ownerId: role === "owner" ? _id.toString() : req.user.ownerId,
-    });
+    }).populate([
+      {
+        path: "address",
+        model: "AdressModel",
+      },
+    ]);
     const postInfo = await PostModel.aggregate([
       {
         $match: {
@@ -141,6 +148,142 @@ const deletePost = async (req, res) => {
   }
 };
 
+//get timeline posts
+
+const getTimelinePosts = async (req, res) => {
+  try {
+    const { budget, rooms, homeId, _page = 1, limit } = req.query;
+
+    const filter = {
+      isVisible: true,
+      isBlock: false,
+    };
+
+    //filtering with budget & rooms
+    const filtering = {};
+
+    if (!isNaN(rooms) && !isNaN(budget)) {
+      filtering["$and"] = [
+        {
+          "apartment.billDetails.totalRent": {
+            $lte: parseInt(budget),
+          },
+        },
+        {
+          "apartment.apartmentDetails.number_of_bed_room": {
+            $lte: parseInt(rooms),
+          },
+        },
+      ];
+    } else if (budget != null && !isNaN(budget)) {
+      filtering["apartment.billDetails.totalRent"] = {
+        $lte: parseInt(budget),
+      };
+    } else if (rooms != null && !isNaN(rooms)) {
+      filtering["apartment.apartmentDetails.number_of_bed_room"] = {
+        $lte: parseInt(rooms),
+      };
+    } else if (homeId != null && isNaN(homeId)) {
+      filtering["house._id"] = {
+        $eq: mongoose.Types.ObjectId(homeId),
+      };
+    }
+
+    let setLimit;
+    if (limit && limit !== "" && limit !== undefined) {
+      setLimit = limit;
+    }
+    const pipeline = [
+      {
+        $match: filter,
+      },
+      {
+        $lookup: {
+          from: "ownerinfomodels",
+          localField: "owner",
+          foreignField: "_id",
+          as: "owner",
+        },
+      },
+      {
+        $unwind: "$owner",
+      },
+      {
+        $lookup: {
+          from: "houseinfos",
+          localField: "house",
+          foreignField: "_id",
+          as: "house",
+        },
+      },
+      {
+        $unwind: "$house",
+      },
+
+      {
+        $lookup: {
+          from: "adressmodels",
+          localField: "house.address",
+          foreignField: "_id",
+          as: "address",
+        },
+      },
+      {
+        $unwind: "$address",
+      },
+
+      {
+        $lookup: {
+          from: "apartmentmodels",
+          localField: "apartment",
+          foreignField: "_id",
+          as: "apartment",
+        },
+      },
+      {
+        $unwind: "$apartment",
+      },
+
+      // filter post
+      {
+        $match: filtering,
+      },
+
+      {
+        $sort: {
+          updatedAt: -1,
+          createdAt: -1,
+        },
+      },
+      {
+        $skip: parseInt(_page - 1) * parseInt(setLimit),
+      },
+      setLimit
+        ? { $limit: parseInt(setLimit) }
+        : {
+            $match: {},
+          },
+    ];
+    const totalPosts = await PostModel.countDocuments(filter);
+    const posts = await PostModel.aggregate(pipeline);
+
+    const hasMore = posts.length === parseInt(limit);
+
+    const response = {
+      posts,
+      totalPosts,
+      // hasMore,
+      // lastPostId: hasMore ? posts[posts.length - 1]._id : null,
+    };
+
+    // console.log(setLimit);
+    res.json(response);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 // Update a post
 
 const updatePost = async (req, res) => {
@@ -160,77 +303,11 @@ const updatePost = async (req, res) => {
   }
 };
 
-//get timeline posts
-
-const getTimelinePosts = async (req, res) => {
-  try {
-    const { lastPostId, limit } = req.query;
-
-    let query = { isVisible: true, isBlock: false };
-    if (lastPostId) {
-      query._id = { $lt: lastPostId };
-    }
-    const [recentlyUpdatedAt, recentlyCreatedAt] = ["updatedAt", "createdAt"];
-    const posts = await PostModel.find(query)
-      .sort([
-        [recentlyUpdatedAt, -1],
-        [recentlyCreatedAt, -1],
-      ])
-      .limit(parseInt(limit))
-      .populate("owner")
-      .populate("house")
-      .populate("apartment");
-
-    const hasMore = posts.length === parseInt(limit);
-
-    const response = {
-      posts,
-      hasMore,
-      lastPostId: hasMore ? posts[posts.length - 1]._id : null,
-    };
-
-    res.json(response);
-    // const { lastPostId } = req.query;
-
-    // const limit = 4; // Set your desired limit here
-
-    // let query = {};
-    // if (lastPostId) {
-    //   query._id = { $lt: lastPostId };
-    // }
-    // console.log(req.params);
-    // const posts = await PostModel.find({ ...query, ...filter })
-    //   .sort({ createdAt: -1 })
-    //   .limit(req.params.limit)
-    //   .populate("owner", "firstName lastName")
-    //   .populate("house", "name")
-    //   .populate("apartment", "name");
-    // res.json(posts);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-//   try {
-//     const currentUserPosts = await PostModel.find({ ownerId: ownerId });
-
-//     const allPosts = await PostModel.find({});
-
-//     res.status(200).json(
-//       allPosts.sort((a, b) => {
-//         return b.updatedAt - a.updatedAt;
-//       })
-//     );
-//   } catch (error) {
-//     res.status(500).json(error);
-//   }
-// };
-
 module.exports = {
   createPost,
   getSpecificHousePosts,
   getPostWidget,
+
   updatePost,
   deletePost,
   getTimelinePosts,

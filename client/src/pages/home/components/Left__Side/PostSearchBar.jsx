@@ -9,28 +9,43 @@ import {
   UilSchedule,
 } from "@iconscout/react-unicons";
 
-import AddressDropdown from "../../../../Components/AddressDropDown";
-import DatePicker from "react-datepicker";
+import CustomMap from "../../../../Components/UI/CustomMap/CustomMap";
+import { useMediaQuery } from "@mantine/hooks";
+import { useDispatch } from "react-redux";
+import { fetchFilteredPosts } from "../../../../redux/features/posts/postSlice";
 const PostSearchBar = () => {
+  const isMobile = useMediaQuery("(max-width: 768px)");
+  const dispatch = useDispatch();
+
   const [isMapOn, setIsMapOn] = useState(false);
   const [budgetOpened, setBudgetOpened] = useState(false);
   const [roomOpened, setRoomOpened] = useState(false);
-  const [scheduleopened, setScheduleOpened] = useState(false);
 
   const [state, setState] = useState({
-    room: 0,
-    budget: 0,
-    location: {},
-    date: new Date(),
+    room: "",
+    budget: "",
   });
-  const getAddressData = (data) => {
-    setState({ ...state, location: data });
+
+  const handleSubmit = () => {
+    dispatch(
+      fetchFilteredPosts({
+        budget: state.budget,
+        rooms: state.room,
+      })
+    );
+    reset();
   };
-  console.log(state);
+  const reset = () => {
+    setState({
+      room: "",
+      budget: "",
+    });
+  };
   return (
     <>
       <div className={`card ${LeftStyle.search__wrapper}`}>
         <div className={LeftStyle.Search_container}>
+          {/* search output */}
           <div className={LeftStyle.Search_content}>
             <div className={LeftStyle.upper__content}>
               <div>
@@ -48,7 +63,7 @@ const PostSearchBar = () => {
               </div>
             </div>
 
-            <div className={LeftStyle.bottom__content}>
+            {/* <div className={LeftStyle.bottom__content}>
               <div>
                 <span>
                   <UilLocationPoint color="var(--location)" />{" "}
@@ -73,17 +88,33 @@ const PostSearchBar = () => {
                 <span>
                   <UilSchedule color="var(--shedule)" />
                 </span>{" "}
-                <span>{new Date(state.date).getMonth() + 1}</span>
+                <span>{new Date(state.date).toLocaleDateString()}</span>
               </div>
-            </div>
+            </div> */}
           </div>
 
-          <div className={LeftStyle.s__icon}>
+          <div
+            className={LeftStyle.s__icon}
+            style={{
+              backgroundImage:
+                "linear-gradient(to right,#02aab0 0%,#00cdac 51%, #02aab0 100%)",
+            }}
+            onClick={handleSubmit}
+            type="submit"
+          >
             <UilSearch />
           </div>
         </div>
+
+        {/* Popover options */}
         <div className={LeftStyle.postOptions}>
-          <Popover opened={budgetOpened} onChange={setBudgetOpened} width={300}>
+          {/* Budget slider  */}
+          <Popover
+            opened={budgetOpened}
+            onChange={setBudgetOpened}
+            withArrow
+            width={300}
+          >
             <Popover.Target>
               <div
                 className={LeftStyle.option}
@@ -123,6 +154,7 @@ const PostSearchBar = () => {
             </Popover.Dropdown>
           </Popover>
 
+          {/* Room slider  */}
           <Popover
             opened={roomOpened}
             onChange={setRoomOpened}
@@ -140,7 +172,7 @@ const PostSearchBar = () => {
               </div>
             </Popover.Target>
 
-            <Popover.Dropdown zIndex={99999}>
+            <Popover.Dropdown>
               <Slider
                 thumbChildren={<UilBedDouble size={16} />}
                 color="violet"
@@ -152,9 +184,6 @@ const PostSearchBar = () => {
                   { value: 8, label: "8" },
                   { value: 10, label: "10" },
                 ]}
-                // value={room}
-                // onChange={setRoom}
-                // onChangeEnd={setEndRoom}
                 value={state.room}
                 onChange={(value) => setState({ ...state, room: value })}
                 max={10}
@@ -166,42 +195,28 @@ const PostSearchBar = () => {
               />
             </Popover.Dropdown>
           </Popover>
+          {/* Location Picker  */}
+          {isMobile && (
+            <Popover withArrow opened={isMapOn} onChange={setIsMapOn}>
+              <Popover.Target>
+                <div
+                  className={LeftStyle.option}
+                  style={{ color: "var(--location)" }}
+                  onClick={() => setIsMapOn((prev) => !prev)}
+                >
+                  <UilLocationPoint />
+                  Location
+                </div>
+              </Popover.Target>
 
-          <Popover opened={isMapOn} onChange={setIsMapOn}>
-            <Popover.Target>
-              <div
-                className={LeftStyle.option}
-                style={{ color: "var(--location)" }}
-                onClick={() => setIsMapOn((prev) => !prev)}
-              >
-                <UilLocationPoint />
-                Location
-              </div>
-            </Popover.Target>
-
-            <Popover.Dropdown>
-              <div>
-                <AddressDropdown getAddressData={getAddressData} />
-              </div>
-            </Popover.Dropdown>
-          </Popover>
-
-          {/* <Popover opened={scheduleopened} onChange={setScheduleOpened}>
-            <Popover.Target></Popover.Target>
-
-            <Popover.Dropdown></Popover.Dropdown>
-          </Popover> */}
-          <div>
-            <DatePicker
-              selected={state.date}
-              onChange={(date) => setState({ ...state, date: date })}
-              customInput={<CustomInput />}
-              dateFormatCalendar={"MMM yyyy"}
-              minDate={new Date()}
-              showPopperArrow
-              showFullMonthYearPicker
-            />
-          </div>
+              <Popover.Dropdown>
+                <div style={{ width: "330px" }}>
+                  {/* <AddressDropdown getAddressData={getAddressData} /> */}
+                  <CustomMap setIsMapOn={setIsMapOn} />
+                </div>
+              </Popover.Dropdown>
+            </Popover>
+          )}
         </div>
       </div>
     </>
@@ -209,15 +224,3 @@ const PostSearchBar = () => {
 };
 
 export default PostSearchBar;
-
-const CustomInput = React.forwardRef(({ value, onClick }, ref) => (
-  <button
-    className={LeftStyle.option}
-    style={{ color: "var(--shedule)", background: "none", border: "none" }}
-    onClick={onClick}
-    ref={ref}
-  >
-    <UilSchedule />
-    Schedule
-  </button>
-));

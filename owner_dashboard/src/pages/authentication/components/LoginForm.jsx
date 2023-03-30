@@ -60,8 +60,7 @@ const LoginForm = () => {
         .unwrap()
         .then(() => {
           toast.success("Successfully registred");
-          dispatch(clearMessage());
-          navigate("/");
+          setIsSignUp(false);
         })
         .catch((error) => {
           console.log(error);
@@ -106,6 +105,40 @@ const LoginForm = () => {
                 ? "Sign up for new account"
                 : "Sign for Owner Dashboard"}
             </h3>
+
+            {!isSignUp && (
+              <div
+                className="demo"
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  flexDirection: "column",
+                }}
+              >
+                <h3>
+                  if you want to check demo version then Sign in with given
+                  credentials
+                </h3>
+                <div
+                  className="credintials"
+                  style={{
+                    padding: "10px",
+                    display: "flex",
+                    justifyContent: "center",
+                    flexDirection: "column",
+                  }}
+                >
+                  <span>
+                    <b>username:</b> ownerdashboard
+                  </span>
+                  <span>
+                    <b>password:</b> 12345
+                  </span>
+                </div>
+              </div>
+            )}
+
             <form onSubmit={handleSubmit}>
               {isSignUp && (
                 <div

@@ -1,5 +1,6 @@
 const OwnerModel = require("../database/models/ownerModel");
 const HouseModel = require("../database/models/houseInfoModel");
+const AddressModel = require("../database/models/addressModel");
 const { serverError, resourceError } = require("../utils/error");
 
 ////********* get Personal Profile ************\\\\
@@ -36,17 +37,33 @@ const UpdateOwnerPersonalProfile = async (req, res) => {
 
 ////********* Create new home ************\\\\
 const CreateHouse = async (req, res) => {
-  // console.log(req);
   const newHouse = new HouseModel({
     ownerId: req.user._id,
     ownerName: req.user.firstname + " " + req.user.lastname,
     ownerPhone: req.user.phone,
+
     ...req.body,
   });
+
+  const newAddress = new AddressModel({
+    ownerId: req.user._id,
+
+    house: newHouse._id,
+    ...req.body,
+  });
+
+  // Associate the new house with the new address
+  newHouse.address = newAddress._id;
+
   try {
     if (req.user.role === "owner") {
-      const house = await newHouse.save();
-      res.status(200).json({ message: "new house created", house });
+      // console.log(newHouse);
+      // console.log(newAddress);
+
+      // Save both the new house and new address to the database
+      await Promise.all([newHouse.save(), newAddress.save()]);
+      // const house = await newHouse.save();
+      res.status(200).json({ message: "new house created" });
     } else {
       return resourceError(res, "Only Owner can create new house");
     }
@@ -58,7 +75,14 @@ const CreateHouse = async (req, res) => {
 ////********* Get All Houses ************\\\\
 const GetAllHouses = async (req, res) => {
   try {
-    let houses = await HouseModel.find({ ownerId: req.user._id.toString() });
+    let houses = await HouseModel.find({
+      ownerId: req.user._id.toString(),
+    }).populate([
+      {
+        path: "address",
+        model: "AdressModel",
+      },
+    ]);
     if (houses) {
       res.status(200).json(houses);
     } else {
@@ -75,10 +99,31 @@ const UpdateHouseInfo = async (req, res) => {
   const { _id } = req.user;
   try {
     const house = await HouseModel.findById({ _id: id });
-
     if (house) {
+      const address = await AddressModel.findOne({ house: id });
       if (house.ownerId === _id.toString()) {
-        await house.updateOne({ $set: req.body });
+        await house.updateOne({
+          $set: {
+            houseName: req.body.houseName,
+            houseNo: req.body.houseNo,
+            number_of_floors: req.body.number_of_floors,
+            number_of_apartments: req.body.number_of_apartments,
+            streetNo: req.body.streetNo,
+          },
+        });
+        await address.updateOne({
+          $set: {
+            address_display_name: req.body.address_display_name,
+            state: req.body.state,
+            state_district: req.body.state_district,
+            postCode: req.body.postCode,
+            lat: req.body.lat,
+            lon: req.body.lon,
+            country: req.body.address?.country,
+            country_code: req.body.address?.country_code,
+            place_id: req.body.place_id,
+          },
+        });
         res.status(200).json({ message: "House info updated" });
       } else {
         return resourceError(res, "Action forbidden");

@@ -85,6 +85,7 @@ export const removeLevels = createAsyncThunk(
 const initialState = {
   isSuccess: false,
   isPending: false,
+  loading: false,
   apartmentData: [],
 };
 
@@ -122,14 +123,17 @@ const apartmentSlice = createSlice({
     [allApartments.pending]: (state, action) => {
       state.isPending = true;
       state.isSuccess = false;
+      state.loading = true;
     },
     [allApartments.fulfilled]: (state, action) => {
       state.isSuccess = true;
       state.isPending = false;
+      state.loading = false;
       state.apartmentData = action.payload.apartments;
     },
     [allApartments.rejected]: (state, action) => {
       state.isSuccess = false;
+      state.loading = false;
       state.apartmentData = [];
     },
 

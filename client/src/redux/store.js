@@ -1,31 +1,20 @@
 import { configureStore } from "@reduxjs/toolkit";
-import authReducer from "./slices/auth";
 import messageReducer from "./slices/message";
-import houseOwnerReducer from "./slices/ownerSlice";
-import apartmentReducer from "./slices/apartmentSlice";
-import renterReducer from "./slices/renterSlice";
-import assignReducer from "./slices/assignRenterSlice";
-import billReducer from "./slices/billSlice";
-import publicReducer from "./slices/publicDataSlice";
-import dashboardReducer from "./slices/dashboardSlice";
-import reloadReducer from "./slices/reloadSlice";
-import roleReducer from "./slices/roleSlice";
-import postReducer from "./slices/postSlice";
 
-export default configureStore({
+import mapReducer from "./features/map/mapSlice";
+import { apiSlice } from "./api/apiSlice";
+import postSlice from "./features/posts/postSlice";
+import authSlice from "./features/auth/authSlice";
+
+export const store = configureStore({
   reducer: {
-    auth: authReducer,
+    [apiSlice.reducerPath]: apiSlice.reducer,
+    post: postSlice,
+    map: mapReducer,
+    auth: authSlice,
     message: messageReducer,
-    houseInfo: houseOwnerReducer,
-    posts: postReducer,
-    apartmentInfo: apartmentReducer,
-    renterInfo: renterReducer,
-    assingRenter: assignReducer,
-    billInfo: billReducer,
-    publicData: publicReducer,
-    dashboardData: dashboardReducer,
-    role: roleReducer,
-    reload: reloadReducer,
   },
-  // devTools: false,
+  devTools: true,
+  middleware: (getDefaultMiddlewares) =>
+    getDefaultMiddlewares().concat(apiSlice.middleware),
 });

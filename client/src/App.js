@@ -2,18 +2,22 @@ import "./App.css";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Authentication from "./pages/authentication/Authentication";
 import Home from "./pages/home/Home";
-import Redirect from "./Redirect";
-import { useSelector } from "react-redux";
-import AppRoutes from "./AppRoutes";
-import AuthVerify from "./utility/AuthVerify";
+import SignIn from "./pages/authentication/SignIn";
+import SignUp from "./pages/authentication/SignUp";
+import useAuthCheck from "./hooks/useAuthCheck";
+import PrivateRoute from "./utility/PrivateRoute";
+import Profile from "./pages/profile/Profile";
+import PublicRoute from "./utility/PublicRoute";
 
 function App() {
-  const { user } = useSelector((state) => state.auth);
-  return (
-    <>
-      <AuthVerify />
+  const authChecked = useAuthCheck();
+
+  return !authChecked ? (
+    <div>Checking authentication.......</div>
+  ) : (
+    <div>
+      <section className="mask"></section>
       <ToastContainer
         position="top-right"
         autoClose={5000}
@@ -26,36 +30,38 @@ function App() {
         pauseOnHover
         theme="colored"
       />
-      {user ? (
-        <>
-          {/* if user have role */}
-          {user?.user.role === undefined && <AppRoutes user={user} />}
-          {/* {user?.user.role === undefined && (
-            <Redirect destination="http://localhost:3000" />
-          )} */}
-        </>
-      ) : (
-        <>
-          <Routes>
-            <Route path="/home" element={<Home />} />
-            <Route path="/auth" element={<Authentication />} />
-            <Route path="*" element={<Navigate to="/home" replace />} />
-          </Routes>
-        </>
-      )}
-    </>
-    // <div className="App">
-    //   <Routes>
-    //     <Route path="/" element={<Home />} />
 
-    //     <Route path="auth" element={<Authentication />} />
-
-    //     <Route
-    //       path="/dashboard"
-    //       element={<Redirect destination="http://localhost:3000" />}
-    //     />
-    //   </Routes>
-    // </div>
+      <>
+        <Routes>
+          <Route path="/home" element={<Home />} />
+          <Route
+            path="/signin"
+            element={
+              <PublicRoute>
+                <SignIn />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              <PublicRoute>
+                <SignUp />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <PrivateRoute>
+                <Profile />
+              </PrivateRoute>
+            }
+          />
+          <Route path="*" element={<Navigate to="/home" replace />} />
+        </Routes>
+      </>
+    </div>
   );
 }
 

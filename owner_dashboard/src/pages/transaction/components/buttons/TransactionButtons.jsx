@@ -77,7 +77,7 @@ const TransactionButtons = () => {
           <button
             className="tempBill__button"
             onClick={() => rentersPopUp({ popUpType: "tempBill" })}
-            disabled={loading}
+            disabled={loading || profileData.defaultHomeID === ""}
           >
             Temporary Bill
           </button>
@@ -86,13 +86,14 @@ const TransactionButtons = () => {
         <button
           className={Style.makeBill__button}
           onClick={() => setIsMakeBillOpen(!isMakeBillOpen)}
-          disabled={loading}
+          disabled={loading || profileData.defaultHomeID === ""}
         >
           Make Bill
         </button>
         <button
           className="button "
           onClick={() => rentersPopUp({ popUpType: "renterProfile" })}
+          disabled={loading || profileData.defaultHomeID === ""}
         >
           Renter profile
         </button>

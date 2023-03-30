@@ -24,9 +24,21 @@ module.exports = (passport) => {
             console.log(error);
             return done(error, false);
           });
-      } else {
+      } else if (payload.role === "owner") {
         OwnerModel.findOne({ _id: payload.id })
-          // AdminModel.findOne({ _id: payload.id })
+          .then((user) => {
+            if (!user) {
+              return done(null, false);
+            } else {
+              return done(null, user);
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+            return done(error, false);
+          });
+      } else {
+        RenterModel.findOne({ _id: payload.id })
           .then((user) => {
             if (!user) {
               return done(null, false);

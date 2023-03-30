@@ -56,6 +56,7 @@ const ownerSchema = new Schema(
     defaultHomeID: {
       // for owner & manager
       type: String,
+      default: "",
     },
     houseName: {
       // for manager

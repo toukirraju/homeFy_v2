@@ -9,7 +9,7 @@ const createMultipleApartment = async (req, res) => {
       ownerId: _id,
       defaultHomeID,
     });
-    if (!apartmentsInfo) {
+    if (apartmentsInfo.length === 0) {
       for (let index = 0; index < numOfFloors; index++) {
         const apartmentData = new ApartmentModel({
           ownerName: req.user.firstname + " " + req.user.lastname,

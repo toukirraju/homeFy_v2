@@ -23,26 +23,16 @@ const houseInfoSchema = new Schema(
       type: String,
       require: true,
     },
-    address: {
-      type: String,
-      require: true,
-    },
     streetNo: {
       type: String,
       // require: true,
     },
-    city: {
-      type: String,
-      require: true,
+    address: {
+      type: mongoose.Types.ObjectId,
+      ref: "AdressModel",
+      required: true,
     },
-    area: {
-      type: String,
-      require: true,
-    },
-    postCode: {
-      type: String,
-      require: true,
-    },
+
     number_of_floors: {
       type: Number,
       require: true,

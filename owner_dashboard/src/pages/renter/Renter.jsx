@@ -9,6 +9,9 @@ import AlertPoPUP from "../../Components/AlertPoPUP";
 import { clearMessage } from "../../redux/slices/message";
 import RenterTableNew from "./components/tables/RenterTableNew";
 import { Loader } from "@mantine/core";
+import DefaultHouseGuideline from "../../Components/UI/guidlines/DefaultHouseGuideline";
+
+import RenterAddingGuideline from "../../Components/UI/guidlines/RenterAddingGuideline";
 
 const Renter = () => {
   const dispatch = useDispatch();
@@ -16,8 +19,9 @@ const Renter = () => {
 
   const { isReload } = useSelector((state) => state.reload);
   const { message } = useSelector((state) => state.message);
-  const { renters } = useSelector((state) => state.renterInfo);
+  const { renters, loading } = useSelector((state) => state.renterInfo);
   const { profileData } = useSelector((state) => state.owner);
+
   // console.log(profileData.role);
 
   useEffect(() => {
@@ -26,6 +30,29 @@ const Renter = () => {
     };
     fetchRenterInfo();
   }, [dispatch, isReload]);
+
+  // decide what to render
+
+  let content = null;
+
+  if (loading)
+    content = (
+      <div className="loading__screen">
+        <Loader color="cyan" variant="bars" />
+      </div>
+    );
+
+  if (renters?.length === 0) {
+    content = <RenterAddingGuideline />;
+  }
+
+  if (renters?.length > 0) {
+    content = <RenterTableNew data={renters} />;
+  }
+
+  if (profileData.defaultHomeID === "") {
+    content = <DefaultHouseGuideline />;
+  }
 
   return (
     <>
@@ -39,7 +66,12 @@ const Renter = () => {
       <div className="button__section">
         {profileData.role === "owner" && (
           <>
-            <button onClick={() => setModalOpened(true)}>Add new</button>
+            <button
+              disabled={profileData.defaultHomeID === ""}
+              onClick={() => setModalOpened(true)}
+            >
+              create renter
+            </button>
             <CreateRenter
               modalOpened={modalOpened}
               setModalOpened={setModalOpened}
@@ -49,14 +81,14 @@ const Renter = () => {
       </div>
       <div style={{ marginTop: "10px" }}>
         {" "}
-        {/* <RenterTable data={renters} />{" "} */}
-        {renters.length !== 0 ? (
+        {/* {renters.length !== 0 ? (
           <RenterTableNew data={renters} />
         ) : (
           <div className="loading__screen">
             <Loader color="cyan" variant="bars" />
           </div>
-        )}
+        )} */}
+        {content}
         {/* <RenterTableNew /> */}
       </div>
     </>

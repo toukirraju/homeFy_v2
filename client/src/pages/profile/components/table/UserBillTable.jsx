@@ -1,21 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Box, Badge } from "@mantine/core";
 import { DataTable } from "mantine-datatable";
-
-import AssignRenter from "../../../../Components/modals/renterModal/AssignRenter";
-import UnAssignRenter from "../../../../Components/modals/renterModal/UnAssignRenter";
-import { useDispatch, useSelector } from "react-redux";
-import ConfirmationModal from "../../../../Components/modals/ConfirmationModal";
-import PopUpWindow from "../../modals/PopUpWindow";
-import { getAllQueryrenters } from "../../../../redux/slices/renterSlice";
-import { clearMessage } from "../../../../redux/slices/message";
+import { useColorScheme } from "@mantine/hooks";
 
 const UserBillTable = ({ data }) => {
-  const dispatch = useDispatch();
-  const [clickCount, setClickCount] = useState(0);
-  const [selectedRow, setSelectedRow] = useState(null);
-  // console.log(profileData.role);
-
+  const colorScheme = useColorScheme();
   const PAGE_SIZES = [6, 10, 15, 20];
 
   const [pageSize, setPageSize] = useState(PAGE_SIZES[0]);
@@ -33,113 +22,69 @@ const UserBillTable = ({ data }) => {
     setRecords(data.slice(from, to));
   }, [page, pageSize]);
 
-  const handleRowDoubleClick = (rowData) => {
-    setClickCount(clickCount + 1);
-    setSelectedRow(rowData);
-    setTimeout(() => {
-      if (clickCount === 1) {
-        console.log(
-          "Double click event fired on row: "
-          // selectedRow
-        );
-        handlePopUpOn(selectedRow);
-        setClickCount(0);
-        setSelectedRow(null);
-      } else {
-        setClickCount(0);
-        setSelectedRow(null);
-      }
-    }, 300);
-  };
-
   const columns = [
     {
-      Header: "Username",
-      accessor: "username",
+      Header: "Date",
+      accessor: "createdAt",
       textAlignment: "center",
-      width: 150,
+    },
+    { Header: "Paid", accessor: "paidAmount", textAlignment: "center" },
+    {
+      Header: "Payable",
+      accessor: "payableAmount",
+      textAlignment: "center",
     },
     {
-      accessor: "name",
+      Header: "rent",
       textAlignment: "center",
-      width: 150,
-      render: ({ firstname, lastname }) => `${firstname} ${lastname}`,
-    },
-    { Header: "Phone No", accessor: "phone" },
-    {
-      Header: "Address",
-      accessor: "address",
-      textAlignment: "center",
-      width: 200,
-    },
-    {
-      Header: "Apartment number",
-      accessor: "apartment_number",
+      accessor: "rent",
       width: 100,
     },
 
     {
-      Header: "Room number",
-      accessor: "roomNumber",
+      Header: "due",
+      textAlignment: "center",
+      accessor: "due",
     },
 
     {
-      Header: "Area",
-      accessor: "area",
+      Header: "gas_bill",
+      textAlignment: "center",
+      accessor: "gas_bill",
     },
     {
-      Header: "City/town",
-      accessor: "city",
+      Header: "water_bill",
+      textAlignment: "center",
+      accessor: "water_bill",
     },
     {
-      Header: "Postcode",
-      accessor: "postCode",
+      Header: "service_charge",
+      textAlignment: "center",
+      accessor: "service_charge",
     },
     {
-      title: "National ID / Passport",
-      accessor: "National_ID_Passport_no",
+      title: "Electricity bill",
+      textAlignment: "center",
+      accessor: "electricity_bill",
     },
 
     {
-      Header: "Advance Rent",
-      accessor: "advanceRent",
-    },
-
-    {
-      Header: "Assigned Date",
-      accessor: "assignedDate",
-
-      customCellAttributes: (row) => ({
-        style: {
-          textAlign: "center",
-        },
-      }),
+      Header: "others",
+      textAlignment: "center",
+      accessor: "others",
     },
   ];
-  // new table end
-
-  // old table start
-  const [assignModalOpened, setAssignModalOpened] = useState(false);
-  const [unAssignModalOpened, setUnAssignModalOpened] = useState(false);
-
-  const [popUpModalOpened, setPopUpModalOpened] = useState(false);
-  const [popUpData, setPopUpData] = useState({});
-
-  const handlePopUpOn = (rowData) => {
-    setPopUpModalOpened(true);
-    setPopUpData(rowData);
-  };
 
   return (
     <>
       <div>
         <Box
           sx={(theme) => ({
-            height: 400,
+            height: 300,
             // width: "calc(100vw - 270px)",
             // Media query with value from theme
             [`@media (max-width: ${theme.breakpoints.xs}px)`]: {
-              height: 400,
+              height: 300,
               width: "calc(100vw - 40px)",
             },
           })}
@@ -154,13 +99,20 @@ const UserBillTable = ({ data }) => {
             totalRecords={data.length}
             recordsPerPage={pageSize}
             page={page}
+            rowStyle={{
+              background: "transparent",
+              color: colorScheme === "dark" ? "white" : "gray",
+            }}
+            styles={{
+              header: { zIndex: 1 },
+              pagination: { backgroundColor: "transparent" },
+            }}
             onPageChange={(p) => setPage(p)}
             recordsPerPageOptions={PAGE_SIZES}
             onRecordsPerPageChange={setPageSize}
-            onRowClick={handleRowDoubleClick}
             defaultColumnRender={(row, _, accessor) => {
               const data = row[accessor];
-              if (accessor === "assignedDate") {
+              if (accessor === "createdAt") {
                 const date = new Date(data);
                 const options = {
                   year: "numeric",
@@ -169,43 +121,12 @@ const UserBillTable = ({ data }) => {
                 };
                 return date.toLocaleDateString("en-US", options);
               }
-              if (accessor === "username") {
-                const assignDate = new Date(row.assignedDate);
-                const currentDate = new Date();
-                if (assignDate.getMonth() === currentDate.getMonth()) {
-                  return (
-                    <>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          fontWeight: "600",
-                        }}
-                      >
-                        <span>{data}</span>
-                        <Badge
-                          variant="gradient"
-                          gradient={{ from: "teal", to: "blue", deg: 60 }}
-                        >
-                          New
-                        </Badge>
-                      </div>
-                    </>
-                  );
-                }
-              }
+
               return data;
             }}
           />
         </Box>
       </div>
-      {Object.keys(popUpData) != 0 && (
-        <PopUpWindow
-          popUpModalOpened={popUpModalOpened}
-          setPopUpModalOpened={setPopUpModalOpened}
-          data={popUpData}
-        />
-      )}
     </>
   );
 };

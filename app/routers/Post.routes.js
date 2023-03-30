@@ -4,7 +4,6 @@ const authenticate = require("../middlewares/authenticate");
 const { authVerify } = require("../middlewares/authVerify");
 const {
   createPost,
-  getPost,
   updatePost,
   deletePost,
   getTimelinePosts,

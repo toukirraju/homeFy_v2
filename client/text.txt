@@ -1,0 +1,199 @@
+import { useState } from "react";
+import styles from "../styles/SignIn.module.css";
+import AuthButton from "./ui/AuthButton";
+import AuthCheckBox from "./ui/AuthCheckBox";
+import AuthDecision from "./ui/AuthDecision";
+import AuthInput from "./ui/AuthInput";
+
+const validate = (values) => {
+  let errors = {};
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+
+  if (!values.username) {
+    errors.username = "Username is required";
+  } else if (!regex.test(values.username)) {
+    errors.username = "Invalid Email";
+  }
+
+  if (!values.phone) {
+    errors.phone = "Phone is required";
+  } else if (values.phone.length < 10) {
+    errors.phone = "Phone number is too short";
+  }
+
+  if (!values.password) {
+    errors.password = "Password is required";
+  } else if (values.password.length < 4) {
+    errors.password = "Password too short";
+  }
+
+  if (!values.cpassword) {
+  } else if (values.password !== values.cpassword) {
+    errors.cpassword = "Password does not match";
+  }
+
+  return errors;
+};
+
+const AuthForm = ({ type }) => {
+  const [formValue, setFormValue] = useState({
+    fullname: "",
+    username: "",
+    phone: "",
+    password: "",
+    cpassword: "",
+  });
+  const resetForm = () => {
+    setFormValue({
+      fullname: "",
+      username: "",
+      phone: "",
+      password: "",
+      cpassword: "",
+    });
+  };
+
+  const [formErrors, setFormErrors] = useState({});
+
+  const handleChange = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    setFormValue({ ...formValue, [name]: value });
+
+    const errors = validate({ [name]: value });
+
+    setFormErrors((prevState) => ({
+      ...prevState,
+      [name]: errors[name],
+    }));
+  };
+
+  const handleFocus = (e) => {
+    const { name } = e.target;
+    setFormErrors((prevState) => ({
+      ...prevState,
+      [name]: "",
+    }));
+  };
+
+  const handleBlur = (e) => {
+    const { name } = e.target;
+    const validated = validate(formValue);
+    setFormErrors({ ...formErrors, [name]: validated[name] || "" });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const validated = validate(formValue);
+    if (type === "signupForm") {
+      if (Object.keys(validated).length === 0) {
+        console.log("Register");
+        console.log(formValue);
+      } else {
+        console.log("erroe");
+        console.log(formErrors);
+      }
+    } else {
+      // if (Object.keys(validated).length === 0) {
+      //   console.log("login");
+      //   console.log(formValue);
+      // } else {
+      //   console.log("error");
+      //   console.log(formErrors);
+      // }
+      console.log("first");
+    }
+  };
+  return (
+    <form onSubmit={handleSubmit}>
+      {type === "signupForm" && (
+        <AuthInput
+          required
+          name="fullname"
+          value={formValue.fullname}
+          onChange={handleChange}
+          title="Full Name"
+          icon={<i className={`fa-solid fa-user ${styles.form__icon}`}></i>}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          error={formErrors?.fullname}
+        />
+      )}
+      <AuthInput
+        required
+        name="username"
+        value={formValue.username}
+        onChange={handleChange}
+        title="E-mail"
+        icon={<i className={`fa-solid fa-envelope ${styles.form__icon}`}></i>}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        error={formErrors?.username}
+      />
+      {type === "signupForm" && (
+        <AuthInput
+          required
+          name="phone"
+          value={formValue.phone}
+          onChange={handleChange}
+          title="Phone"
+          type="tel"
+          icon={<i className={`fa-solid fa-phone ${styles.form__icon}`}></i>}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          error={formErrors?.phone}
+        />
+      )}
+      <AuthInput
+        required
+        name="password"
+        value={formValue.password}
+        onChange={handleChange}
+        title="Password"
+        icon={<i className={`fa-solid fa-lock ${styles.form__icon}`}></i>}
+        // type="password"
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        error={formErrors?.password}
+      />
+
+      {type === "signupForm" && (
+        <AuthInput
+          required
+          name="cpassword"
+          value={formValue.cpassword}
+          onChange={handleChange}
+          title="Confirm Password"
+          //   type="password"
+          icon={<i className={`fa-solid fa-lock ${styles.form__icon}`}></i>}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          error={
+            formValue.password !== formValue.cpassword && formErrors?.cpassword
+          }
+        />
+      )}
+
+      <AuthCheckBox
+        title={
+          type === "signupForm"
+            ? "I will agree all terms & conditions"
+            : "Remember me"
+        }
+        type="checkbox"
+      />
+
+      <AuthDecision />
+
+      {/* submit button  */}
+      <div className={styles.center__button}>
+        <AuthButton
+          title={type === "signupForm" ? "Register" : "Log in"}
+          type="submit"
+        />
+      </div>
+    </form>
+  );
+};
+
+export default AuthForm;

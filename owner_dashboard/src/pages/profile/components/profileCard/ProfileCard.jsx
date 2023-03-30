@@ -18,7 +18,7 @@ import PostWidget from "../../../../Components/postComponents/PostWidget";
 
 const ProfileCard = ({ data }) => {
   // const isMobile = useMediaQuery("(max-width: 768px)");
-  const { widgetData } = useSelector((state) => state.posts);
+  const { widgetData, specificPosts } = useSelector((state) => state.posts);
 
   const [modalOpened, setModalOpened] = useState(false);
   // const { user } = useSelector((state) => state.auth);
@@ -47,8 +47,6 @@ const ProfileCard = ({ data }) => {
       </div>
 
       <div className={` ${Style.Post__widget__header}`}>
-        <PostWidget data={widgetData} />
-
         <div className={`${Style.owner__container__body}`}>
           <div className={`${Style.owner_content}`}>
             <span>
@@ -85,30 +83,6 @@ const ProfileCard = ({ data }) => {
             <span> {data.role}</span>
           </div>
         </div>
-
-        {/* <div className={` ${Style.Profile__info__section}`}>
-          <div>
-            <span>Name:</span>
-            {data.firstname + " " + data.lastname}
-          </div>
-          <div>
-            {"  "}
-            <span>Phone:</span>
-            {data.phone}
-          </div>
-          <div>
-            <span>Nid:</span>
-            {data.nid}
-          </div>
-          <div>
-            <span>Profession:</span>
-            {data.profession}
-          </div>
-          <div>
-            <span>Role:</span>
-            House {data.role}
-          </div>
-        </div> */}
       </div>
     </div>
   );

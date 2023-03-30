@@ -20,8 +20,8 @@ const CircularProgress = ({ data }) => {
 
       <div className={`${Style.circular_progress}`}>
         <CircularProgressbar
-          value={percentage}
-          text={`Paid :${percentage}%`}
+          value={isNaN(percentage) ? 0 : percentage}
+          text={`Paid: ${isNaN(percentage) ? 0 : percentage}%`}
           styles={buildStyles({
             textColor: "gray",
             pathColor: "turquoise",

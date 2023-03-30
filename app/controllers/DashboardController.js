@@ -285,13 +285,42 @@ const getApartmentWidgetData = async (req, res) => {
 
     const nonTypeCount = result.find((obj) => obj.apartmentType === "")?.count;
 
+    let totalapartment = 0;
+
+    if (
+      familyCount !== undefined &&
+      bachelorCount !== undefined &&
+      nonTypeCount !== undefined
+    ) {
+      totalapartment =
+        parseInt(familyCount) +
+        parseInt(bachelorCount) +
+        parseInt(nonTypeCount);
+    } else if (
+      familyCount !== undefined &&
+      bachelorCount !== undefined &&
+      nonTypeCount === undefined
+    ) {
+      totalapartment =
+        parseInt(familyCount) + parseInt(bachelorCount) + parseInt(0);
+    } else if (
+      familyCount !== undefined &&
+      bachelorCount === undefined &&
+      nonTypeCount !== undefined
+    ) {
+      totalapartment =
+        parseInt(familyCount) + parseInt(0) + parseInt(nonTypeCount);
+    } else if (
+      familyCount === undefined &&
+      bachelorCount !== undefined &&
+      nonTypeCount !== undefined
+    ) {
+      totalapartment =
+        parseInt(0) + parseInt(bachelorCount) + parseInt(nonTypeCount);
+    }
+
     const details = {
-      totalApartment:
-        result.length === 0
-          ? 0
-          : parseInt(familyCount) +
-            parseInt(bachelorCount) +
-            parseInt(nonTypeCount),
+      totalApartment: result.length === 0 ? 0 : totalapartment,
       availableApartments: result.length === 0 ? 0 : availableApartments,
       familyApartment: result.length === 0 ? 0 : familyCount,
       bachelorApartment: result.length === 0 ? 0 : bachelorCount,

@@ -6,6 +6,7 @@ import * as Yup from "yup";
 import { useDispatch } from "react-redux";
 import {
   GetHouses,
+  GetProfileInfo,
   MakeDefaultHouse,
   UpdateHouse,
   UpdatePersonalProfile,
@@ -95,6 +96,7 @@ function DefaultHousePopupModal({
                 dispatch(GetHouses());
                 dispatch(getSpecificHousePosts());
                 dispatch(getPostWidget());
+                dispatch(GetProfileInfo());
               })
               .catch((err) => toast.error("Somthing went wrong!"));
           }}

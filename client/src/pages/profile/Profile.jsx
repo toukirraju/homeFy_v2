@@ -1,31 +1,22 @@
 import Style from "./styles/Profile.module.css";
-import ProfileLeft from "../../Components/profile/profileLeft/ProfileLeft";
-import RightSide from "../../Components/profile/rightSide/RightSide";
-import { useSelector } from "react-redux";
+import { useState } from "react";
 import UserBillTable from "./components/table/UserBillTable";
 import LeftTitleHeader from "../../Components/leftSide/LeftTitleHeader";
 import RightNavBar from "../../Components/navigationBar/RightNavBar";
-import ProfileCard from "./components/profileCard/ProfileCard";
 import BarChartCompo from "./components/Charts/BarChartCompo";
 import UserIntroCard from "./components/UserIntroCard";
 import ApartmentInfoCard from "./components/apartmentInfoCard/ApartmentInfoCard";
 import DropdownActionButton from "../../Components/UI/ActionButtons/DropdownActionButton";
 import { useMediaQuery } from "@mantine/hooks";
-import { useState } from "react";
 import { Modal } from "@mantine/core";
-import {
-  UilPhoneAlt,
-  UilMapMarker,
-  UilEnvelope,
-  UilPostcard,
-  UilEstate,
-  UilChatBubbleUser,
-  UilEdit,
-  UilBuilding,
-  UilBill,
-  UilLayerGroup,
-} from "@iconscout/react-unicons";
+import { UilBuilding, UilBill, UilLayerGroup } from "@iconscout/react-unicons";
 import BillinfoCard from "./components/billInfoCard/BillinfoCard";
+import { useGetProfileInfoQuery } from "../../redux/features/profile/profileRTKquery";
+import ApartmentCardLoader from "../../Components/loader/ApartmentCardLoader";
+import BillInfoLoader from "../../Components/loader/BillInfoLoader";
+import ProfileIntroLoader from "../../Components/loader/ProfileIntroLoader";
+import BarchartLoader from "../../Components/loader/BarchartLoader";
+import TableLoader from "../../Components/loader/TableLoader";
 
 const Profile = () => {
   const isMobile = useMediaQuery("(max-width: 768px)");
@@ -33,15 +24,72 @@ const Profile = () => {
     apartmentInfo: false,
     billInfo: false,
   });
+  const { data: profile, isLoading, isError } = useGetProfileInfoQuery();
 
-  const handleOptionSelect = (option) => {
+  // decide what to render
+
+  let profileIntro = null;
+  let apartment = null;
+  let billinfo = null;
+  let chart = null;
+  let table = null;
+
+  if (isLoading && !isError) {
+    profileIntro = <ProfileIntroLoader />;
+    apartment = <ApartmentCardLoader />;
+    billinfo = <BillInfoLoader />;
+    chart = <BarchartLoader />;
+    table = <TableLoader />;
+  }
+  if (!isLoading && isError) {
+    profileIntro = <h3>There is an error to getting profile info</h3>;
+    apartment = <h3>There is an error to getting Apartment info</h3>;
+    billinfo = <h3>There is an error to getting bill info</h3>;
+    chart = <h3>There is an error to getting chart info</h3>;
+    table = <h3>There is an error to getting table info</h3>;
+  }
+  if (!isLoading && !isError && profile._id) {
+    profileIntro = <UserIntroCard data={profile} />;
+    apartment = (
+      <>
+        {!isMobile && Object.keys(profile).length !== 0 && (
+          <ApartmentInfoCard data={profile.apartment} />
+        )}
+      </>
+    );
+    billinfo = (
+      <>
+        {!isMobile && Object.keys(profile).length !== 0 && (
+          <BillinfoCard data={profile.apartment} />
+        )}
+      </>
+    );
+
+    chart = (
+      <>
+        {Object.keys(profile).length !== 0 && (
+          <BarChartCompo data={profile.bills} />
+        )}
+      </>
+    );
+    table = (
+      <>
+        {Object.keys(profile).length !== 0 && (
+          <UserBillTable data={profile.bills} />
+        )}
+      </>
+    );
+  }
+
+  // Action button handler
+  const handleActionButtonSelect = (option) => {
     if (option.value === 1) {
       setIsOpen({ ...isOpen, apartmentInfo: true });
     } else if (option.value === 2) {
       setIsOpen({ ...isOpen, billInfo: true });
     }
   };
-
+  // Action button options
   const options = [
     { label: <UilBuilding />, value: 1 },
     { label: <UilBill />, value: 2 },
@@ -51,25 +99,18 @@ const Profile = () => {
       <div className={Style.Profile__wrapper}>
         <div className={Style.Profile__left}>
           <LeftTitleHeader />
-          {!isMobile && <ApartmentInfoCard />}
+          {apartment}
         </div>
         <div className={Style.Profile__center}>
           {/* <Profile Intro Card /> */}
-          <UserIntroCard />
-          <div className={` ${Style.user__chart}`}>
-            {" "}
-            <BarChartCompo />
-          </div>
-          <div className={` ${Style.bill__table}`}>
-            <UserBillTable data={[]} />
-          </div>
-
-          {/* <UserBillTable /> */}
+          {profileIntro}
+          <div className={` ${Style.user__chart}`}> {chart}</div>
+          <div className={` ${Style.bill__table}`}>{table}</div>
         </div>
         <div className={Style.Profile__right}>
           {/* <RightSide /> */}
           <RightNavBar />
-          {!isMobile && <BillinfoCard />}
+          {billinfo}
         </div>
       </div>
       {isMobile && (
@@ -79,20 +120,20 @@ const Profile = () => {
             opened={isOpen.apartmentInfo}
             onClose={() => setIsOpen({ ...isOpen, apartmentInfo: false })}
           >
-            <ApartmentInfoCard />
+            <ApartmentInfoCard data={profile?.apartment} />
           </Modal>
           <Modal
             size="lg"
             opened={isOpen.billInfo}
             onClose={() => setIsOpen({ ...isOpen, billInfo: false })}
           >
-            <BillinfoCard />
+            <BillinfoCard data={profile?.apartment} />
           </Modal>
 
           <DropdownActionButton
             label={<UilLayerGroup />}
             options={options}
-            onOptionSelect={handleOptionSelect}
+            onOptionSelect={handleActionButtonSelect}
           />
         </>
       )}

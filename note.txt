@@ -49,6 +49,82 @@
 
 
 
+
+
+
+
+
+
+
+
+////////////
+const getTimelinePosts = async (req, res) => {
+  try {
+    const { lastPostId, limit, budget, rooms } = req.query;
+
+    let query = { isVisible: true, isBlock: false };
+    if (lastPostId) {
+      query._id = { $lt: lastPostId };
+    }
+
+    const [recentlyUpdatedAt, recentlyCreatedAt] = ["updatedAt", "createdAt"];
+    const posts = await PostModel.find(query)
+      .sort([
+        [{ "apartment.billDetails.rent": { $lte: budget } }],
+        [recentlyUpdatedAt, -1],
+        [recentlyCreatedAt, -1],
+      ])
+      .limit(parseInt(limit))
+      .populate("owner")
+      .populate("house")
+      .populate({
+        path: "apartment",
+      });
+
+    const hasMore = posts.length === parseInt(limit);
+
+    const response = {
+      posts,
+      hasMore,
+      lastPostId: hasMore ? posts[posts.length - 1]._id : null,
+    };
+
+    res.json(response);
+    // const { lastPostId } = req.query;
+
+    // const limit = 4; // Set your desired limit here
+
+    // let query = {};
+    // if (lastPostId) {
+    //   query._id = { $lt: lastPostId };
+    // }
+    // console.log(req.params);
+    // const posts = await PostModel.find({ ...query, ...filter })
+    //   .sort({ createdAt: -1 })
+    //   .limit(req.params.limit)
+    //   .populate("owner", "firstName lastName")
+    //   .populate("house", "name")
+    //   .populate("apartment", "name");
+    // res.json(posts);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+///////////
+  if (!isNaN(budget)) {
+      filter["apartment.billDetails.rent:"] = { $lte: parseInt(budget) };
+    }
+    // if (rooms) {
+    //   filter["apartment.apartmentDetails.number_of_bed_room"] = {
+    //     $lte: parseInt(rooms),
+    //   };
+    // }
+
+
+
 //******************Git commands*******************\\
 
         …or create a new repository on the command line

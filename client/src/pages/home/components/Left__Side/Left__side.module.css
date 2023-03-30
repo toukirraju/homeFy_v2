@@ -5,15 +5,8 @@
   margin-bottom: 10px;
   /* position: sticky; */
   /* padding: 0 10px; */
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-   -khtml-user-select: none; /* Konqueror HTML */
-     -moz-user-select: none; /* Old versions of Firefox */
-      -ms-user-select: none; /* Internet Explorer/Edge */
-          user-select: none; /* Non-prefixed version, currently
-                                supported by Chrome, Edge, Opera and Firefox */
-                                
 }
+
 .Search_container {
   display: flex;
   position: relative;
@@ -21,11 +14,11 @@
   width: 100%;
   background-color: var(--inputColor);
   border-radius: 10px;
-  padding: 5px;
+  padding: 10px;
   gap: 5px;
   height: auto;
 }
-.Search_content{
+.Search_content {
   /* background: #000; */
   width: 93%;
   display: flex;
@@ -45,46 +38,39 @@
   justify-content: space-around;
   align-items: center;
   gap: 10px;
-  
 }
 
 .bottom__content {
   width: 93%;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  
 }
 
 .bottom__content > div {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   gap: 10px;
-  
 }
 
-
-
-.bottom__locations :nth-child(1){
+.bottom__locations :nth-child(1) {
   color: #f95f35;
   border-right: 1px solid #f95f35;
   padding: 0 5px;
 }
-.bottom__locations :nth-child(2){
+.bottom__locations :nth-child(2) {
   color: #f95f35;
   border-right: 1px solid #f95f35;
   padding: 0 5px;
 }
-.bottom__locations :nth-child(3){
+.bottom__locations :nth-child(3) {
   color: #f95f35;
   padding: 0 5px;
 }
-
 
 .Search_content > div :nth-child(1) {
   width: 18px;
-  
 }
 .Search_content > div :nth-child(2) {
   font-size: 14px;
@@ -95,7 +81,6 @@
   background-color: transparent;
   border: none;
   outline: none;
- 
 }
 /* .map__Wrapper {
   height: 350px;
@@ -112,24 +97,26 @@
   justify-content: center;
   position: absolute;
   /* background: linear-gradient(106.23deg, #f99827, #f95f35 100%); */
-  background: var(--buttonBg);
+  /* background: unset var(--buttonBg); */
+
   border-radius: 5px;
   padding: 4px;
   color: white;
   right: 5px;
-  top: 25%;
+  /* top: 25%; */
 }
 
 .s__icon:hover {
   cursor: pointer;
   background: linear-gradient(106.23deg, #f99827, #f95f35 100%);
+  color: gray;
+  transition: all 300ms ease-in;
 }
 
 .postOptions {
   display: flex;
   justify-content: space-around;
   width: 100%;
- 
 }
 .option {
   padding: 5px;

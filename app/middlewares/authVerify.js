@@ -10,7 +10,7 @@ verifyToken = (req, res, next) => {
       return next(err);
     }
     if (!user) {
-      return res.status(400).json({
+      return res.status(401).json({
         message: "Authentication Failed",
       });
     }

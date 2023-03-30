@@ -30,6 +30,7 @@ const assignRenter = async (req, res) => {
         $set: {
           ownerId: _id,
           defaultHomeID: defaultHomeID,
+          house: defaultHomeID,
           apartmentId: req.body.apartmentId,
           apartment_number: req.body.apartment_number,
           roomNumber: req.body.roomNumber,
