@@ -49,8 +49,7 @@ const RenterProfile = ({ profileModalOpened, setProfileModalOpened, data }) => {
   const [isAssignData, setIsAssignData] = useState();
   const [removeData, setRemoveData] = useState();
 
-  const { profileData } = useSelector((state) => state.owner);
-  // console.log(profileData.role);
+  const { user: profileData } = useSelector((state) => state.auth);
 
   const handleRemove = (renter) => {
     if (
@@ -71,14 +70,14 @@ const RenterProfile = ({ profileModalOpened, setProfileModalOpened, data }) => {
   return (
     <>
       <Modal
-        overlayColor={
-          theme.colorScheme === "dark"
-            ? theme.colors.dark[9]
-            : theme.colors.gray[2]
-        }
+        classNames={{
+          modal: `bg-gray-300 dark:bg-gray-800`,
+          title: `modal__title`,
+          close: `modal__close`,
+        }}
         overlayOpacity={0.55}
         overlayBlur={3}
-        size="lg"
+        size="400"
         fullScreen={isMobile}
         opened={profileModalOpened}
         onClose={() => setProfileModalOpened(false)}
@@ -98,14 +97,8 @@ const RenterProfile = ({ profileModalOpened, setProfileModalOpened, data }) => {
                     <div className={Styles.popUpWindow_double_elements}>
                       <div className={Styles.popUpWindow__innerCard}>
                         <div className={Styles.popUpWindow__card__elements}>
-                          <span>First Name</span>
-                          <span>{data.firstname}</span>
-                        </div>
-                      </div>
-                      <div className={Styles.popUpWindow__innerCard}>
-                        <div className={Styles.popUpWindow__card__elements}>
-                          <span>Last Name</span> <hr />
-                          <span>{data.lastname}</span>
+                          <span>Name</span>
+                          <span>{data.fullname}</span>
                         </div>
                       </div>
                     </div>

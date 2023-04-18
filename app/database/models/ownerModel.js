@@ -70,7 +70,9 @@ const ownerSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    profilePicture: String,
+    profilePicture: {
+      type: Object,
+    },
     documents: {
       nid: String,
       income_tax: String,

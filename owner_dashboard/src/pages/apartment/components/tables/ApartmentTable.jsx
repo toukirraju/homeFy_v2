@@ -1,379 +1,296 @@
+import React, { useEffect, useState } from "react";
+import { Box } from "@mantine/core";
+import { DataTable } from "mantine-datatable";
+
 import Style from "../../../../Styles/TableStyle.module.css";
-import ModalStyle from "../../../../Styles/ModalStyle.module.css";
-import { AgGridReact } from "ag-grid-react";
-import { useDispatch, useSelector } from "react-redux";
-import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  allApartments,
-  createMultiApartment,
-} from "../../../../redux/slices/apartmentSlice";
-import { setReload } from "../../../../redux/slices/reloadSlice";
-import LoadingSpinner from "../../../../Components/LoadingSpinner";
-import ConfirmationModal from "../../../../Components/modals/ConfirmationModal";
-import UpdateApartment from "../../modals/UpdateApartment";
-import PostShare from "../../../../Components/postComponents/postShare/PostShare";
-import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 import PopUpWindow from "../../modals/PopUpWindow";
-
+import { toast } from "react-toastify";
+import LoadingSpinner from "../../../../Components/LoadingSpinner";
+import { useCreateApartmentMutation } from "../../../../redux/features/apartment/RTK Query/apartmentApi";
 const ApartmentTable = ({ data }) => {
-  const gridRef = useRef();
-  const dispatch = useDispatch();
+  const [clickCount, setClickCount] = useState(0);
+  const [selectedRow, setSelectedRow] = useState(null);
 
-  const [floorData, setFloorData] = useState([]);
+  const { user: profileData } = useSelector((state) => state.auth);
 
-  const [isAssignData, setIsAssignData] = useState();
-  const [removeId, setRemoveId] = useState();
+  const [createApartment, { isSuccess, isLoading }] =
+    useCreateApartmentMutation();
 
-  const [updateModalOpened, setUpdateModalOpened] = useState(false);
-  const [updateData, setUpdateData] = useState({});
+  // table row duoble click function
+  const handleRowDoubleClick = (rowData) => {
+    setClickCount(clickCount + 1);
+    setSelectedRow(rowData);
+    setTimeout(() => {
+      if (clickCount === 1) {
+        // console.log("Double click event fired on row: ", selectedRow);
+        handlePopUpOn(selectedRow);
+        setClickCount(0);
+        setSelectedRow(null);
+      } else {
+        setClickCount(0);
+        setSelectedRow(null);
+      }
+    }, 300);
+  };
 
-  const [postModalOpened, setPostModalOpened] = useState(false);
-  const [postData, setPostData] = useState({});
+  const tableColumns = [
+    {
+      Header: "Renter Name",
+      textAlignment: "center",
+      accessor: "renterName",
+      width: 150,
+      customCellAttributes: (row) => ({
+        style: {
+          width: "auto",
+          textAlign: "center",
+          position: "absolute",
+          height: "35px",
+          fontWeight: "600",
+          backgroundColor: "#70a493",
+          zIndex: 7,
+          boxShadow: "1px 0px 3px rgba(0,0,0,0.2)",
+        },
+      }),
+    },
+    // apartment details
+    {
+      accessor: "Apartment Name",
+      textAlignment: "center",
+      width: 150,
+      render: ({ apartmentDetails }) => `${apartmentDetails.apartmentName}`,
+    },
 
-  const [confirmationPopUp, setConfirmationPopUp] = useState(false);
+    {
+      //Header: "Apartment No",
+      accessor: "Apartment No",
+      render: ({ apartmentDetails }) => `${apartmentDetails.apartment_number}`,
+      resizable: true,
+    },
+    {
+      //Header: "Room No",
+      accessor: "Room No",
+      render: ({ apartmentDetails }) => `${apartmentDetails.roomNumber}`,
+      resizable: true,
+    },
+    {
+      //Header: "Apartment Type",
+      accessor: "Apartment Type",
+      render: ({ apartmentDetails }) => `${apartmentDetails.apartmentType}`,
+      resizable: true,
+    },
+    {
+      //Header: "Beds",
+      accessor: "Beds",
+      render: ({ apartmentDetails }) =>
+        `${apartmentDetails.number_of_bed_room}`,
+      resizable: true,
+    },
+    {
+      //Header: "Kitchen",
+      accessor: "Kitchen",
+      render: ({ apartmentDetails }) => `${apartmentDetails.number_of_kitchen}`,
+      resizable: true,
+    },
+    {
+      //Header: "Balcony",
+      accessor: "Balcony",
+      render: ({ apartmentDetails }) => `${apartmentDetails.number_of_balcony}`,
+      resizable: true,
+    },
+    {
+      //Header: "Baths",
+      accessor: "Baths",
+      render: ({ apartmentDetails }) => `${apartmentDetails.number_of_baths}`,
+      resizable: true,
+    },
+    // bill details
+    {
+      //Header: "Rent",
+      accessor: "Rent",
+      render: ({ billDetails }) => `${billDetails.rent}`,
+      resizable: true,
+      // width: 100,
+    },
+    {
+      //Header: "Gas bill",
+      accessor: "Gas bill",
+      render: ({ billDetails }) => `${billDetails.gas_bill}`,
+      resizable: true,
+      // width: 100,
+    },
+    {
+      //Header: "Water bill",
+      accessor: "Water bill",
+      render: ({ billDetails }) => `${billDetails.water_bill}`,
+      resizable: true,
+      // width: 150,
+    },
+
+    {
+      //Header: "Service charge",
+      accessor: "Service charge",
+      render: ({ billDetails }) => `${billDetails.service_charge}`,
+      resizable: true,
+      // width: 100,
+    },
+    {
+      //Header: "Others",
+      accessor: "Others",
+      render: ({ billDetails }) => `${billDetails.others}`,
+      resizable: true,
+      // width: 100,
+    },
+    {
+      //Header: "Total Rent",
+      accessor: "Total Rent",
+      render: ({ billDetails }) => `${billDetails.totalRent}`,
+      resizable: true,
+      // width: 100,
+    },
+  ];
 
   const [popUpModalOpened, setPopUpModalOpened] = useState(false);
   const [popUpData, setPopUpData] = useState({});
 
-  const { user } = useSelector((state) => state.auth.user);
-  const { isPending } = useSelector((state) => state.apartmentInfo);
+  const handlePopUpOn = (rowData) => {
+    setPopUpModalOpened(true);
+    setPopUpData(rowData);
+  };
+
+  const [selectedData, setSelectedData] = useState({
+    floor: 1,
+  });
+
+  const handleChange = (e) => {
+    setSelectedData({ ...selectedData, [e.target.name]: e.target.value });
+  };
 
   //add single apartment
   const addApartment = (floor) => {
     const formData = {
       numOfFloors: floor,
     };
-    dispatch(createMultiApartment(formData))
-      .unwrap()
-      .then(() => {
-        dispatch(allApartments());
-        toast.success("Successfully add new apartment");
-
-        // dispatch(clearMessage());
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    createApartment(formData);
   };
-  //apartment remove function
-  const handleRemove = (apartment) => {
-    if (apartment.isAvailable === true) {
-      setConfirmationPopUp(true);
-      setRemoveId(apartment._id);
-      setIsAssignData(null);
-    } else {
-      setConfirmationPopUp(true);
-      setRemoveId(null);
-      // console.log(apartment);
-      setIsAssignData({
-        ownerId: user._id,
-        apartmentId: apartment._id,
-        _id: apartment.renterId,
-      });
-      // const unAssignedData = {
-      //   ownerId: user._id,
-      //   apartmentId: renter.apartmentId,
-      //   renterId: renter._id,
-      // };
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Successfully add new apartment");
     }
-  };
+  }, [isSuccess]);
 
-  const handleUpdate = (apartment) => {
-    setUpdateData({ ...apartment, ownerId: user._id });
-    setUpdateModalOpened(true);
-  };
-
-  const handlePost = (apartment) => {
-    setPostData(apartment);
-    setPostModalOpened(true);
-  };
-
-  const defaultColDef = {
-    sortable: true,
-    filter: true,
-    floatingFilter: true,
-  };
-  const tableColumns = [
-    {
-      headerName: "Renter Name",
-      field: "renterName",
-      resizable: true,
-      pinned: true,
-      width: 150,
-    },
-    // apartment details
-    {
-      headerName: "Apartment Name",
-      field: "apartmentDetails.apartmentName",
-      resizable: true,
-    },
-    {
-      headerName: "Apartment No",
-      field: "apartmentDetails.apartment_number",
-      resizable: true,
-    },
-    {
-      headerName: "Room No",
-      field: "apartmentDetails.roomNumber",
-      resizable: true,
-    },
-    {
-      headerName: "Apartment Type",
-      field: "apartmentDetails.apartmentType",
-      resizable: true,
-    },
-    {
-      headerName: "Beds",
-      field: "apartmentDetails.number_of_bed_room",
-      resizable: true,
-    },
-    {
-      headerName: "Kitchen",
-      field: "apartmentDetails.number_of_kitchen",
-      resizable: true,
-    },
-    {
-      headerName: "Balcony",
-      field: "apartmentDetails.number_of_balcony",
-      resizable: true,
-    },
-    {
-      headerName: "Baths",
-      field: "apartmentDetails.number_of_baths",
-      resizable: true,
-    },
-    // bill details
-    {
-      headerName: "Rent",
-      field: "billDetails.rent",
-      resizable: true,
-      // width: 100,
-    },
-    {
-      headerName: "Gas bill",
-      field: "billDetails.gas_bill",
-      resizable: true,
-      // width: 100,
-    },
-    {
-      headerName: "Water bill",
-      field: "billDetails.water_bill",
-      resizable: true,
-      // width: 150,
-    },
-
-    {
-      headerName: "Service charge",
-      field: "billDetails.service_charge",
-      resizable: true,
-      // width: 100,
-    },
-    {
-      headerName: "Others",
-      field: "billDetails.others",
-      resizable: true,
-      // width: 100,
-    },
-    {
-      headerName: "Total Rent",
-      field: "billDetails.totalRent",
-      resizable: true,
-      // width: 100,
-    },
-    {
-      headerName: "Available",
-      field: "isAvailable",
-      resizable: true,
-      width: 100,
-      cellStyle: function (params) {
-        if (params.data.isAvailable) {
-          return {
-            color: "black",
-            backgroundColor: "#c4c85b",
-            fontWeight: 900,
-          };
-        } else {
-          return {
-            color: "white",
-            backgroundColor: "green",
-            fontWeight: 900,
-          };
-        }
-      },
-    },
-    {
-      headerName: "Actions",
-      field: "_id",
-      resizable: true,
-      width: 250,
-      cellRenderer: (params) => (
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <button
-            disabled={!params.data.isAvailable}
-            style={{ padding: "0 15px" }}
-            className="button btns"
-            onClick={() => handlePost(params.data)}
-          >
-            post
-          </button>
-          <button
-            className="updateButton btns"
-            onClick={() => handleUpdate(params.data)}
-          >
-            update
-          </button>
-          <button
-            className="removeButton btns"
-            onClick={() => handleRemove(params.data)}
-          >
-            remove
-          </button>
-        </div>
-      ),
-    },
-  ];
-
-  const groupByApartments = (arr, property) => {
-    let grouped = [];
-    for (let i = 0; i < arr.length; i++) {
-      let p = arr[i].apartmentDetails[property];
-      if (!grouped[p]) {
-        grouped[p] = [];
-      }
-      grouped[p].push(arr[i]);
+  //filterd Data by floors
+  const filteredData = data.filter(
+    (row) => row.apartmentDetails.floor === parseInt(selectedData.floor)
+  );
+  //family apartment count
+  let familyApartment = 0;
+  filteredData.forEach((obj) => {
+    if (
+      obj.apartmentDetails &&
+      obj.apartmentDetails.apartmentType === "family"
+    ) {
+      familyApartment++;
     }
-    return grouped;
-  };
-  const numberOfApartments = groupByApartments(floorData, "apartment_number");
-
-  //table resizing function start
-  const sizeToFit = useCallback(() => {
-    gridRef.current.api.sizeColumnsToFit();
-  }, []);
-  const autoSizeAll = useCallback((skipHeader) => {
-    const allColumnIds = [];
-    gridRef.current.columnApi.getColumns().forEach((column) => {
-      allColumnIds.push(column.getId());
-    });
-    gridRef.current.columnApi.autoSizeColumns(allColumnIds, skipHeader);
-  }, []);
-  //table resizing function end
-
-  //handle selected floor data
-  function handlefloorChange(event) {
-    setFloorData((data) => JSON.parse(event.target.value));
-  }
-
-  //floor selected data
-  const floors = data.map((item, index) => (
-    <option key={index} value={JSON.stringify(item)}>
-      {item[0].apartmentDetails.floor}
-    </option>
-  ));
-  const handlePopUpOn = (rowData) => {
-    setPopUpModalOpened(true);
-    setPopUpData(rowData);
-  };
+  });
+  //bachelor apartment count
+  let bachelorApartment = 0;
+  filteredData.forEach((obj) => {
+    if (
+      obj.apartmentDetails &&
+      obj.apartmentDetails.apartmentType === "bachelor"
+    ) {
+      bachelorApartment++;
+    }
+  });
 
   return (
     <>
-      <div className={`card ${Style.table_container}`}>
-        <div className={``}>
-          <label htmlFor="floor" className={ModalStyle.input__label}>
-            Floor number{" "}
-          </label>
-          <select name="floor" onChange={handlefloorChange}>
-            <option value={JSON.stringify(new Array())}>----select----</option>
-            {floors}
-          </select>
-        </div>
-        {/**********  Contain header section ***********/}
-        <div className={Style.table__header}>
-          <h3 className="title">
-            Floor :{" "}
-            {floorData.length === 0 ? 0 : floorData[0].apartmentDetails.floor}
-          </h3>
-          <h4 className="subtitle">
-            Apartments : {Object.keys(numberOfApartments).length}
-          </h4>
-          <h4 className="subtitle">Number of Room : {floorData.length}</h4>
-        </div>
-        {/**********  table  section ***********/}
-        <div
-          className="ag-theme-alpine"
-          style={{ height: "55vh", width: "100%" }}
-        >
-          {floorData.length === 0 ? (
-            <h1 className={Style.table__alert}>Please select floor</h1>
-          ) : (
-            <AgGridReact
-              ref={gridRef}
-              rowData={floorData}
-              columnDefs={tableColumns}
-              defaultColDef={defaultColDef}
-              gridOptions={{
-                onRowDoubleClicked: (event) => handlePopUpOn(event.data),
-                suppressCellFocus: true,
+      <>
+        <div className={`card ${Style.table_container}`}>
+          {/**********  Contain header section ***********/}
+          <div className={Style.table__header}>
+            <h4 className="subtitle">Apartments : {filteredData.length}</h4>
+            <h3 className="title">Family : {familyApartment}</h3>
+            <h4 className="subtitle">Bachelor : {bachelorApartment}</h4>
+          </div>
+          {/**********  header buttons start ***********/}
+          <div className={Style.table__header}>
+            {profileData.role === "owner" && (
+              <button
+                className={`submit_button px-3 py-1`}
+                disabled={isLoading}
+                onClick={() => addApartment(parseInt(selectedData.floor))}
+              >
+                {isLoading ? <LoadingSpinner /> : "ADD"}
+              </button>
+            )}
+
+            <form>
+              <div className={Style.input__container}>
+                <select
+                  className="bg-slate-200 dark:bg-slate-500 dark:text-gray-300"
+                  onChange={handleChange}
+                  value={selectedData.floor}
+                  name="floor"
+                >
+                  <option value="">Select Apartment</option>
+                  {data
+                    ? [
+                        ...new Set(
+                          data.map(
+                            (apartment) => apartment.apartmentDetails.floor
+                          )
+                        ),
+                      ].map((apartment, idx) => (
+                        <option key={idx} value={apartment}>
+                          Floor: {apartment}
+                        </option>
+                      ))
+                    : null}
+                </select>
+              </div>
+            </form>
+          </div>
+          {/**********  header buttons end ***********/}
+
+          {/**********  table start ***********/}
+          <Box
+            sx={(theme) => ({
+              height: 440,
+              width: "calc(100vw - 270px)",
+              // Media query with value from theme
+              [`@media (max-width: ${theme.breakpoints.md}px)`]: {
+                height: "100vh - 200px",
+                width: "calc(100vw - 20px)",
+              },
+            })}
+          >
+            <DataTable
+              withColumnBorders
+              striped
+              highlightOnHover
+              records={filteredData}
+              columns={tableColumns}
+              textSelectionDisabled
+              classNames={{
+                root: "bg-transparent",
               }}
+              rowStyle={{ background: "transparent" }}
+              onRowClick={handleRowDoubleClick}
             />
-          )}
+          </Box>
+          {/**********  table end ***********/}
         </div>
-        <button
-          className={`button ${Style.table__btn}`}
-          disabled={isPending}
-          onClick={() => addApartment(floorData[0].apartmentDetails.floor)}
-        >
-          {isPending ? <LoadingSpinner /> : "ADD"}
-        </button>
-        <div className={Style.table_resize_buttons}>
-          <i
-            className={`${"uil uil-arrows-h-alt"} ${Style.button}`}
-            onClick={() => {
-              autoSizeAll(false);
-            }}
-          ></i>
-          <i
-            className={`${"uil uil-arrows-merge"} ${Style.button}`}
-            onClick={() => {
-              autoSizeAll(true);
-            }}
-          ></i>
-          <i
-            className={`${"uil uil-arrows-shrink-h"} ${Style.button}`}
-            onClick={() => {
-              sizeToFit();
-            }}
-          ></i>
-        </div>
-      </div>
-
-      <ConfirmationModal
-        confirmationPopUp={confirmationPopUp}
-        setConfirmationPopUp={setConfirmationPopUp}
-        data={removeId}
-        popUp_type="Remove_Apartment"
-        isAssignData={isAssignData}
-      />
-
-      {Object.keys(popUpData) != 0 && (
-        <PopUpWindow
-          popUpModalOpened={popUpModalOpened}
-          setPopUpModalOpened={setPopUpModalOpened}
-          data={popUpData}
-        />
-      )}
-
-      <UpdateApartment
-        updateModalOpened={updateModalOpened}
-        setUpdateModalOpened={setUpdateModalOpened}
-        data={updateData}
-      />
-
-      <PostShare
-        postModalOpened={postModalOpened}
-        setPostModalOpened={setPostModalOpened}
-        data={postData}
-      />
+        {Object.keys(popUpData) != 0 && (
+          <PopUpWindow
+            popUpModalOpened={popUpModalOpened}
+            setPopUpModalOpened={setPopUpModalOpened}
+            data={popUpData}
+          />
+        )}
+      </>
     </>
   );
 };

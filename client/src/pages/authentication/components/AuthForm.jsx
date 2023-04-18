@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import ErrorMessage from "../../../Components/UI/Error/ErrorMessage";
 import { useAuthHook } from "../hooks/useAuthHook";
 import styles from "../styles/SignIn.module.css";
 import AuthButton from "./ui/AuthButton";
@@ -10,14 +12,19 @@ const AuthForm = ({ authType }) => {
   const {
     formValue,
     touchedFields,
+    loading,
     errors,
     handleSubmit,
     handleChange,
     handleBlur,
     handleFocus,
   } = useAuthHook({ authType });
+  const { errorMessage } = useSelector((state) => state.message);
+
   return (
     <form onSubmit={handleSubmit}>
+      {errorMessage && <ErrorMessage message={errorMessage?.data.message} />}
+
       {authType === "signupForm" && (
         <AuthInput
           required
@@ -106,6 +113,8 @@ const AuthForm = ({ authType }) => {
         <AuthButton
           title={authType === "signupForm" ? "Register" : "Log in"}
           authType="submit"
+          loading={loading}
+          disabled={loading}
         />
       </div>
     </form>

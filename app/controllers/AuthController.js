@@ -148,16 +148,16 @@ const OwnerRegister = async (req, res) => {
 
     if (role === "owner" || role === "manager") {
       const owner = await newOwner.save();
-      // const token = jwt.sign(
-      //   {
-      //     username: owner.username,
-      //     id: owner._id,
-      //   },
-      //   process.env.JWT_KEY,
-      //   { expiresIn: "1h" }
-      // );
-      // res.status(200).json({ user: owner, token: `Bearer ${token}` });
-      res.status(200).json({ message: "Registration Complete" });
+      const token = jwt.sign(
+        {
+          username: owner.username,
+          id: owner._id,
+        },
+        process.env.JWT_KEY,
+        { expiresIn: "1h" }
+      );
+      res.status(200).json({ user: owner, token: `Bearer ${token}` });
+      // res.status(200).json({ message: "Registration Complete" });
     } else {
       return resourceError(res, "Role not defined");
     }

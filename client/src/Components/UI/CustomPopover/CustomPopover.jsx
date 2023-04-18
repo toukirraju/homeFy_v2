@@ -18,11 +18,10 @@ const CustomPopover = ({ children, onClose }) => {
   }, [onClose]);
 
   return (
-    <div className="card popover-container" ref={ref}>
+    <div className="card popover-container py-2" ref={ref}>
       {children}
     </div>
   );
 };
 
 export default CustomPopover;
-// ${RightStyle.message__container}

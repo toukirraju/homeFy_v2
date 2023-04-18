@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import styles from "./SearchRenter.module.css";
 import { UilSearch, UilTimes } from "@iconscout/react-unicons";
 import { useDispatch } from "react-redux";
-import { searchRenter } from "../../../../redux/slices/renterSlice";
 import SearchPopUp from "../../modals/SearchPopUp";
 import { Loader } from "@mantine/core";
 import * as Yup from "yup";
 import { Formik, Form, Field } from "formik";
+import { searchRenter } from "../../../../redux/features/filter/filterSlice";
 
 const ValidatinSchema = Yup.object().shape({
   search: Yup.string().required("Required"),
@@ -28,22 +28,18 @@ const SearchRenter = () => {
         setSearchPopUp={setSearchPopUp}
         data={searchData}
       />
-      {loading ? <Loader color="teal" variant="bars" /> : null}
 
       <div className={styles.Search_Wrapper}>
-        {/* <img src={Logo} alt="" /> */}
         <Formik
           initialValues={initialValues}
           validationSchema={ValidatinSchema}
           onSubmit={(values) => {
-            // same shape as initial values
-            // console.log(values);
             setLoading(true);
             dispatch(searchRenter(values.search))
               .unwrap()
               .then((res) => {
                 setLoading(false);
-                setSearchData(res.renter);
+                setSearchData(res);
                 setSearchPopUp(true);
               })
               .catch((error) => {
@@ -51,23 +47,38 @@ const SearchRenter = () => {
               });
           }}
         >
-          {({ errors, touched, resetForm }) => (
+          {({ errors, touched, resetForm, dirty }) => (
             <Form>
-              <div className={styles.Search}>
-                <Field
-                  type="text"
-                  name="search"
-                  placeholder="#Find Renter"
-                  // onChange={(e) => setSearchId(e.target.value)}
-                />
-                {errors.search && touched.search ? (
-                  <div className={styles.input__error}>{errors.search}</div>
-                ) : null}
-                <div className={styles.s_buttons}>
-                  {initialValues && (
-                    <UilTimes cursor="pointer" onClick={() => resetForm()} />
-                  )}
+              <div className="flex">
+                <div className="relative flex">
+                  <Field
+                    type="text"
+                    name="search"
+                    className="dark:bg-slate-800"
+                    placeholder="Find Renter"
+                  />
+                  {errors.search && touched.search ? (
+                    <div className={styles.input__error}>{errors.search}</div>
+                  ) : null}
+                  {dirty && loading ? (
+                    <Loader
+                      color="cyan"
+                      size="sm"
+                      className="absolute right-1 top-2.5 text-red-500"
+                      variant="oval"
+                    />
+                  ) : dirty && !loading ? (
+                    <UilTimes
+                      className="absolute right-0 top-2 text-red-500"
+                      cursor="pointer"
+                      onClick={() => {
+                        resetForm();
+                      }}
+                    />
+                  ) : null}
+                </div>
 
+                <div className={styles.s_buttons}>
                   <button className={styles.s_icon} type="submit">
                     <UilSearch />
                   </button>

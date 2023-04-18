@@ -94,11 +94,11 @@
 /* Dark mode */
 
 @media (prefers-color-scheme: dark) {
-  .ProfileCard {
-    background-color: rgb(119, 136, 145);
+  .dark .ProfileCard {
+    background-color: rgb(25, 38, 45);
   }
-  .ProfileName,
-  .follow > span:nth-of-type(2) {
+  .dark .ProfileName,
+  .dark .follow > span:nth-of-type(2) {
     color: rgb(209, 236, 243);
     --tw-drop-shadow: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
       drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
@@ -107,7 +107,7 @@
       var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
   }
 
-  .follow > span:nth-of-type(1) {
+  .dark .follow > span:nth-of-type(1) {
     color: rgb(243, 243, 243);
     --tw-drop-shadow: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
       drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));

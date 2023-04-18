@@ -25,9 +25,6 @@
   cursor: pointer;
 }
 
-.right__logOut:hover {
-  background: var(--location);
-}
 .message__container {
   /* height: calc(100vh - 100px); */
   width: 95%;
@@ -39,23 +36,9 @@
   z-index: 1;
 }
 
-.popover__buttons {
-  margin-bottom: 5px;
-  gap: 5px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 5px 20px;
-  cursor: pointer;
-}
-.popover__buttons:hover {
-  background: #f1f1f1;
-  border-radius: 10px;
-}
-
 @media screen and (max-width: 768px) {
   .navIcons > a {
-    color: gray;
+    /* color: gray; */
   }
   .message__container {
     position: fixed;
@@ -67,25 +50,4 @@
 /* Dark mode */
 
 @media (prefers-color-scheme: dark) {
-  .navIcons > a {
-    color: rgb(243, 243, 243);
-    --tw-drop-shadow: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
-      drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
-    filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast)
-      var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert)
-      var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
-  }
-
-  .popover__buttons {
-    color: rgb(180, 180, 180);
-  }
-  .popover__buttons:hover {
-    background: #adadad;
-    color: rgb(243, 243, 243);
-    --tw-drop-shadow: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
-      drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
-    filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast)
-      var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert)
-      var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
-  }
 }

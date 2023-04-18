@@ -5,14 +5,29 @@ import Style from "../../styles/Dashboard.module.css";
 import { Bar } from "react-chartjs-2";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 
-import { useDispatch, useSelector } from "react-redux";
 import { useMediaQuery } from "@mantine/hooks";
-import { getYearlyBills } from "../../../../redux/slices/dashboardSlice";
+import { useFetchYarlyBillsQuery } from "../../../../redux/features/dashboard/RTK Query/dashboardApi";
 
 const BarChartCompo = (props) => {
-  const dispatch = useDispatch();
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [selectedDate, setSelectedDate] = useState(new Date());
+
+  const {
+    data: yearlyBills,
+    isLoading: isLoadingYbill,
+    isError: isErrorYbill,
+    isSuccess: isSuccessYrlyBills,
+  } = useFetchYarlyBillsQuery(selectedDate.getFullYear());
+
+  let barChart = {};
+  if (
+    !isLoadingYbill &&
+    !isErrorYbill &&
+    isSuccessYrlyBills &&
+    Object.keys(yearlyBills).length > 0
+  ) {
+    barChart = yearlyBills;
+  }
 
   const data = {
     labels: [
@@ -32,7 +47,7 @@ const BarChartCompo = (props) => {
     datasets: [
       {
         label: "Total Rent",
-        data: Object.values(props.data).map(
+        data: Object.values(barChart).map(
           (monthNumber) => monthNumber.totalRent
         ),
         backgroundColor: "rgba(255, 99, 132, 0.2)",
@@ -41,7 +56,7 @@ const BarChartCompo = (props) => {
       },
       {
         label: "Payable Amount",
-        data: Object.values(props.data).map(
+        data: Object.values(barChart).map(
           (monthNumber) => monthNumber.payableAmount
         ),
         backgroundColor: "rgba(54, 162, 235, 0.2)",
@@ -50,7 +65,7 @@ const BarChartCompo = (props) => {
       },
       {
         label: "Paid Amount",
-        data: Object.values(props.data).map(
+        data: Object.values(barChart).map(
           (monthNumber) => monthNumber.paidAmount
         ),
         backgroundColor: "rgba(255, 206, 86, 0.2)",
@@ -59,10 +74,6 @@ const BarChartCompo = (props) => {
       },
     ],
   };
-
-  useEffect(() => {
-    dispatch(getYearlyBills(selectedDate.getFullYear()));
-  }, [selectedDate]);
 
   return (
     <div className={`${Style.bar_chart}`}>
@@ -88,7 +99,7 @@ const BarChartCompo = (props) => {
             maintainAspectRatio: false,
             responsive: true,
             animation: {
-              duration: 0,
+              duration: 1000,
             },
 
             plugins: {

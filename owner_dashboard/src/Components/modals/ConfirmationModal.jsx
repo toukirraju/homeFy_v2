@@ -1,32 +1,18 @@
 import Styles from "./ModalStyle.module.css";
-import { Modal, useMantineTheme } from "@mantine/core";
+import { Modal } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
-import {
-  GetManagers,
-  OwnerInfo,
-  RemoveRole,
-  updateHouseInfo,
-} from "../../redux/slices/ownerSlice";
-import { removeLevels } from "../../redux/slices/apartmentSlice";
-import { setReload } from "../../redux/slices/reloadSlice";
-import { removeRenter } from "../../redux/slices/renterSlice";
 import UnAssignRenter from "./renterModal/UnAssignRenter";
-import {
-  createBill,
-  createTemporaryBill,
-  monthlyBill,
-  removeBill,
-  removeTemporaryBill,
-  temporaryBill,
-} from "../../redux/slices/billSlice";
 import LoadingSpinner from "../LoadingSpinner";
 import { toast } from "react-toastify";
-import { clearMessage } from "../../redux/slices/message";
-// import { uploadImage } from "../../actions/UploadAction";
-// import { updateUser } from "../../actions/UserAction";
+import { useDeleteApartmentMutation } from "../../redux/features/apartment/RTK Query/apartmentApi";
+import { useRemoveRenterMutation } from "../../redux/features/renter/RTK Query/renterApi";
+import {
+  useCreateBillMutation,
+  useDeleteBillMutation,
+  useDeleteTemporaryBillMutation,
+} from "../../redux/features/transactions/RTK Query/billApi";
+import { useRemoveManagerRoleMutation } from "../../redux/features/profile/RTK Query/profileApi";
 
 function ConfirmationModal({
   confirmationPopUp,
@@ -35,128 +21,118 @@ function ConfirmationModal({
   popUp_type,
   isAssignData,
 }) {
-  const theme = useMantineTheme();
   const isMobile = useMediaQuery("(max-width: 600px)");
-
-  const [date, setDate] = useState(new Date());
-  const month = date.getMonth() + 1;
-  const year = date.getFullYear();
   const [unAssignModalOpened, setUnAssignModalOpened] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const dispatch = useDispatch();
-  // console.log(isAssignData);
-  // console.log(data);
+
+  //delete apartemnet
+  const [
+    deleteApartment,
+    {
+      isSuccess: apartmentDeletionSuccess,
+      isLoading: apartmentDeletionLoading,
+    },
+  ] = useDeleteApartmentMutation();
+
+  //delete renter
+  const [
+    removeRenter,
+    { isSuccess: renterRemoveSuccess, isLoading: renterRemoveLoading },
+  ] = useRemoveRenterMutation();
+
+  //delete bill
+  const [
+    deleteBill,
+    { isSuccess: billDeleteSuccess, isLoading: billDeleteLoading },
+  ] = useDeleteBillMutation();
+
+  //delete temporary bill
+  const [
+    deleteTemporaryBill,
+    { isSuccess: tempBillDeleteSuccess, isLoading: tempBillDeleteLoading },
+  ] = useDeleteTemporaryBillMutation();
+
+  //create bill
+  const [
+    createBill,
+    { isSuccess: createBillSuccess, isLoading: createBillLoading },
+  ] = useCreateBillMutation();
+
+  //remove manager
+  const [
+    removeManagerRole,
+    { isSuccess: managerRemoveSuccess, isLoading: managerRemoveLoading },
+  ] = useRemoveManagerRoleMutation();
+
   const handleSubmit = () => {
     switch (popUp_type) {
       case "Remove_Apartment":
-        setLoading(true);
-        dispatch(removeLevels(data))
-          .unwrap()
-          .then(() => {
-            setLoading(false);
-            toast.success("Successfully remove apartment");
-            dispatch(setReload());
-            setConfirmationPopUp(false);
-          })
-          .catch(() => {
-            setLoading(false);
-          });
+        deleteApartment(data);
 
         break;
       case "Remove_Renter":
-        setLoading(true);
-        dispatch(removeRenter(data))
-          .unwrap()
-          .then(() => {
-            setLoading(false);
-            dispatch(setReload());
-            setConfirmationPopUp(false);
-          })
-          .catch(() => {
-            setLoading(false);
-          });
+        removeRenter(data);
         break;
 
       case "Create_Bill":
-        setLoading(true);
-        dispatch(createBill(data))
-          .unwrap()
-          .then(() => {
-            toast.success("Payment complete!");
-            setLoading(false);
-            setConfirmationPopUp(false);
-            dispatch(monthlyBill({ month, year }));
-            dispatch(temporaryBill());
-            dispatch(clearMessage());
-            // dispatch(setReload());
-          })
-          .catch(() => {
-            setLoading(false);
-          });
+        // console.log(data);
+        createBill(data);
+        // setLoading(true);
+        // dispatch(createBill(data))
+        //   .unwrap()
+        //   .then(() => {
+        //     toast.success("Payment complete!");
+        //     setLoading(false);
+        //     setConfirmationPopUp(false);
+        //     dispatch(monthlyBill({ month, year }));
+        //     dispatch(temporaryBill());
+        //     dispatch(clearMessage());
+        //     // dispatch(setReload());
+        //   })
+        //   .catch(() => {
+        //     setLoading(false);
+        //   });
         // props.onHide(false);
         break;
       case "Remove_Bill":
-        setLoading(true);
-        dispatch(removeBill(data))
-          .unwrap()
-          .then(() => {
-            toast.info("Bill removed!");
-            setLoading(false);
-            setConfirmationPopUp(false);
-            dispatch(monthlyBill({ month, year }));
-            dispatch(temporaryBill());
-            dispatch(setReload());
-          })
-          .catch(() => {
-            setLoading(false);
-          });
+        deleteBill(data);
         break;
-      case "Create_Temporary_Bill":
-        setLoading(true);
-        dispatch(createTemporaryBill(data))
-          .unwrap()
-          .then(() => {
-            toast.success("Temporary bill created!");
-            setLoading(false);
-            setConfirmationPopUp(false);
-            dispatch(setReload());
-          })
-          .catch(() => {
-            setLoading(false);
-          });
-        break;
+
       case "Remove_Temporary_Bill":
-        setLoading(true);
-        dispatch(removeTemporaryBill(data))
-          .unwrap()
-          .then(() => {
-            toast.info("Temporary Bill removed!");
-            setLoading(false);
-            setConfirmationPopUp(false);
-            dispatch(setReload());
-          })
-          .catch(() => {
-            setLoading(false);
-          });
+        deleteTemporaryBill(data);
         break;
 
       case "Delete_manager":
-        setLoading(true);
-        dispatch(RemoveRole(data))
-          .unwrap()
-          .then(() => {
-            toast.success("Manager Deleted");
-            setLoading(false);
-            setConfirmationPopUp(false);
-            dispatch(GetManagers());
-          })
-          .catch(() => {
-            setLoading(false);
-          });
+        removeManagerRole(data);
         break;
+
+      default:
+        return null;
     }
   };
-  // console.log(data);
+
+  const success =
+    renterRemoveSuccess ||
+    apartmentDeletionSuccess ||
+    createBillSuccess ||
+    billDeleteSuccess ||
+    tempBillDeleteSuccess ||
+    managerRemoveSuccess;
+  const loading =
+    apartmentDeletionLoading ||
+    renterRemoveLoading ||
+    createBillLoading ||
+    billDeleteLoading ||
+    tempBillDeleteLoading ||
+    managerRemoveLoading;
+
+  useEffect(() => {
+    if (success) {
+      toast.success("Success!");
+      setConfirmationPopUp(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [success]);
+
   const unAssingned = () => {
     setConfirmationPopUp(false);
     setUnAssignModalOpened(true);
@@ -170,11 +146,11 @@ function ConfirmationModal({
       />
 
       <Modal
-        overlayColor={
-          theme.colorScheme === "dark"
-            ? theme.colors.dark[9]
-            : theme.colors.gray[2]
-        }
+        classNames={{
+          modal: `modal__Body`,
+          title: `modal__title`,
+          close: `modal__close`,
+        }}
         overlayOpacity={0.55}
         overlayBlur={3}
         size={isMobile ? "sm" : "md"}
@@ -196,15 +172,15 @@ function ConfirmationModal({
                   Do you really want to <b>{popUp_type}</b> ? After doing this
                   it can't be undone.
                 </div>
-                <div className={Styles.popUp__submit_btns}>
+                <div className="flex justify-end gap-2">
                   <button
-                    className={`removeButton ${Styles.infoButton}`}
+                    className="rounded-lg bg-slate-400 px-3 py-1 uppercase hover:bg-sky-500 hover:text-gray-200"
                     onClick={() => setConfirmationPopUp(false)}
                   >
                     cancel
                   </button>
                   <button
-                    className={`button ${Styles.infoButton}`}
+                    className={`removeButton px-3 py-1`}
                     disabled={loading}
                     onClick={() => handleSubmit()}
                   >
@@ -212,24 +188,23 @@ function ConfirmationModal({
                   </button>
                 </div>
               </>
-            ) : popUp_type === "Create_Bill" ||
-              popUp_type === "Create_Temporary_Bill" ? (
+            ) : popUp_type === "Create_Bill" ? (
               <>
                 <h3 className="title"> Are you sure? </h3>
-                <div className={Styles.popUp__body}>
+                <div className="text-gray-300">
                   Do you really want to <b>{popUp_type}</b>? After creating, it
                   cannot be undone.
                 </div>
 
-                <div className={Styles.popUp__submit_btns}>
+                <div className="my-5 flex justify-end gap-2">
                   <button
-                    className={`removeButton ${Styles.infoButton}`}
+                    className="rounded-lg bg-slate-400 px-2 py-1 uppercase hover:bg-sky-500 hover:text-gray-200"
                     onClick={() => setConfirmationPopUp(false)}
                   >
                     cancel
                   </button>
                   <button
-                    className={`button ${Styles.infoButton}`}
+                    className={`submit_button px-3 py-1`}
                     disabled={loading}
                     onClick={() => handleSubmit()}
                   >
@@ -246,15 +221,15 @@ function ConfirmationModal({
               To remove the <b>{popUp_type}</b>, it must be <b>unassigned</b>{" "}
               first.
             </div>
-            <div className={Styles.popUp__submit_btns}>
+            <div className="flex justify-end gap-2">
               <button
-                className={`removeButton ${Styles.infoButton}`}
+                className={`removeButton px-3 py-1`}
                 onClick={() => setConfirmationPopUp(false)}
               >
                 cancel
               </button>
               <button
-                className={`warningButton ${Styles.infoButton}`}
+                className={`updateButton px-3 py-1`}
                 onClick={() => unAssingned()}
               >
                 unassign

@@ -1,14 +1,16 @@
 import { Formik } from "formik";
-import { useState } from "react";
-import Style from "../styles/loginForm.module.css";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { login, register } from "../../../redux/slices/auth";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../../Components/LoadingSpinner";
-import { UilEstate } from "@iconscout/react-unicons";
 import { toast } from "react-toastify";
 import AlertPoPUP from "../../../Components/AlertPoPUP";
-import { clearMessage } from "../../../redux/slices/message";
+import { clearMessage, setMessage } from "../../../redux/slices/message";
+import {
+  useSignInMutation,
+  useSignUpMutation,
+} from "../../../redux/features/auth/RTK Query/authApi";
+import TextInput from "../../../Components/UI/TextInput";
 
 const initialValues = {
   firstname: "",
@@ -20,9 +22,13 @@ const initialValues = {
   role: "",
 };
 
-const validate = (values) => {
+const validate = (values, isSignUp) => {
   let errors = {};
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+
+  if (!values.firstname && isSignUp) {
+    errors.firstname = "Firstname is required";
+  }
 
   if (!values.username) {
     errors.username = "Username is required";
@@ -43,45 +49,75 @@ const validate = (values) => {
     errors.cpassword = "Password does not match";
   }
 
+  if (!values.phone && isSignUp) {
+    errors.phone = "Phone number is required";
+  }
+
+  if (!values.role && isSignUp) {
+    errors.role = "Role is required";
+  }
+
   return errors;
 };
 
 const LoginForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isPending } = useSelector((state) => state.auth);
+
+  const [
+    signIn,
+    {
+      isSuccess: signInSuccess,
+      isLoading: signInLoading,
+      isError: signInIsError,
+      error: signinError,
+    },
+  ] = useSignInMutation();
+  const [
+    signUp,
+    {
+      isSuccess: signUpSuccess,
+      isLoading: signUpLoading,
+      isError: signUpIsError,
+      error: signupError,
+    },
+  ] = useSignUpMutation();
+
+  const loading = signInLoading || signUpLoading;
+  const success = signInSuccess || signUpSuccess;
+  const isError = signInIsError || signUpIsError;
+
   const { message } = useSelector((state) => state.message);
   const [isSignUp, setIsSignUp] = useState(false);
 
   const submitForm = (values, { resetForm }) => {
-    resetForm();
     if (isSignUp) {
-      dispatch(register(values))
-        .unwrap()
-        .then(() => {
-          toast.success("Successfully registred");
-          setIsSignUp(false);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      signUp(values);
     } else {
-      dispatch(login(values))
-        .unwrap()
-        .then(() => {
-          toast.success("Successfully login");
-          dispatch(clearMessage());
-          navigate("/");
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      signIn(values);
     }
+    success && resetForm();
   };
+  useEffect(() => {
+    if (success) {
+      dispatch(clearMessage());
+      toast.success("Success");
+      navigate("/");
+    }
+  }, [success, dispatch, navigate]);
+
+  useEffect(() => {
+    dispatch(clearMessage());
+    if (isError) {
+      signinError && dispatch(setMessage(signinError?.data?.message));
+      signupError && dispatch(setMessage(signupError?.data?.message));
+    }
+  }, [isError, dispatch]);
+
   return (
     <Formik
       initialValues={initialValues}
-      validate={validate}
+      validate={(values) => validate(values, isSignUp)}
       onSubmit={submitForm}
     >
       {(formik) => {
@@ -97,210 +133,169 @@ const LoginForm = () => {
           resetForm,
         } = formik;
         return (
-          <div className={Style.container}>
+          // Style.container Style.form__row
+          <div className={`mx-5 mb-5 md:mx-10 lg:mx-28`}>
             {message && <AlertPoPUP message={message} />}
 
-            <h3 className={Style.title}>
-              {isSignUp
-                ? "Sign up for new account"
-                : "Sign for Owner Dashboard"}
+            <h3 className="my-5 text-center text-2xl font-extrabold text-gray-500 drop-shadow-lg dark:text-white">
+              {isSignUp ? "Signup for new account" : "Dashboard Signin"}
             </h3>
 
             {!isSignUp && (
-              <div
-                className="demo"
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  flexDirection: "column",
-                }}
-              >
+              <div className="text-gray-500 dark:text-slate-300">
                 <h3>
                   if you want to check demo version then Sign in with given
                   credentials
                 </h3>
-                <div
-                  className="credintials"
-                  style={{
-                    padding: "10px",
-                    display: "flex",
-                    justifyContent: "center",
-                    flexDirection: "column",
-                  }}
-                >
-                  <span>
+                <ul className="md:list-disc">
+                  <li className="text-gray-500">
                     <b>username:</b> ownerdashboard
-                  </span>
-                  <span>
+                  </li>
+                  <li className="text-gray-500">
                     <b>password:</b> 12345
-                  </span>
-                </div>
+                  </li>
+                </ul>
               </div>
             )}
 
             <form onSubmit={handleSubmit}>
               {isSignUp && (
                 <div
-                  className={Style.form__row}
-                  style={{ display: "flex", gap: "10px" }}
+                  className={`my-1 flex gap-1 rounded-lg bg-white p-2 shadow-md dark:bg-slate-600`}
                 >
-                  <div style={{ flexGrow: 1 }}>
-                    <label htmlFor="firstname">First name</label>
-                    <input
-                      type="firstname"
-                      name="firstname"
-                      id="firstname"
-                      value={values.firstname}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      className={
-                        errors.firstname && touched.firstname
-                          ? "input-error"
-                          : null
-                      }
-                    />
-                    {errors.firstname && touched.firstname && (
-                      <span className={Style.error}>{errors.firstname}</span>
-                    )}
-                  </div>
-                  <div style={{ flexGrow: 1 }}>
-                    <label htmlFor="lastname">Last name</label>
-                    <input
-                      type="lastname"
-                      name="lastname"
-                      id="lastname"
-                      value={values.lastname}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      className={
-                        errors.lastname && touched.lastname
-                          ? "input-error"
-                          : null
-                      }
-                    />
-                    {errors.lastname && touched.lastname && (
-                      <span className={Style.error}>{errors.lastname}</span>
-                    )}
-                  </div>
+                  <TextInput
+                    title="First name"
+                    type="firstname"
+                    name="firstname"
+                    id="firstname"
+                    placeholder="first name"
+                    value={values.firstname}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    errors={errors.firstname}
+                    touched={touched.firstname}
+                  />
+
+                  <TextInput
+                    title="Last name"
+                    type="lastname"
+                    name="lastname"
+                    id="lastname"
+                    placeholder="last name"
+                    value={values.lastname}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    errors={errors.lastname}
+                    touched={touched.lastname}
+                  />
                 </div>
               )}
-
-              <div className={Style.form__row}>
-                <label htmlFor="username">Email/Username</label>
-                <input
+              {/* Style.form__row */}
+              <div
+                className={`my-1 flex rounded-lg bg-white p-2 shadow-md dark:bg-slate-600`}
+              >
+                <TextInput
                   type="text"
                   name="username"
                   id="username"
+                  title="Email"
+                  placeholder="@username"
                   value={values.username}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={
-                    errors.username && touched.username ? "input-error" : null
-                  }
+                  errors={errors.username}
+                  touched={touched.username}
                 />
-                {errors.username && touched.username && (
-                  <span className={Style.error}>{errors.username}</span>
-                )}
               </div>
-
               <div
-                className={Style.form__row}
-                style={{ display: "flex", gap: "10px" }}
+                className={`my-1 flex gap-1 rounded-lg bg-white p-2 shadow-md dark:bg-slate-600`}
               >
-                <div style={{ flexGrow: 1 }}>
-                  <label htmlFor="password">Password</label>
-                  <input
+                <TextInput
+                  title="Password"
+                  type="password"
+                  name="password"
+                  id="password"
+                  placeholder="password"
+                  value={values.password}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  errors={errors.password}
+                  touched={touched.password}
+                />
+
+                {isSignUp && (
+                  <TextInput
+                    title="Confirm Password"
                     type="password"
-                    name="password"
-                    id="password"
-                    value={values.password}
+                    name="cpassword"
+                    placeholder="confirm password"
+                    id="cpassword"
+                    value={values.cpassword}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    className={
-                      errors.password && touched.password
-                        ? Style.input__error
-                        : null
-                    }
+                    errors={errors.cpassword}
+                    touched={touched.cpassword}
                   />
-                  {errors.password && touched.password && (
-                    <span className={Style.error}>{errors.password}</span>
-                  )}
-                </div>
-                {isSignUp && (
-                  <div style={{ flexGrow: 1 }}>
-                    <label htmlFor="cpassword">Confirm Password</label>
-                    <input
-                      type="password"
-                      name="cpassword"
-                      id="cpassword"
-                      value={values.cpassword}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      className={
-                        errors.cpassword && touched.cpassword
-                          ? Style.input__error
-                          : null
-                      }
-                    />
-                    {errors.cpassword && touched.cpassword && (
-                      <span className={Style.error}>{errors.cpassword}</span>
-                    )}
-                  </div>
                 )}
               </div>
 
               {isSignUp && (
-                <div className={Style.form__row}>
-                  <label htmlFor="phone">Phone</label>
-                  <input
-                    type="phone"
+                <div
+                  className={`my-1 flex rounded-lg bg-white p-2 shadow-md dark:bg-slate-600`}
+                >
+                  <TextInput
+                    title="Phone"
+                    type="tel"
                     name="phone"
                     id="phone"
+                    placeholder="019XXXXXXXX"
                     value={values.phone}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    className={
-                      errors.phone && touched.phone ? "input-error" : null
-                    }
+                    errors={errors.phone}
+                    touched={touched.phone}
                   />
-                  {errors.phone && touched.phone && (
-                    <span className={Style.error}>{errors.phone}</span>
-                  )}
                 </div>
               )}
 
               {isSignUp && (
-                <div className={Style.form__row}>
-                  <label htmlFor="role">Role</label>
-
-                  <select
-                    name="role"
-                    value={values.role}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    // style={{ display: "block" }}
+                <div
+                  className={`my-1 flex rounded-lg bg-white p-2 shadow-md dark:bg-slate-600`}
+                >
+                  <div
+                    className={`w-full text-sm font-normal text-gray-500 dark:text-slate-300`}
                   >
-                    <option value="" label="Select a role">
-                      Select a role{" "}
-                    </option>
-                    <option value="owner" label="owner">
-                      owner
-                    </option>
-                    <option value="manager" label="manager">
-                      manager
-                    </option>
-                  </select>
-                  {errors.role && touched.role && (
-                    <span className="input-feedback">{errors.role}</span>
-                  )}
+                    <label htmlFor="role">Role</label>
+
+                    <select
+                      name="role"
+                      value={values.role}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      className="w-full dark:bg-slate-700"
+                    >
+                      <option value="" label="Select a role">
+                        Select a role{" "}
+                      </option>
+                      <option value="owner" label="owner">
+                        owner
+                      </option>
+                      <option value="manager" label="manager">
+                        manager
+                      </option>
+                    </select>
+                    {errors.role && touched.role && (
+                      <span className="mx-1 w-full text-xs text-red-500">
+                        {errors.role}
+                      </span>
+                    )}
+                  </div>
                 </div>
               )}
 
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <div className="my-2 cursor-pointer text-xs text-gray-500 hover:text-gray-700 dark:hover:text-white">
                 <div>
                   <span
-                    className={Style.isAccount}
                     onClick={() => {
                       setIsSignUp((prev) => !prev);
                       resetForm();
@@ -312,19 +307,20 @@ const LoginForm = () => {
                       : "Don't have an account? Sign Up"}
                   </span>
                 </div>
-                {isSignUp && <div></div>}
               </div>
 
               <button
                 type="submit"
                 className={
-                  !(dirty && isValid) ? "disabled-btn" : Style.signinButton
+                  !(dirty && isValid)
+                    ? "disabled-btn px-2 py-1"
+                    : "submit_button px-2 py-1"
                 }
-                disabled={!(dirty && isValid)}
+                disabled={!(dirty && isValid) || loading}
                 style={{ margin: "auto" }}
               >
                 {/* {isSignUp ? "Sign up" : "Sign in"} */}
-                {isPending ? (
+                {loading ? (
                   <LoadingSpinner />
                 ) : isSignUp ? (
                   "Sign up"

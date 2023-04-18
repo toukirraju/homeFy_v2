@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import LoadingSpinner from "../../../../Components/LoadingSpinner";
 import { clearMessage } from "../../../../redux/slices/message";
-import { SearchManager } from "../../../../redux/slices/ownerSlice";
 import Style from "../../styles/Profile.module.css";
 import SearchOutput from "../searchOutputCard/SearchOutput";
 
 import * as Yup from "yup";
 import { Formik, Form, Field } from "formik";
+import { searchManager } from "../../../../redux/features/filter/filterSlice";
 
 const ValidatinSchema = Yup.object().shape({
   search: Yup.string().required("Required"),
@@ -37,7 +37,7 @@ const SearchSection = () => {
           // same shape as initial values
           // console.log(values);
           setisLoading(true);
-          dispatch(SearchManager(values.search))
+          dispatch(searchManager(values.search))
             .unwrap()
             .then((result) => {
               setisLoading(false);
@@ -51,6 +51,7 @@ const SearchSection = () => {
           <Form>
             <div className={` ${Style.search_section}`}>
               <Field
+                className="dark:bg-slate-800"
                 type="text"
                 name="search"
                 placeholder="@username"
@@ -64,7 +65,7 @@ const SearchSection = () => {
               ) : null}
               <button
                 disabled={isLoading}
-                className={` ${Style.search_button}`}
+                className={`submit_button absolute right-0 my-0.5 px-2 py-1`}
                 type="submit"
               >
                 {isLoading ? <LoadingSpinner /> : "find"}

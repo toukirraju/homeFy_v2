@@ -10,10 +10,13 @@ app.use(cors());
 dotEnv.config({ path: "./config.env" });
 
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: false, limit: "50mb" }));
+app.use(express.json({ limit: "50mb" }));
 
 // parse application/jsonß
-app.use(bodyParser.json());
+
+// app.use(bodyParser.urlencoded({ extended: false, limit: "50mb" }));
+// app.use(bodyParser.json({ limit: "50mb" }));
 
 // passportjs initializetion
 app.use(passport.initialize());

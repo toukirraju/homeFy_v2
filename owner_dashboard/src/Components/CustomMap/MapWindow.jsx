@@ -36,11 +36,11 @@ const MapWindow = ({ mapWindowOpen, setMapWindowOpen, setAddress }) => {
   };
   return (
     <Modal
-      overlayColor={
-        theme.colorScheme === "dark"
-          ? theme.colors.dark[9]
-          : theme.colors.gray[2]
-      }
+      classNames={{
+        modal: `bg-transparent`,
+        title: `modal__title`,
+        close: `modal__close`,
+      }}
       overlayOpacity={0.55}
       overlayBlur={3}
       size={isMobile ? "sm" : "lg"}

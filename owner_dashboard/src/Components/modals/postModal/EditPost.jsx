@@ -1,19 +1,10 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Styles from "../../../Styles/ModalStyle.module.css";
 import "../../postComponents/postShare/PostShare.css";
-import ProfileImg from "../../../assets/user.png";
-import { useSelector, useDispatch } from "react-redux";
-import { Loader, Switch, Modal, useMantineTheme } from "@mantine/core";
+import { Switch, Modal } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import {
   UilScenery,
-  UilPlayCircle,
-  UilLocationPoint,
-  UilSchedule,
-  UilTimes,
-  UilBookReader,
-  UilBuilding,
-  UilUser,
   UilSimCard,
   UilLayerGroup,
   UilListOl,
@@ -27,22 +18,19 @@ import {
   UilFire,
   UilTear,
   UilWrench,
-  UilElipsisDoubleVAlt,
   UilSigma,
   UilEllipsisH,
 } from "@iconscout/react-unicons";
-import {
-  createPost,
-  getSpecificHousePosts,
-} from "../../../redux/slices/postSlice";
 // import { uploadImage, uploadPost } from "../../actions/UploadAction";
 import LoadingSpinner from "../../LoadingSpinner";
 import { toast } from "react-toastify";
+import { useMakePostMutation } from "../../../redux/features/post/RTK Query/postApi";
 
 const EditPost = ({ postEditModalOpened, setPostEditModalOpened, data }) => {
-  const dispatch = useDispatch();
-  const theme = useMantineTheme();
   const isMobile = useMediaQuery("(max-width: 600px)");
+
+  const [makePost] = useMakePostMutation();
+
   const [loading, setLoading] = useState(false);
 
   const [postData, setPostData] = useState({});
@@ -62,14 +50,12 @@ const EditPost = ({ postEditModalOpened, setPostEditModalOpened, data }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
-    dispatch(createPost(postData))
+    makePost(postData)
       .unwrap()
       .then(() => {
         setPostEditModalOpened(false);
         setLoading(false);
-        dispatch(getSpecificHousePosts());
         toast.success("success!");
-        // dispatch(clearMessage());
       })
       .catch(() => {
         setLoading(false);
@@ -92,23 +78,22 @@ const EditPost = ({ postEditModalOpened, setPostEditModalOpened, data }) => {
 
   return (
     <Modal
-      overlayColor={
-        theme.colorScheme === "dark"
-          ? theme.colors.dark[9]
-          : theme.colors.gray[2]
-      }
+      classNames={{
+        modal: `bg-gray-300 dark:bg-gray-800`,
+        title: `modal__title`,
+        close: `modal__close`,
+      }}
       overlayOpacity={0.55}
       overlayBlur={3}
       size={isMobile ? "sm" : "lg"}
       opened={postEditModalOpened}
+      title="Edit your post"
       onClose={() => setPostEditModalOpened(false)}
     >
-      <h3 className="negotiable_message">You edit post here</h3>
-      <div className="PostSHare">
-        <img src={ProfileImg} alt="" />
+      <div className="card">
         <div>
-          <input
-            // required
+          <textarea
+            className="w-full rounded-t-lg bg-gray-300 p-2 outline-none focus:border-b-2 focus:border-b-gray-400 dark:bg-slate-700 dark:text-gray-400 focus:dark:border-b-2"
             type="text"
             placeholder="Short description"
             onChange={(e) => setDescription(e.target.value)}
@@ -122,20 +107,9 @@ const EditPost = ({ postEditModalOpened, setPostEditModalOpened, data }) => {
               <UilScenery />
               Photo
             </div>
-            {/* <div className="option" style={{ color: "var(--video)" }}>
-            <UilPlayCircle />
-            Video
-          </div> */}
-            <div className="option" style={{ color: "var(--location)" }}>
-              <UilLocationPoint />
-              Location
-            </div>
-            <div className="option" style={{ color: "var(--shedule)" }}>
-              <UilSchedule />
-              Schedule
-            </div>
+
             <button
-              className="button ps-button"
+              className="submit_button ps-button mb-1"
               onClick={handleSubmit}
               disabled={loading}
             >

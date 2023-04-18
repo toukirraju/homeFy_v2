@@ -85,7 +85,7 @@ const useBillMaker = (setBillModalOpened, temporaryBill, data, isSMSOn) => {
   useEffect(() => {
     setFormValue({
       renterId: data._id,
-      renterName: data.firstname + " " + data.lastname,
+      renterName: data.fullname,
 
       rent: data.apartment.billDetails.rent,
       gas_bill: data.apartment.billDetails.gas_bill,

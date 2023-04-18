@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import "./LogoSearch.css";
 import { UilSearch } from "@iconscout/react-unicons";
 import { useDispatch } from "react-redux";
-import { searchRenter } from "../../../../redux/slices/renterSlice";
 
 const LogoSearch = ({ searchType }) => {
   const dispatch = useDispatch();
@@ -15,17 +14,17 @@ const LogoSearch = ({ searchType }) => {
   const handleSubmit = () => {
     switch (searchType) {
       case "renter":
-        setLoading(true);
-        dispatch(searchRenter(searchId))
-          .unwrap()
-          .then((res) => {
-            setLoading(false);
-            setSearchData(res.renter);
-            setSearchPopUp(true);
-          })
-          .catch((error) => {
-            setLoading(false);
-          });
+        // setLoading(true);
+        // dispatch(searchRenter(searchId))
+        //   .unwrap()
+        //   .then((res) => {
+        //     setLoading(false);
+        //     setSearchData(res.renter);
+        //     setSearchPopUp(true);
+        //   })
+        //   .catch((error) => {
+        //     setLoading(false);
+        //   });
 
         break;
 

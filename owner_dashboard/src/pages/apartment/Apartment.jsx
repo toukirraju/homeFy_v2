@@ -1,43 +1,36 @@
 import styles from "./style/Apartment.module.css";
 import CreateBulkApartment from "./modals/CreateBulkApartment";
-import { Fragment, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { allApartments } from "../../redux/slices/apartmentSlice";
-import { v4 as uuidv4 } from "uuid";
+import { useState } from "react";
+import { useSelector } from "react-redux";
 import AlertPoPUP from "../../Components/AlertPoPUP";
-import { clearMessage } from "../../redux/slices/message";
-import ApartmentTableNew from "./components/tables/ApartmentTableNew";
+import ApartmentTable from "./components/tables/ApartmentTable";
 import { Loader } from "@mantine/core";
 import DefaultHouseGuideline from "../../Components/UI/guidlines/DefaultHouseGuideline";
 import CreateApartmentGuideline from "../../Components/UI/guidlines/CreateApartmentGuideline";
+import { useFetchApartmentsQuery } from "../../redux/features/apartment/RTK Query/apartmentApi";
+import ErrorMessage from "../../Components/ErrorMessage";
 
 const Apartment = () => {
-  const dispatch = useDispatch();
   const [modalOpened, setModalOpened] = useState(false);
 
-  const { isReload } = useSelector((state) => state.reload);
   const { message } = useSelector((state) => state.message);
-  const { apartmentData, loading } = useSelector(
-    (state) => state.apartmentInfo
-  );
-  const { profileData } = useSelector((state) => state.owner);
 
-  useEffect(() => {
-    const fetchApartmentInfo = async () => {
-      await dispatch(allApartments())
-        .unwrap()
-        .then(() => dispatch(clearMessage()));
-    };
-    fetchApartmentInfo();
-  }, [isReload]);
+  const { data: apartmentData, isLoading, isError } = useFetchApartmentsQuery();
+
+  const { user: profileData } = useSelector((state) => state.auth);
 
   let content = null;
 
-  if (loading)
+  if (isLoading && !isError)
     content = (
       <div className="loading__screen">
         <Loader color="cyan" variant="bars" />
       </div>
+    );
+
+  if (!isLoading && isError)
+    content = (
+      <ErrorMessage message={"There was an error to fetching apartments"} />
     );
 
   if (apartmentData?.length === 0) {
@@ -49,7 +42,7 @@ const Apartment = () => {
   }
 
   if (apartmentData?.length > 0) {
-    content = <ApartmentTableNew data={apartmentData} />;
+    content = <ApartmentTable data={apartmentData} />;
   }
   return (
     <>
@@ -60,7 +53,7 @@ const Apartment = () => {
           <div className="bulkCreate">
             <button
               disabled={profileData.defaultHomeID === ""}
-              className={`button ${styles.create__btn}`}
+              className={`submit_button ${styles.create__btn}`}
               onClick={() => setModalOpened(true)}
             >
               Create
@@ -73,18 +66,7 @@ const Apartment = () => {
         )}
       </div>
 
-      <div>
-        <Fragment key={uuidv4()}>
-          {/* {apartmentData.length !== 0 ? (
-            <ApartmentTableNew data={apartmentData} />
-          ) : (
-            <div className="loading__screen">
-              <Loader color="cyan" variant="bars" />
-            </div>
-          )} */}
-          {content}
-        </Fragment>
-      </div>
+      <div className="relative">{content}</div>
     </>
   );
 };

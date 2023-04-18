@@ -1,4 +1,4 @@
-import { Modal, useMantineTheme } from "@mantine/core";
+import { Modal } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useSelector } from "react-redux";
 
@@ -15,10 +15,9 @@ const AssignRenter = ({
   apartmentData,
   apartmentPopUp,
 }) => {
-  const theme = useMantineTheme();
   const isMobile = useMediaQuery("(max-width: 600px)");
 
-  const { renters } = useSelector((state) => state.renterInfo);
+  const { allRenters: renters } = useSelector((state) => state.renter);
 
   //custom useAssign hook
   const { loading, fatchApartments, selectedData, handleChange, onSubmit } =
@@ -33,11 +32,11 @@ const AssignRenter = ({
   return (
     <>
       <Modal
-        overlayColor={
-          theme.colorScheme === "dark"
-            ? theme.colors.dark[9]
-            : theme.colors.gray[2]
-        }
+        classNames={{
+          modal: `modal__Body`,
+          title: `modal__title`,
+          close: `modal__close`,
+        }}
         overlayOpacity={0.55}
         overlayBlur={3}
         size={isMobile ? "sm" : "md"}
@@ -46,7 +45,9 @@ const AssignRenter = ({
         onClose={() => setAssignModalOpened(false)}
       >
         <div className={Styles.Modal_header}>
-          <h3 className={Styles.Modal_header_title}>Assign Renter</h3>
+          <h3 className="text-2xl text-gray-400 drop-shadow-lg">
+            Assign Renter
+          </h3>
           {fatchApartments?.length === 0 && (
             <span className={Styles.Modal_header_subtitle}>
               * Apartment not available
@@ -57,7 +58,7 @@ const AssignRenter = ({
           <div className={Styles.input__container}>
             {!apartmentPopUp && (
               <select
-                className=""
+                className="bg-slate-500 text-gray-200"
                 onChange={handleChange}
                 value={selectedData.apartment}
                 name="apartment"
@@ -65,20 +66,15 @@ const AssignRenter = ({
                 <option value="">Select Apartment</option>
 
                 {fatchApartments
-                  ? fatchApartments.map(
-                      (apartment, idx) =>
-                        // console.log(apartments)
-                        // apartments.map((apartment, idx) =>
-                        apartment.isAvailable === true ? (
-                          <option key={idx} value={JSON.stringify(apartment)}>
-                            Floor:- {apartment.apartmentDetails.floor} &#10148;
-                            Apartment:-{" "}
-                            {apartment.apartmentDetails.apartment_number}{" "}
-                            &#10148; Room:-{" "}
-                            {apartment.apartmentDetails.roomNumber}
-                          </option>
-                        ) : null
-                      // )
+                  ? fatchApartments.map((apartment, idx) =>
+                      apartment.isAvailable === true ? (
+                        <option key={idx} value={JSON.stringify(apartment)}>
+                          Floor:- {apartment.apartmentDetails.floor} &#10148;
+                          Apartment:-{" "}
+                          {apartment.apartmentDetails.apartment_number} &#10148;
+                          Room:- {apartment.apartmentDetails.roomNumber}
+                        </option>
+                      ) : null
                     )
                   : null}
               </select>
@@ -87,7 +83,7 @@ const AssignRenter = ({
             {!renterPopUp && (
               <select
                 name="renter"
-                className=""
+                className="bg-slate-500 text-gray-200"
                 onChange={handleChange}
                 value={selectedData.renter}
               >
@@ -99,7 +95,7 @@ const AssignRenter = ({
                       (item.roomNumber === "" ||
                         item.roomNumber === undefined) ? (
                         <option key={index} value={JSON.stringify(item)}>
-                          &#10687; Name&#9500; {item.username} &#9500;&#9742;
+                          &#10687; Name&#9500; {item.fullname} &#9500;&#9742;
                           Phone:- {item.phone}
                         </option>
                       ) : null
@@ -110,7 +106,7 @@ const AssignRenter = ({
           </div>
 
           <button
-            className={Styles.submit_button}
+            className="submit_button mx-auto px-3 py-1"
             disabled={loading}
             onClick={onSubmit}
           >

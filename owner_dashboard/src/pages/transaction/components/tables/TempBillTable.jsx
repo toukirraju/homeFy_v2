@@ -10,7 +10,7 @@ const TempBillTable = ({ data }) => {
   const [tempData, setTempData] = useState({});
   const [removeId, setRemoveId] = useState();
 
-  const { profileData } = useSelector((state) => state.owner);
+  const { user: profileData } = useSelector((state) => state.auth);
   // console.log(profileData.role);
 
   const [confirmationPopUp, setConfirmationPopUp] = useState(false);
@@ -96,16 +96,16 @@ const TempBillTable = ({ data }) => {
       resizable: true,
       width: 180,
       cellRenderer: (params) => (
-        <div style={{ display: "flex", alignItems: "center" }}>
+        <div className="flex  gap-1">
           <button
-            className="updateButton btns"
+            className="updateButton mt-1 border-[3px] px-2 py-1 text-sm"
             onClick={() => handleUpdate(params.data)}
           >
             update
           </button>
 
           <button
-            className="removeButton btns"
+            className="removeButton mt-1 border-[3px] px-2 py-1 text-sm"
             onClick={() => handleRemove(params.data)}
           >
             Remove
@@ -132,7 +132,7 @@ const TempBillTable = ({ data }) => {
         <div className={Style.table__header}>
           <h3 className="title">Temporary Bills</h3>
         </div>
-        <div className="ag-theme-alpine" style={{ height: 400, width: "100%" }}>
+        <div className="ag-theme-alpine" style={{ height: 450, width: "100%" }}>
           <AgGridReact
             ref={gridRef}
             rowData={data}

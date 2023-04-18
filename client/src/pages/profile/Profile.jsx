@@ -17,6 +17,7 @@ import BillInfoLoader from "../../Components/loader/BillInfoLoader";
 import ProfileIntroLoader from "../../Components/loader/ProfileIntroLoader";
 import BarchartLoader from "../../Components/loader/BarchartLoader";
 import TableLoader from "../../Components/loader/TableLoader";
+import ErrorMessage from "../../Components/UI/Error/ErrorMessage";
 
 const Profile = () => {
   const isMobile = useMediaQuery("(max-width: 768px)");
@@ -24,7 +25,7 @@ const Profile = () => {
     apartmentInfo: false,
     billInfo: false,
   });
-  const { data: profile, isLoading, isError } = useGetProfileInfoQuery();
+  const { data: profile, isLoading, isError, error } = useGetProfileInfoQuery();
 
   // decide what to render
 
@@ -42,11 +43,11 @@ const Profile = () => {
     table = <TableLoader />;
   }
   if (!isLoading && isError) {
-    profileIntro = <h3>There is an error to getting profile info</h3>;
-    apartment = <h3>There is an error to getting Apartment info</h3>;
-    billinfo = <h3>There is an error to getting bill info</h3>;
-    chart = <h3>There is an error to getting chart info</h3>;
-    table = <h3>There is an error to getting table info</h3>;
+    profileIntro = <ErrorMessage message={error?.data?.message} />;
+    // apartment = <h3>There is an error to getting Apartment info</h3>;
+    // billinfo = <h3>There is an error to getting bill info</h3>;
+    // chart = <h3>There is an error to getting chart info</h3>;
+    // table = <h3>There is an error to getting table info</h3>;
   }
   if (!isLoading && !isError && profile._id) {
     profileIntro = <UserIntroCard data={profile} />;
@@ -103,6 +104,7 @@ const Profile = () => {
         </div>
         <div className={Style.Profile__center}>
           {/* <Profile Intro Card /> */}
+          {/* <ErrorMessage /> */}
           {profileIntro}
           <div className={` ${Style.user__chart}`}> {chart}</div>
           <div className={` ${Style.bill__table}`}>{table}</div>
@@ -116,6 +118,11 @@ const Profile = () => {
       {isMobile && (
         <>
           <Modal
+            classNames={{
+              modal: `modal__Body`,
+              title: `modal__title`,
+              close: `modal__close`,
+            }}
             size="lg"
             opened={isOpen.apartmentInfo}
             onClose={() => setIsOpen({ ...isOpen, apartmentInfo: false })}
@@ -123,6 +130,11 @@ const Profile = () => {
             <ApartmentInfoCard data={profile?.apartment} />
           </Modal>
           <Modal
+            classNames={{
+              modal: `modal__Body`,
+              title: `modal__title`,
+              close: `modal__close`,
+            }}
             size="lg"
             opened={isOpen.billInfo}
             onClose={() => setIsOpen({ ...isOpen, billInfo: false })}

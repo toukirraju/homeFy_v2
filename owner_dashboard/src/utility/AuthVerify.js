@@ -2,7 +2,6 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import { useDispatch } from "react-redux";
-import { logout } from "../redux/slices/auth";
 
 const AuthVerify = () => {
   const location = useLocation();
@@ -15,7 +14,7 @@ const AuthVerify = () => {
       if (user) {
         const decodedJwt = jwtDecode(user.token);
         if (decodedJwt.exp * 1000 < Date.now()) {
-          dispatch(logout());
+          // dispatch(logout());
         }
       }
     };

@@ -1,28 +1,22 @@
 import Styles from "../../../Styles/ModalStyle.module.css";
-import { Modal, useMantineTheme } from "@mantine/core";
+import { Modal } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import {
-  temporaryBill,
-  updateTemporaryBill,
-} from "../../../redux/slices/billSlice";
-import { setReload } from "../../../redux/slices/reloadSlice";
 import LoadingSpinner from "../../../Components/LoadingSpinner";
-import ConfirmationModal from "../../../Components/modals/ConfirmationModal";
+import { useUpdateTemporaryBillMutation } from "../../../redux/features/transactions/RTK Query/billApi";
 
 const UpdateTempBill = ({
   updateTempBillModalOpened,
   setUpdateTempBillModalOpened,
   data,
 }) => {
-  const theme = useMantineTheme();
   const isMobile = useMediaQuery("(max-width: 600px)");
 
-  const [loading, setLoading] = useState(false);
-  const dispatch = useDispatch();
   const [formData, setFormData] = useState({ ...data });
+
+  const [updateTemporaryBill, { isSuccess, isLoading }] =
+    useUpdateTemporaryBillMutation();
 
   const changeHandler = (event) => {
     const name = event.target.name;
@@ -35,44 +29,27 @@ const UpdateTempBill = ({
 
   const submitHandler = (event) => {
     event.preventDefault();
-    setLoading(true);
-    dispatch(updateTemporaryBill(formData))
-      .unwrap()
-      .then(() => {
-        setLoading(false);
-        dispatch(temporaryBill());
-        toast.info("Temporary Bill updated!");
-        setUpdateTempBillModalOpened(false);
-      })
-      .catch((error) => {
-        setLoading(false);
-        console.log(error);
-      });
-    // setTempData({
-    //   ...formData,
-    //   tempDue: parseInt(data.tempDue) + parseInt(formData.tempDue),
-    // });
-    // setUpdateTempBillModalOpened(false);
+    updateTemporaryBill(formData);
   };
   //   console.log(formData);
   useEffect(() => {
     setFormData({ ...data });
   }, [data]);
   // console.log(data);
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Temporary bill updated");
+      setUpdateTempBillModalOpened(false);
+    }
+  }, [isSuccess]);
   return (
     <>
-      {/* <ConfirmationModal
-        confirmationPopUp={confirmationPopUp}
-        setConfirmationPopUp={setConfirmationPopUp}
-        data={formData}
-        popUp_type="Create_Temporary_Bill"
-      /> */}
       <Modal
-        overlayColor={
-          theme.colorScheme === "dark"
-            ? theme.colors.dark[9]
-            : theme.colors.gray[2]
-        }
+        classNames={{
+          modal: `bg-gray-300 dark:bg-gray-800`,
+          title: `modal__title`,
+          close: `modal__close`,
+        }}
         overlayOpacity={0.55}
         overlayBlur={3}
         size={isMobile ? "sm" : "md"}
@@ -80,19 +57,19 @@ const UpdateTempBill = ({
         onClose={() => setUpdateTempBillModalOpened(false)}
         title="Update Temporary Bill"
       >
-        <div className={`${Styles.bill__header} card`}>
+        <div className={`${Styles.bill__header} card dark:text-gray-200`}>
           <h3>{data.renterName}</h3>
         </div>
         <>
           <div className={`${Styles.bill__info}`} style={{ margin: "15px 0" }}>
-            <p className="card">
+            <p className="card dark:text-gray-200">
               Electricity Bill: <b>{data ? data.electricity_bill : 0}</b>
             </p>
-            <p className="card">
+            <p className="card dark:text-gray-200">
               Others Bill: <b>{data ? data.others : 0}</b>
             </p>
 
-            <p className="card">
+            <p className="card dark:text-gray-200">
               Old Due: <b>{data ? data.tempDue : 0}</b>
             </p>
           </div>
@@ -100,8 +77,9 @@ const UpdateTempBill = ({
 
         <form onSubmit={submitHandler}>
           <div className={`${Styles.input__container} ${Styles.infoInput}`}>
-            <label className={Styles.input__label}>Due bill</label>
+            <label className="text-gray-600 dark:text-gray-300">Due bill</label>
             <input
+              className=" dark:bg-slate-900 dark:text-gray-200"
               type="number"
               placeholder="Enter Due"
               name="tempDue"
@@ -113,8 +91,11 @@ const UpdateTempBill = ({
           </div>
 
           <div className={`${Styles.input__container} ${Styles.infoInput}`}>
-            <label className={Styles.input__label}>Electricity Bill</label>
+            <label className="text-gray-600 dark:text-gray-300">
+              Electricity Bill
+            </label>
             <input
+              className=" dark:bg-slate-900 dark:text-gray-200"
               type="number"
               placeholder="Enter Electricity Bill"
               name="electricity_bill"
@@ -126,8 +107,11 @@ const UpdateTempBill = ({
           </div>
 
           <div className={`${Styles.input__container} ${Styles.infoInput}`}>
-            <label className={Styles.input__label}>Others Bill</label>
+            <label className="text-gray-600 dark:text-gray-300">
+              Others Bill
+            </label>
             <input
+              className=" dark:bg-slate-900 dark:text-gray-200"
               type="number"
               placeholder="Enter Others Bill"
               name="others"
@@ -138,8 +122,11 @@ const UpdateTempBill = ({
             />
           </div>
 
-          <button className={Styles.submit_button} disabled={loading}>
-            {loading ? <LoadingSpinner /> : "submit"}
+          <button
+            className="submit_button mx-auto mb-5 px-3 py-1"
+            disabled={isLoading}
+          >
+            {isLoading ? <LoadingSpinner /> : "submit"}
           </button>
         </form>
       </Modal>

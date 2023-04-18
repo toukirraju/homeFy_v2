@@ -1,16 +1,35 @@
+import { Loader } from "@mantine/core";
+import { useFetchPostWidgetQuery } from "../../redux/features/post/RTK Query/postApi";
 import Styles from "./PostStyle.module.css";
 import {
   UilHouseUser,
   UilPhoneAlt,
   UilMapMarker,
-  UilEllipsisH,
 } from "@iconscout/react-unicons";
+import ErrorMessage from "../ErrorMessage";
 
-const PostWidget = ({ data }) => {
-  console.log(data?.address?.address_display_name);
-  return (
-    <div>
-      <div className={`card ${Styles.Post__widget__wrapper}`}>
+const PostWidget = () => {
+  const { data, isLoading, isError } = useFetchPostWidgetQuery();
+
+  //decide what to render
+  let content = null;
+  if (isLoading && !isError) {
+    content = (
+      <div className="mx-auto flex h-full flex-col items-center justify-center">
+        <Loader color="cyan" variant="bars" size="lg" />
+      </div>
+    );
+  }
+
+  if (!isLoading && isError) {
+    content = (
+      <ErrorMessage message={"Somthing went wrong to fetching widgets data"} />
+    );
+  }
+
+  if (!isLoading && !isError && data) {
+    content = (
+      <div className={`card  ${Styles.Post__widget__wrapper}`}>
         <div className={`card ${Styles.Post__widget__header}`}>
           <h3 className={`${Styles.header__title}`}>{data.houseName}</h3>
           <span className={`${Styles.header__subtitle}`}>
@@ -48,8 +67,9 @@ const PostWidget = ({ data }) => {
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
+  return <div className="relative">{content}</div>;
 };
 
 export default PostWidget;

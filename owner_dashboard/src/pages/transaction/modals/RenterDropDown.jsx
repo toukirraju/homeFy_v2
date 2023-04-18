@@ -1,12 +1,11 @@
 import Styles from "../../../Styles/ModalStyle.module.css";
-import { Modal, useMantineTheme } from "@mantine/core";
+import { Modal } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
 import CreateTempBill from "./CreateTempBill";
-import { renterTemporaryBill } from "../../../redux/slices/billSlice";
 import LoadingSpinner from "../../../Components/LoadingSpinner";
 import RenterProfile from "../../renter/modals/RenterProfile";
+import { billApi } from "../../../redux/features/transactions/RTK Query/billApi";
 
 const RenterDropDown = ({
   renterDropDownModalOpened,
@@ -14,43 +13,37 @@ const RenterDropDown = ({
   popUpType,
   data,
 }) => {
-  const dispatch = useDispatch();
-  const theme = useMantineTheme();
   const isMobile = useMediaQuery("(max-width: 600px)");
 
   const [renterData, setRenterData] = useState({});
-  const [tempData, setTempData] = useState({});
   const [profileModalOpened, setProfileModalOpened] = useState(false);
   const [createTempBillModalOpened, setCreateTempBillModalOpened] =
     useState(false);
-  const [loading, setLoading] = useState(false);
+  const [renterId, setRenterId] = useState(null);
   const [selectedData, setSelectedData] = useState({
     renter: "",
   });
 
+  //manually fetch renter temp bill data
+  const { data: tempData = {}, isLoading } =
+    billApi.endpoints.fetchRenterTemporaryBill.useQuery(renterId);
+
   const handleChange = (e) => {
     setSelectedData({ ...selectedData, [e.target.name]: e.target.value });
+    setRenterId(JSON.parse(e.target.value)._id);
   };
 
   const onSubmit = (e) => {
     e.preventDefault();
     const renter = JSON.parse(selectedData.renter);
     setRenterData(renter);
+    // setId(renter._id);
     if (popUpType === "tempBill") {
-      setLoading(true);
-      dispatch(renterTemporaryBill(renter._id))
-        .unwrap()
-        .then((bill) => {
-          setLoading(false);
-          setCreateTempBillModalOpened(true);
-          setRenterDropDownModalOpened(false);
-          setRenterData(renter);
-          setTempData(bill.renterTempBill);
-        })
-        .catch((error) => {
-          setLoading(false);
-          console.log(error);
-        });
+      if (!isLoading) {
+        setCreateTempBillModalOpened(true);
+        setRenterDropDownModalOpened(false);
+        setRenterData(renter);
+      }
     } else if (popUpType === "renterProfile") {
       setProfileModalOpened(true);
       setRenterDropDownModalOpened(false);
@@ -77,11 +70,11 @@ const RenterDropDown = ({
       )}
 
       <Modal
-        overlayColor={
-          theme.colorScheme === "dark"
-            ? theme.colors.dark[9]
-            : theme.colors.gray[2]
-        }
+        classNames={{
+          modal: `bg-gray-300 dark:bg-gray-800`,
+          title: `modal__title`,
+          close: `modal__close`,
+        }}
         overlayOpacity={0.55}
         overlayBlur={3}
         size={isMobile ? "sm" : "md"}
@@ -98,18 +91,17 @@ const RenterDropDown = ({
 
           {data ? (
             <form>
-              <div
-                className={`card ${Styles.input__container}`}
-                style={{ marginTop: "10px" }}
-              >
+              <div className={`card px-4 py-3 `} style={{ marginTop: "10px" }}>
                 <select
-                  style={{ width: "100%", marginBottom: "10px" }}
+                  // style={{ width: "100%", marginBottom: "10px" }}
                   name="renter"
-                  className=""
+                  className=" w-full dark:bg-slate-800 dark:text-gray-400"
                   onChange={handleChange}
                   value={selectedData.renter}
                 >
-                  <option value="">Select Renter</option>
+                  <option value="" hidden>
+                    Select Renter
+                  </option>
                   {data
                     ? data
                         .filter((item) => item.apartment !== null)
@@ -119,8 +111,8 @@ const RenterDropDown = ({
                           newitem.apartment.apartmentDetails.roomNumber !==
                             "" ? (
                             <option key={index} value={JSON.stringify(newitem)}>
-                              {newitem.firstname} {newitem.lastname}
-                              &#10148; Apartment:{" "}
+                              &#10687; Name&#9500; {newitem.fullname} &#10148;
+                              Apartment:{" "}
                               {
                                 newitem.apartment.apartmentDetails
                                   .apartment_number
@@ -133,11 +125,11 @@ const RenterDropDown = ({
               </div>
 
               <button
-                className={Styles.submit_button}
-                disabled={loading}
+                className="submit_button mx-auto mt-5 px-3 py-1"
+                disabled={isLoading}
                 onClick={onSubmit}
               >
-                {loading ? <LoadingSpinner /> : "submit"}
+                {isLoading ? <LoadingSpinner /> : "submit"}
               </button>
             </form>
           ) : (

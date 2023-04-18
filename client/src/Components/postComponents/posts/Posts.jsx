@@ -10,6 +10,7 @@ import {
   fetchMorePosts,
   fetchPosts,
 } from "../../../redux/features/posts/postSlice";
+import ErrorMessage from "../../UI/Error/ErrorMessage";
 
 const Posts = ({ posts, totalPosts }) => {
   const dispatch = useDispatch();

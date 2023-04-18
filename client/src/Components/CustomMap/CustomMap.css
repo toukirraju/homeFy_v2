@@ -99,11 +99,12 @@
 /* Dark mode */
 
 @media (prefers-color-scheme: dark) {
-  .search-box {
-    background-color: rgb(119, 136, 145);
+  .dark .search-box {
+    background-color: rgb(40, 47, 52);
+    color: gray;
   }
 
-  .search__list {
+  .dark .search__list {
     background-color: rgb(188, 197, 202);
   }
 }

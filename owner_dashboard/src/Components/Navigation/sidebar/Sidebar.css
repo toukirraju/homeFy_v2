@@ -14,6 +14,13 @@
   z-index: 9999;
 }
 
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .dark .sidebar {
+    background: rgba(10, 12, 20, 0.764);
+  }
+}
+
 a {
   text-decoration: none;
   display: block;
@@ -39,7 +46,6 @@ ul {
     margin: 0;
     width: 100%;
     height: 8%;
-    justify-content: space-between;
     align-items: stretch;
     position: fixed;
     bottom: 0;
@@ -48,14 +54,10 @@ ul {
     background-color: hsl(250, 60%, 98%);
     border-radius: 1rem 1rem 0 0;
   }
-  .container {
-    min-width: 767px;
-    margin-left: 2.5rem;
-    margin-right: 2.5rem;
-  }
 
-  .nav {
+  .nav.container {
     min-width: 100px;
+    padding: 0 35px;
     height: 3rem;
     display: flex;
     justify-content: space-between;
@@ -71,6 +73,7 @@ ul {
   }
   .nav__btns {
     display: flex;
+    gap: 15px;
     align-items: center;
     visibility: visible;
   }
@@ -96,13 +99,14 @@ ul {
     bottom: -100%;
     left: 0;
     width: 100%;
-    background-color: hsl(250, 60%, 98%);
+    background: hsl(250, 60%, 98%);
     padding: 2rem 1.5rem 4rem;
     box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.15);
     border-radius: 1.2rem 1.2rem 0 0;
     transition: 0.3s;
     z-index: 9999;
   }
+
   .nav__list {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -113,7 +117,7 @@ ul {
     flex-direction: column;
     align-items: center;
     font-size: 1rem;
-    color: hsl(250, 8%, 15%);
+    color: hsl(252, 10%, 10%);
     font-weight: 500;
   }
   .nav__link:hover {
@@ -132,12 +136,14 @@ ul {
     color: hsl(250, 8%, 15%);
   }
 
-  .nav__profile  {
+  .nav__profile {
     position: fixed;
-    bottom: 5px;
-    left: 47%;
+    display: flex;
+    gap: 17px;
+    bottom: 15px;
+    left: 40%;
   }
-  
+
   .circle {
     position: fixed;
     bottom: 21px;
@@ -172,6 +178,17 @@ ul {
   .LinkUnset__hover {
     color: gray;
   }
+  /* Dark mode */
+  @media (prefers-color-scheme: dark) {
+    .dark .nav__menu {
+      background: rgba(10, 12, 20, 1);
+    }
+    .dark .nav__link,
+    .nav__close,
+    .nav__toggle {
+      color: hsl(0, 2%, 65%);
+    }
+  }
 }
 
 /***
@@ -187,7 +204,7 @@ ul {
   a {
     text-decoration: none;
     display: block;
-    color: var(--gray);
+    color: gray;
     font-weight: 700;
     padding: 12px;
     height: 50px;
@@ -246,9 +263,10 @@ ul {
     position: fixed;
     bottom: 50px;
     display: flex;
-    justify-content: center;
+
+    gap: 20px;
     align-items: center;
-    margin-left: 20px;
+    margin-left: 40px;
   }
 
   .profile__image {
@@ -257,12 +275,12 @@ ul {
     width: 3rem;
     border-radius: 50%;
     cursor: pointer;
-    margin-right: 50px;
+    /* margin-right: 50px; */
     box-lines: var(--profileShadow);
   }
-  .nav__profile > button {
+  /* .nav__profile > button {
     height: 2.5rem;
     width: 4rem;
     box-lines: var(--profileShadow);
-  }
+  } */
 }

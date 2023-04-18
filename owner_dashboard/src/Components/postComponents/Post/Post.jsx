@@ -23,22 +23,23 @@ import image4 from "../../../assets/image4.jpg";
 
 import EditPost from "../../modals/postModal/EditPost";
 import { toast } from "react-toastify";
-import {
-  createPost,
-  deletePost,
-  getSpecificHousePosts,
-} from "../../../redux/slices/postSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import ImageCollage from "../../imageCollage/ImageCollage";
+import {
+  useDeletePostMutation,
+  useMakePostMutation,
+} from "../../../redux/features/post/RTK Query/postApi";
 // import { useSelector } from "react-redux";
 // import { likePost } from "../../Api/PostRequest";
 
 const Post = ({ data }) => {
-  const dispatch = useDispatch();
-  const { profileData } = useSelector((state) => state.owner);
+  const { user: profileData } = useSelector((state) => state.auth);
   const [postEditModalOpened, setPostEditModalOpened] = useState(false);
   const [opened, setOpened] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const [makePost] = useMakePostMutation();
+  const [deletePost] = useDeletePostMutation();
 
   const handleEditOpen = () => {
     setPostEditModalOpened(true);
@@ -47,14 +48,12 @@ const Post = ({ data }) => {
 
   const handleActive = () => {
     setLoading(true);
-    dispatch(createPost({ ...data, isVisible: true }))
+    makePost({ ...data, isVisible: true })
       .unwrap()
       .then(() => {
         setLoading(false);
-        dispatch(getSpecificHousePosts());
         toast.success("Active now!");
         setOpened((o) => !o);
-        // dispatch(clearMessage());
       })
       .catch(() => {
         setLoading(false);
@@ -63,14 +62,12 @@ const Post = ({ data }) => {
 
   const handleInactive = () => {
     setLoading(true);
-    dispatch(createPost({ ...data, isVisible: false }))
+    makePost({ ...data, isVisible: false })
       .unwrap()
       .then(() => {
         setLoading(false);
-        dispatch(getSpecificHousePosts());
         toast.success("Inactive now!");
         setOpened((o) => !o);
-        // dispatch(clearMessage());
       })
       .catch(() => {
         setLoading(false);
@@ -79,30 +76,19 @@ const Post = ({ data }) => {
 
   const handleDelete = () => {
     setLoading(true);
-    dispatch(deletePost(data._id))
+    deletePost(data._id)
       .unwrap()
       .then(() => {
         setLoading(false);
-        dispatch(getSpecificHousePosts());
         toast.success("Deleted!");
         setOpened((o) => !o);
-        // dispatch(clearMessage());
       })
       .catch(() => {
         setLoading(false);
       });
   };
-  // const { user } = useSelector((state) => state.authReducer.authData);
 
-  // const [liked, setLiked] = useState(data.likes.includes(user._id));
-  // const [likes, setLikes] = useState(data.likes.length);
-
-  // const handleLike = () => {
-  //   setLiked((prev) => !prev);
-  //   likePost(data._id, user._id);
-  //   liked ? setLikes((prev) => prev - 1) : setLikes((prev) => prev + 1);
-  // };
-  const images = [
+  const ima = [
     {
       src: image1,
       width: 320,
@@ -136,6 +122,15 @@ const Post = ({ data }) => {
       height: 212,
     },
   ];
+  const images = data?.images.map((image) => {
+    return {
+      src: image.url,
+      width: 320,
+      height: 174,
+    };
+  });
+
+  useEffect(() => {}, [images, data?.images]);
 
   if (loading) {
     return (
@@ -147,25 +142,8 @@ const Post = ({ data }) => {
 
   return (
     <div className={data.isVisible ? "Post" : "Inactive__Post"}>
-      {/* <Carousel
-        slideSize="70%"
-        height={200}
-        align="start"
-        slideGap="xs"
-        controlsOffset="md"
-        controlSize={27}
-        loop
-        dragFree
-        withIndicators
-        breakpoints={[
-          { maxWidth: "md", slideSize: "50%" },
-          { maxWidth: "sm", slideSize: "100%", slideGap: 0 },
-        ]}
-      >
-        {slides}
-      </Carousel> */}
-      {data && <ImageCollage data={images} />}
-
+      {/* {data && <ImageCollage data={images} />} */}
+      {images && <ImageCollage data={images} />}
       <div className="postDetails">
         {/*************************  apartment details section start *************************/}
         <div className=" Post__innerCard">

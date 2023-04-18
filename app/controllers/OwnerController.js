@@ -2,6 +2,7 @@ const OwnerModel = require("../database/models/ownerModel");
 const HouseModel = require("../database/models/houseInfoModel");
 const AddressModel = require("../database/models/addressModel");
 const { serverError, resourceError } = require("../utils/error");
+const cloudinary = require("../utils/cloudinary");
 
 ////********* get Personal Profile ************\\\\
 const PersonalProfile = async (req, res) => {
@@ -25,8 +26,101 @@ const UpdateOwnerPersonalProfile = async (req, res) => {
     const owner = await OwnerModel.findById({ _id: req.user._id });
 
     if (owner) {
-      const result = await owner.updateOne({ $set: req.body });
-      result && res.status(200).json({ message: "Profile updated" });
+      const filter = { _id: req.user._id };
+      const update = {
+        $set: req.body,
+      };
+      const options = { returnDocument: "after" };
+
+      const result = await OwnerModel.findByIdAndUpdate(
+        filter,
+        update,
+        options
+      );
+      result && res.status(200).json(result);
+    } else {
+      return resourceError(res, "Does not recognize user");
+    }
+  } catch (error) {
+    serverError(res, error);
+  }
+};
+
+////********* Update  Profile picture ************\\\\
+const UpdateProfileImage = async (req, res) => {
+  try {
+    const owner = await OwnerModel.findById({ _id: req.user._id });
+
+    if (owner) {
+      if (
+        req.body.profilePicture !== "" ||
+        req.body.profilePicture !== null ||
+        req.body.profilePicture !== undefined
+      ) {
+        const uploadRes = await cloudinary.uploader.upload(
+          req.body.profilePicture,
+          {
+            upload_preset: "homify-dashboard",
+          }
+        );
+
+        if (uploadRes) {
+          const filter = { _id: req.user._id };
+          const update = {
+            $set: {
+              profilePicture: uploadRes,
+            },
+          };
+          const options = { returnDocument: "after" };
+
+          const result = await OwnerModel.findByIdAndUpdate(
+            filter,
+            update,
+            options
+          );
+
+          result && res.status(200).json(result);
+        }
+      } else {
+        return resourceError(res, "You not selected any image");
+      }
+    } else {
+      return resourceError(res, "Does not recognize user");
+    }
+  } catch (error) {
+    serverError(res, error);
+  }
+};
+
+////********* Update  Profile picture ************\\\\
+const RemoveProfileImage = async (req, res) => {
+  try {
+    const owner = await OwnerModel.findById({ _id: req.user._id });
+
+    if (owner) {
+      if (req.body.public_id) {
+        const deleteRes = await cloudinary.uploader.destroy(req.body.public_id);
+
+        if (deleteRes) {
+          const filter = { _id: req.user._id };
+          const update = {
+            $set: {
+              profilePicture: null,
+            },
+          };
+          const options = { returnDocument: "after" };
+
+          const result = await OwnerModel.findByIdAndUpdate(
+            filter,
+            update,
+            options
+          );
+
+          result && res.status(200).json(result);
+        }
+      } else {
+        return resourceError(res, "You not selected any image");
+      }
     } else {
       return resourceError(res, "Does not recognize user");
     }
@@ -136,6 +230,101 @@ const UpdateHouseInfo = async (req, res) => {
   }
 };
 
+////********* upload House image ************\\\\
+const uploadHouseImage = async (req, res) => {
+  const houseId = req.params.houseId;
+  const { _id } = req.user;
+  try {
+    const house = await HouseModel.findById({ _id: houseId });
+    if (house) {
+      if (house.ownerId === _id.toString()) {
+        if (
+          req.body.houseImage !== "" ||
+          req.body.houseImage !== null ||
+          req.body.houseImage !== undefined
+        ) {
+          const uploadRes = await cloudinary.uploader.upload(
+            req.body.houseImage,
+            {
+              upload_preset: "homify-dashboard",
+            }
+          );
+
+          if (uploadRes) {
+            const filter = { _id: houseId };
+            const update = {
+              $set: {
+                houseImage: uploadRes,
+              },
+            };
+            const options = { returnDocument: "after" };
+
+            const result = await HouseModel.findByIdAndUpdate(
+              filter,
+              update,
+              options
+            );
+
+            result && res.status(200).json(result);
+          }
+        } else {
+          return resourceError(res, "You not select any image");
+        }
+      } else {
+        return resourceError(res, "Action forbidden");
+      }
+    } else {
+      return resourceError(res, "House does not found!");
+    }
+  } catch (error) {
+    serverError(res, error);
+  }
+};
+
+////********* remove House image ************\\\\
+const removeHouseImage = async (req, res) => {
+  const houseId = req.params.houseId;
+  const { _id } = req.user;
+  try {
+    const house = await HouseModel.findById({ _id: houseId });
+    if (house) {
+      if (house.ownerId === _id.toString()) {
+        if (req.body.public_id) {
+          const deleteRes = await cloudinary.uploader.destroy(
+            req.body.public_id
+          );
+
+          if (deleteRes) {
+            const filter = { _id: houseId };
+            const update = {
+              $set: {
+                profilePicture: null,
+              },
+            };
+            const options = { returnDocument: "after" };
+
+            const result = await HouseModel.findByIdAndUpdate(
+              filter,
+              update,
+              options
+            );
+
+            result && res.status(200).json(result);
+          }
+        } else {
+          return resourceError(res, "You not select any image");
+        }
+      } else {
+        return resourceError(res, "Action forbidden");
+      }
+    } else {
+      return resourceError(res, "House does not found!");
+    }
+  } catch (error) {
+    serverError(res, error);
+  }
+};
+
 ////********* Update House Documents ************\\\\
 const UpdateHouseDocuments = async (req, res) => {
   const id = req.params.id;
@@ -203,19 +392,38 @@ const DefaultHouse = async (req, res) => {
         if (house.ownerId === _id.toString()) {
           //owner matched
           if (owner.defaultHomeID) {
-            const oldDefaultHouse = await HouseModel.findById({
-              _id: owner.defaultHomeID,
-            });
-            if (oldDefaultHouse) {
-              await oldDefaultHouse.updateOne({ $set: { isDefault: false } });
-            }
-          }
+            //if one house is already default
 
-          await owner.updateOne({
-            $set: { defaultHomeID: id, houseName: house.houseName },
-          });
-          await house.updateOne({ $set: { isDefault: true } });
-          res.status(200).json({ message: "This house is default now" });
+            const filter = { _id: owner.defaultHomeID };
+            const update = {
+              $set: {
+                isDefault: false,
+              },
+            };
+            const options = { returnDocument: "after" };
+            await Promise.all([
+              //update already default house
+              HouseModel.findByIdAndUpdate(filter, update, options),
+
+              //update owner profile
+              owner.updateOne({
+                $set: { defaultHomeID: id, houseName: house.houseName },
+              }),
+              //update new default house
+              house.updateOne({ $set: { isDefault: true } }),
+            ]);
+
+            res.status(200).json({ message: "This house is default now" });
+          } else {
+            //if not any house is default
+            //update owner profile
+            await owner.updateOne({
+              $set: { defaultHomeID: id, houseName: house.houseName },
+            });
+            //update new default house
+            await house.updateOne({ $set: { isDefault: true } });
+            res.status(200).json({ message: "This house is default now" });
+          }
         } else {
           //owner not match
           return resourceError(res, "Owner does not match!");
@@ -325,9 +533,13 @@ const RemoveRole = async (req, res) => {
 module.exports = {
   PersonalProfile,
   UpdateOwnerPersonalProfile,
+  UpdateProfileImage,
+  RemoveProfileImage,
   CreateHouse,
   GetAllHouses,
   UpdateHouseInfo,
+  uploadHouseImage,
+  removeHouseImage,
   UpdateHouseDocuments,
   DeleteHouse,
   DefaultHouse,

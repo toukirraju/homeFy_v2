@@ -6,19 +6,15 @@ import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 
-const BillTable = ({ data }) => {
+const BillTable = ({ data, date }) => {
   const gridRef = useRef();
   const { pathname } = useLocation();
 
-  const [month, setMonth] = useState(new Date());
-
-  const { profileData } = useSelector((state) => state.owner);
-  // console.log(profileData.role);
+  const { user: profileData } = useSelector((state) => state.auth);
 
   const [confirmationPopUp, setConfirmationPopUp] = useState(false);
   const [removeId, setRemoveId] = useState();
   const dateFormatter = (params) => {
-    setMonth(params.value);
     return new Date(params.value).toDateString();
   };
 
@@ -36,10 +32,9 @@ const BillTable = ({ data }) => {
   const handleRemove = (bill) => {
     if (new Date(bill.createdAt).getMonth() + 1 === new Date().getMonth() + 1) {
       setConfirmationPopUp(true);
-      setRemoveId(bill._id);
+      setRemoveId(bill);
     } else {
       toast.error("you can't remove this bill");
-      // console.log("you can't remove this bill");
     }
   };
   const defaultColDef = {
@@ -79,11 +74,11 @@ const BillTable = ({ data }) => {
     },
     {
       headerName: "Electricity Bill",
-      field: "e_bill",
+      field: "electricity_bill",
       resizable: true,
       width: 100,
     },
-    { headerName: "Others Bill", field: "o_bill", resizable: true, width: 100 },
+    { headerName: "Others Bill", field: "others", resizable: true, width: 100 },
 
     {
       headerName: "Due",
@@ -114,29 +109,28 @@ const BillTable = ({ data }) => {
       field: "_id",
       resizable: true,
       width: 160,
-      cellRenderer: (params) =>
-        pathname !== "/" && (
-          <div style={{ display: "flex", alignItems: "center" }}>
+      cellRenderer: (params) => (
+        <div className="flex items-center justify-center gap-1">
+          <button
+            className="submit_button px-2 py-1 text-sm"
+            // onClick={() => handleRemove(params.data)}
+          >
+            Print
+          </button>
+          {profileData.role === "owner" && pathname === "/transaction" && (
             <button
-              className="button btns"
-              // onClick={() => handleRemove(params.data)}
+              className="removeButton border-[3px] px-2 py-1 text-sm"
+              disabled={
+                new Date(params.data.createdAt).getMonth() + 1 !==
+                new Date().getMonth() + 1
+              }
+              onClick={() => handleRemove(params.data)}
             >
-              Print
+              Remove
             </button>
-            {profileData.role === "owner" && (
-              <button
-                className="removeButton btns"
-                disabled={
-                  new Date(params.data.createdAt).getMonth() + 1 !==
-                  new Date().getMonth() + 1
-                }
-                onClick={() => handleRemove(params.data)}
-              >
-                Remove
-              </button>
-            )}
-          </div>
-        ),
+          )}
+        </div>
+      ),
     },
   ];
   useEffect(() => {}, [data]);
@@ -152,10 +146,10 @@ const BillTable = ({ data }) => {
         <div className={Style.table__header}>
           <h1 className="title">Bills</h1>
           <h4 className="subtitle">
-            {new Date(month).toLocaleString("default", { month: "long" })}
+            {new Date(date).toLocaleString("default", { month: "long" })}
           </h4>
         </div>
-        <div className="ag-theme-alpine" style={{ height: 400, width: "100%" }}>
+        <div className="ag-theme-alpine" style={{ height: 450, width: "100%" }}>
           <AgGridReact
             ref={gridRef}
             rowData={data}

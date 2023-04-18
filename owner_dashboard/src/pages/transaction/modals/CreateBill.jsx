@@ -12,7 +12,6 @@ const CreateBill = ({
   data,
   temporaryBill,
 }) => {
-  const theme = useMantineTheme();
   const isMobile = useMediaQuery("(max-width: 600px)");
 
   const [isSwitchOn, setIsSwitchOn] = useState(false);
@@ -39,14 +38,14 @@ const CreateBill = ({
         popUp_type="Create_Bill"
       />
       <Modal
-        overlayColor={
-          theme.colorScheme === "dark"
-            ? theme.colors.dark[9]
-            : theme.colors.gray[2]
-        }
+        classNames={{
+          modal: `bg-gray-300 dark:bg-gray-800`,
+          title: `modal__title`,
+          close: `modal__close`,
+        }}
         overlayOpacity={0.55}
         overlayBlur={3}
-        size={isMobile ? "sm" : "md"}
+        size={isMobile ? "lg" : "lg"}
         opened={billModalOpened}
         onClose={() => setBillModalOpened(false)}
         title="Make bill"
@@ -54,7 +53,7 @@ const CreateBill = ({
         {Object.keys(data).length !== 0 ? (
           <div>
             <div
-              className={`card ${Styles.bill__header}`}
+              className={`card dark:text-gray-200 ${Styles.bill__header}`}
               style={{ margin: "15px 0" }}
             >
               <h3>{data?.apartment.renterName}</h3>
@@ -64,39 +63,39 @@ const CreateBill = ({
             </div>
 
             <div className={Styles.bill__info}>
-              <p className="card">
+              <p className="card dark:text-gray-200">
                 {" "}
                 Rent: <b>{data?.apartment.billDetails.rent}</b>
               </p>
-              <p className="card">
+              <p className="card dark:text-gray-200">
                 Gas Bill: <b>{data?.apartment.billDetails.gas_bill}</b>
               </p>
-              <p className="card">
+              <p className="card dark:text-gray-200">
                 Water Bill: <b>{data?.apartment.billDetails.water_bill}</b>
               </p>
-              <p className="card">
+              <p className="card dark:text-gray-200">
                 Service Charge:{" "}
                 <b>{data?.apartment.billDetails.service_charge}</b>
               </p>
-              <p className="card">
+              <p className="card dark:text-gray-200">
                 Others Bill: <b>{data?.apartment.billDetails.others}</b>
               </p>
-              <p className="card">
+              <p className="card dark:text-gray-200">
                 Electricity Bill: <b>{temporaryBill.electricity_bill}</b>
               </p>
-              <p className="card">
+              <p className="card dark:text-gray-200">
                 Others Temoprary Bill: <b>{temporaryBill.others}</b>
               </p>
-              <p className="card">
+              <p className="card dark:text-gray-200">
                 Total fixed Rent: <b>{data?.apartment.billDetails.totalRent}</b>
               </p>
-              <p className="card">
+              <p className="card dark:text-gray-200">
                 Old Due: <b>{temporaryBill ? temporaryBill.tempDue : 0}</b>
               </p>
             </div>
 
             <div
-              className={`card ${Styles.bill__header}`}
+              className={`card dark:text-gray-200 ${Styles.bill__header}`}
               style={{ margin: "15px 0" }}
             >
               <p className="mt-2">
@@ -116,7 +115,7 @@ const CreateBill = ({
             <form>
               <div className={Styles.switch}>
                 <div>
-                  <span>Manual add bill</span>
+                  <span className="dark:text-gray-200">Manual add bill</span>
                   <Switch
                     onLabel="ON"
                     offLabel="OFF"
@@ -127,7 +126,7 @@ const CreateBill = ({
                   />
                 </div>
                 <div className={Styles.switch}>
-                  <span>SMS</span>
+                  <span className="dark:text-gray-200">SMS</span>
                   <Switch
                     onLabel="ON"
                     offLabel="OFF"
@@ -148,6 +147,7 @@ const CreateBill = ({
                       Electricity bill
                     </label>
                     <input
+                      className=" dark:bg-slate-900 dark:text-gray-200"
                       type="number"
                       name="electricity_bill"
                       onChange={handleChange}
@@ -160,6 +160,7 @@ const CreateBill = ({
                   >
                     <label className={Styles.input__label}>Other bill</label>
                     <input
+                      className=" dark:bg-slate-900 dark:text-gray-200"
                       type="number"
                       name="others"
                       onChange={handleChange}
@@ -174,7 +175,7 @@ const CreateBill = ({
                 <input
                   style={{ fontSize: "16px", fontWeight: 700 }}
                   type="number"
-                  className=" button "
+                  className=" dark:bg-slate-900 dark:text-gray-200"
                   name="paidAmount"
                   onChange={handleChange}
                   value={formValue.paidAmount}
@@ -185,7 +186,7 @@ const CreateBill = ({
                 {error && <div className={Styles.input__error}>{error}</div>}
               </div>
               <button
-                className={Styles.submit_button}
+                className="submit_button mx-auto mb-5 px-3 py-1"
                 disabled={error}
                 onClick={onSubmit}
               >

@@ -4,31 +4,114 @@ const PostModel = require("../database/models/postModel");
 const AddressModel = require("../database/models/addressModel");
 const { serverError, resourceError } = require("../utils/error");
 const { default: mongoose } = require("mongoose");
+const cloudinary = require("../utils/cloudinary");
 
 ///////////////////////////// post created  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 const createPost = async (req, res) => {
   const { ownerId, defaultHomeID } = req.body;
   // console.log(req.body);
+  const uploadImages = async (images) => {
+    const uploadResults = [];
+
+    for (const image of images) {
+      const result = await cloudinary.uploader.upload(image, {
+        upload_preset: "post-images",
+      });
+      uploadResults.push(result);
+    }
+
+    return uploadResults;
+  };
+
+  const distroyImages = async (images) => {
+    const distroyResults = [];
+
+    for (const image of images) {
+      const result = await cloudinary.uploader.destroy(image.public_id);
+      distroyResults.push(result);
+    }
+
+    return distroyResults;
+  };
+
   try {
     const post = await PostModel.findById({ _id: req.body._id });
 
-    const newPost = new PostModel({
-      _id: req.body._id,
-      ownerId: ownerId,
-      defaultHomeID,
-      owner: ownerId,
-      house: defaultHomeID,
-      apartment: req.body._id,
-      description: req.body.description,
-      isVisible: req.body.isVisible,
-    });
     if (req.body.isAvailable || req.body.apartment.isAvailable) {
       if (post) {
-        await post.updateOne({ $set: req.body });
-        res.status(200).json({ message: "post  updated " });
+        // await post.updateOne({ $set: req.body });
+        // res.status(200).json({ message: "post  updated " });
+
+        // post updating
+        distroyImages(post.images)
+          .then(() => {
+            //image distroied complete
+
+            if (req.body.images.length !== 0) {
+              uploadImages(req.body.images)
+                .then((upImages) => {
+                  post.updateOne({ $set: { ...req.body, images: upImages } });
+                  res.status(200).json({ message: "post updated" });
+                })
+                .catch((error) => {
+                  //problem with image upload
+                  console.error(error);
+                });
+            } else {
+              return resourceError(res, "You not select any image");
+            }
+          })
+          .catch((error) => {
+            //problem on distroy image
+            console.log(error);
+          });
       } else {
-        await newPost.save();
-        res.status(200).json({ message: "post created" });
+        // await newPost.save();
+        // res.status(200).json({ message: "post created" });
+
+        //post creating
+        if (req.body.images.length !== 0) {
+          uploadImages(req.body.images)
+            .then((upImages) => {
+              // console.log(upImages);
+
+              const newPost = new PostModel({
+                _id: req.body._id,
+                ownerId: ownerId,
+                defaultHomeID,
+                owner: ownerId,
+                house: defaultHomeID,
+                apartment: req.body._id,
+                description: req.body.description,
+                isVisible: req.body.isVisible,
+                images: upImages,
+              });
+
+              newPost.save();
+              res.status(200).json({ message: "post created" });
+
+              // const filter = { _id: houseId };
+              // const update = {
+              //   $set: {
+              //     houseImage: uploadRes,
+              //   },
+              // };
+              // const options = { returnDocument: "after" };
+
+              // const result = await HouseModel.findByIdAndUpdate(
+              //   filter,
+              //   update,
+              //   options
+              // );
+
+              // result && res.status(200).json(result);
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        } else {
+          return resourceError(res, "You not select any image");
+        }
       }
     } else {
       return resourceError(res, "Apartment is not available for post");

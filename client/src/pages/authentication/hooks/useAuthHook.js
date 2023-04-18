@@ -1,15 +1,38 @@
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
   useSignInMutation,
   useSignUpMutation,
 } from "../../../redux/features/auth/authRTKquery";
+import {
+  clearMessage,
+  setError,
+  setMessage,
+} from "../../../redux/slices/message";
 import { authValidation } from "../../../utility/validations/authValidation";
 
 export const useAuthHook = ({ authType }) => {
-  const [signIn, { isSuccess: signInSuccess }] = useSignInMutation();
-  const [signUp, { isSuccess: signUpSuccess }] = useSignUpMutation();
+  const dispatch = useDispatch();
+  const [
+    signIn,
+    {
+      isLoading: signInLoading,
+      isSuccess: signInSuccess,
+      isError: isSignInError,
+      error: signInError,
+    },
+  ] = useSignInMutation();
+  const [
+    signUp,
+    {
+      isLoading: signUpLoading,
+      isSuccess: signUpSuccess,
+      isError: isSignUpError,
+      error: signUpError,
+    },
+  ] = useSignUpMutation();
   const navigate = useNavigate();
   const [formValue, setFormValue] = useState({
     fullname: "",
@@ -29,6 +52,7 @@ export const useAuthHook = ({ authType }) => {
     agree: false,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const resetForm = () => {
     setFormValue({
@@ -102,6 +126,20 @@ export const useAuthHook = ({ authType }) => {
     }
   }, [signInSuccess, signUpSuccess]);
 
+  useEffect(() => {
+    setLoading(false);
+    if (signInLoading || signUpLoading) {
+      setLoading(true);
+    }
+  }, [signInLoading, signUpLoading]);
+
+  useEffect(() => {
+    dispatch(clearMessage());
+    if (isSignInError || isSignUpError) {
+      dispatch(setError(signInError || signUpError));
+    }
+  }, [isSignInError, isSignUpError]);
+
   const errors = authValidation(
     formValue,
     touchedFields,
@@ -116,6 +154,7 @@ export const useAuthHook = ({ authType }) => {
     handleSubmit,
     formValue,
     touchedFields,
+    loading,
     errors,
   };
 };

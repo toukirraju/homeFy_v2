@@ -14,16 +14,34 @@ const {
   AssignRole,
   GetAllAssignedManager,
   RemoveRole,
+  UpdateProfileImage,
+  RemoveProfileImage,
+  uploadHouseImage,
+  removeHouseImage,
 } = require("../controllers/OwnerController");
 
 ////********* Get personal info ************\\\\
 router.get("/", [authVerify.verifyToken], PersonalProfile);
 
 //********* Update owner Personal Profile ************//
-router.put(
+router.patch(
   "/personal/update",
   [authVerify.verifyToken],
   UpdateOwnerPersonalProfile
+);
+
+//********* Update Personal Profile Image ************//
+router.patch(
+  "/personal/update/image",
+  [authVerify.verifyToken],
+  UpdateProfileImage
+);
+
+//********* remove Personal Profile Image ************//
+router.patch(
+  "/personal/remove/image",
+  [authVerify.verifyToken],
+  RemoveProfileImage
 );
 
 ////********* Create new home ************\\\\
@@ -41,12 +59,24 @@ router.get(
 );
 
 ////********* Update House info ************\\\\
-router.put(
+router.patch(
   "/house/update/:id",
   [authVerify.verifyToken, authVerify.isOwner],
   UpdateHouseInfo
 );
 
+////********* upload House image ************\\\\
+router.patch(
+  "/house/image/upload/:houseId",
+  [authVerify.verifyToken, authVerify.isOwner],
+  uploadHouseImage
+);
+////********* upload House image ************\\\\
+router.patch(
+  "/house/image/remove/:houseId",
+  [authVerify.verifyToken, authVerify.isOwner],
+  removeHouseImage
+);
 ////********* Delete House ************\\\\
 router.delete(
   "/house/delete/:id",
@@ -55,14 +85,14 @@ router.delete(
 );
 
 ////********* Make Default House ************\\\\
-router.put(
+router.patch(
   "/house/default/:id",
   [authVerify.verifyToken, authVerify.isOwner],
   DefaultHouse
 );
 
 ////********* Assign manager role ************\\\\
-router.put(
+router.patch(
   "/assign/manager/:srcId",
   [authVerify.verifyToken, authVerify.isOwner],
   AssignRole
@@ -83,7 +113,7 @@ router.get(
 );
 
 ////********* Remove manager role ************\\\\
-router.put(
+router.patch(
   "/remove/manager/:id",
   [authVerify.verifyToken, authVerify.isOwner],
   RemoveRole

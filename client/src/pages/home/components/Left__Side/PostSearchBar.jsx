@@ -47,7 +47,7 @@ const PostSearchBar = () => {
         <div className={LeftStyle.Search_container}>
           {/* search output */}
           <div className={LeftStyle.Search_content}>
-            <div className={LeftStyle.upper__content}>
+            <div className={`${LeftStyle.upper__content} dark:text-gray-400`}>
               <div>
                 <span>
                   <UilBill color="green" />{" "}
@@ -57,7 +57,7 @@ const PostSearchBar = () => {
 
               <div>
                 <span>
-                  <UilBedDouble color="var(--video)" />
+                  <UilBedDouble color="var(--orange)" />
                 </span>{" "}
                 <span>{state.room}</span>
               </div>
@@ -164,7 +164,7 @@ const PostSearchBar = () => {
             <Popover.Target>
               <div
                 className={LeftStyle.option}
-                style={{ color: "var(--video)" }}
+                style={{ color: "var(--orange)" }}
                 onClick={() => setRoomOpened((o) => !o)}
               >
                 <UilBedDouble />

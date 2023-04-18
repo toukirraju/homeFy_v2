@@ -9,13 +9,16 @@ const messageSlice = createSlice({
     setMessage: (state, action) => {
       return { message: action.payload };
     },
+    setError: (state, action) => {
+      return { errorMessage: action.payload };
+    },
     clearMessage: () => {
-      return { message: "" };
+      return { message: "", errorMessage: "" };
     },
   },
 });
 
 const { reducer, actions } = messageSlice;
 
-export const { setMessage, clearMessage } = actions;
+export const { setMessage, setError, clearMessage } = actions;
 export default reducer;

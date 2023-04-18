@@ -1,4 +1,4 @@
-import { Loader, Switch, Modal, useMantineTheme } from "@mantine/core";
+import { Loader, Switch, Modal } from "@mantine/core";
 import Styles from "../../../Styles/ModalStyle.module.css";
 import { useMediaQuery } from "@mantine/hooks";
 import {
@@ -19,22 +19,18 @@ import {
   UilEllipsisH,
 } from "@iconscout/react-unicons";
 import { useState } from "react";
-// import UpdateApartment from "./UpdateApartment";
 import ConfirmationModal from "../../../Components/modals/ConfirmationModal";
 import UpdateRenter from "./UpdateRenter";
 import AssignRenter from "../../../Components/modals/renterModal/AssignRenter";
 import UnAssignRenter from "../../../Components/modals/renterModal/UnAssignRenter";
-import { useDispatch, useSelector } from "react-redux";
-import { renterTemporaryBill } from "../../../redux/slices/billSlice";
+import { useSelector } from "react-redux";
 import CreateBill from "../../transaction/modals/CreateBill";
 import LoadingSpinner from "../../../Components/LoadingSpinner";
+import { billApi } from "../../../redux/features/transactions/RTK Query/billApi";
 const PopUpWindow = ({ popUpModalOpened, setPopUpModalOpened, data }) => {
-  const theme = useMantineTheme();
   const isMobile = useMediaQuery("(max-width: 600px)");
 
-  const dispatch = useDispatch();
-
-  const { profileData } = useSelector((state) => state.owner);
+  const { user: profileData } = useSelector((state) => state.auth);
   // console.log(profileData.role);
 
   const [checked, setChecked] = useState(false);
@@ -48,7 +44,10 @@ const PopUpWindow = ({ popUpModalOpened, setPopUpModalOpened, data }) => {
 
   const [confirmationPopUp, setConfirmationPopUp] = useState(false);
 
-  const [tempData, setTempData] = useState({});
+  const { data: tempData = {} } =
+    billApi.endpoints.fetchRenterTemporaryBill.useQuery(data?._id);
+
+  // const [tempData, setTempData] = useState({});
   const [isAssignData, setIsAssignData] = useState();
   const [removeData, setRemoveData] = useState();
 
@@ -56,6 +55,7 @@ const PopUpWindow = ({ popUpModalOpened, setPopUpModalOpened, data }) => {
   const month = date.getMonth() + 1;
   const year = date.getFullYear();
 
+  // remove Renter
   const handleRemove = (renter) => {
     if (
       (renter.apartmentId === "" || renter.apartmentId === undefined) &&
@@ -72,30 +72,32 @@ const PopUpWindow = ({ popUpModalOpened, setPopUpModalOpened, data }) => {
       setIsAssignData(renter);
     }
   };
-  // console.log(data);
+  // make bill
   const billHandler = () => {
-    setLoading(true);
-    dispatch(renterTemporaryBill(data._id))
-      .unwrap()
-      .then((bill) => {
-        setLoading(false);
-        setPopUpModalOpened(false);
-        setBillModalOpened(true);
-        setTempData(bill.renterTempBill);
-      })
-      .catch((error) => {
-        setLoading(false);
-        console.log(error);
-      });
+    // setLoading(true);
+    // dispatch(renterTemporaryBill(data._id))
+    //   .unwrap()
+    //   .then((bill) => {
+    //     setLoading(false);
+    //     setPopUpModalOpened(false);
+    //     setBillModalOpened(true);
+    //     // setTempData(bill.renterTempBill);
+    //   })
+    //   .catch((error) => {
+    //     setLoading(false);
+    //     console.log(error);
+    //   });
+    setPopUpModalOpened(false);
+    setBillModalOpened(true);
   };
   return (
     <>
       <Modal
-        overlayColor={
-          theme.colorScheme === "dark"
-            ? theme.colors.dark[9]
-            : theme.colors.gray[2]
-        }
+        classNames={{
+          modal: `bg-gray-300 dark:bg-gray-800`,
+          title: `modal__title`,
+          close: `modal__close`,
+        }}
         overlayOpacity={0.55}
         overlayBlur={3}
         size={isMobile ? "sm" : "md"}
@@ -445,18 +447,19 @@ const PopUpWindow = ({ popUpModalOpened, setPopUpModalOpened, data }) => {
               </div>
             </div>
 
+            {/******************************************  button section ******************************** */}
             {profileData.role === "owner" && (
               <div className={`card ${Styles.Modal_button_container}`}>
                 {data.apartment === null ? (
                   <>
                     <button
-                      className="removeButton btns"
+                      className="removeButton px-2 py-1 text-sm"
                       onClick={() => handleRemove(data)}
                     >
                       remove
                     </button>
                     <button
-                      className="submit_button btns"
+                      className="submit_button px-2 py-1 text-sm"
                       onClick={() => setAssignModalOpened(true)}
                     >
                       Assign
@@ -464,7 +467,7 @@ const PopUpWindow = ({ popUpModalOpened, setPopUpModalOpened, data }) => {
                   </>
                 ) : (
                   <button
-                    className="removeButton btns"
+                    className="removeButton px-2 py-1 text-sm"
                     onClick={() => setUnAssignModalOpened(true)}
                   >
                     Unassign
@@ -472,7 +475,7 @@ const PopUpWindow = ({ popUpModalOpened, setPopUpModalOpened, data }) => {
                 )}
                 {data.apartment !== null && (
                   <button
-                    className="warningButton btns"
+                    className="submit_button px-3 py-1"
                     onClick={() => billHandler()}
                     disabled={loading}
                   >
@@ -481,7 +484,7 @@ const PopUpWindow = ({ popUpModalOpened, setPopUpModalOpened, data }) => {
                 )}
 
                 <button
-                  className="updateButton btns"
+                  className="updateButton px-2 py-1 text-sm"
                   onClick={() => setUpdateModalOpened(true)}
                 >
                   Update

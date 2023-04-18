@@ -1,24 +1,27 @@
-import { Modal, useMantineTheme } from "@mantine/core";
+import { Modal } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import Styles from "../../../Styles/ModalStyle.module.css";
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { unAssign } from "../../../redux/slices/assignRenterSlice";
-import { setReload } from "../../../redux/slices/reloadSlice";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import LoadingSpinner from "../../LoadingSpinner";
 import { toast } from "react-toastify";
+import {
+  renterApi,
+  useUnAssignRenterMutation,
+} from "../../../redux/features/renter/RTK Query/renterApi";
 
 const UnAssignRenter = ({
   unAssignModalOpened,
   setUnAssignModalOpened,
   renterData,
 }) => {
-  const theme = useMantineTheme();
   const isMobile = useMediaQuery("(max-width: 600px)");
+  const [assignRenter, { isSuccess, isLoading }] = useUnAssignRenterMutation();
+  //manually fetch renters data
+  const { refetch: refetchRenters } =
+    renterApi.endpoints.fetchRenters.useQuery();
 
-  const [loading, setLoading] = useState(false);
-  const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth.user);
+  const user = useSelector((state) => state.auth.user);
   const [selectedData, setSelectedData] = useState({
     renter: "",
   });
@@ -38,34 +41,28 @@ const UnAssignRenter = ({
       renterId: renter ? renter._id : renterData._id,
     };
     // console.log(unAssignedData);
-
-    setLoading(true);
-    dispatch(unAssign(unAssignedData))
-      .unwrap()
-      .then(() => {
-        setLoading(false);
-        toast.info("Un-Assigned");
-        dispatch(setReload());
-        setUnAssignModalOpened(false);
-        setSelectedData({
-          renter: "",
-        });
-      })
-      .catch(() => {
-        // toast.error("Something want wrong");
-        setLoading(false);
-      });
+    assignRenter(unAssignedData);
   };
-  // console.log(renterData);
+  useEffect(() => {
+    if (isSuccess) {
+      refetchRenters();
+      toast.success("successfully unassigned");
+      setUnAssignModalOpened(false);
+      setSelectedData({
+        renter: "",
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccess]);
 
   return (
     <>
       <Modal
-        overlayColor={
-          theme.colorScheme === "dark"
-            ? theme.colors.dark[9]
-            : theme.colors.gray[2]
-        }
+        classNames={{
+          modal: `modal__Body`,
+          title: `modal__title`,
+          close: `modal__close`,
+        }}
         overlayOpacity={0.55}
         overlayBlur={3}
         size={isMobile ? "sm" : "md"}
@@ -75,8 +72,10 @@ const UnAssignRenter = ({
         {Array.isArray(renterData) === true ? (
           <form>
             <div className={Styles.Modal_header}>
-              <h3 className={Styles.Modal_header_title}>Unassign Renter</h3>
-              <span className={Styles.Modal_header_subtitle}>
+              <h3 className="text-2xl text-gray-400 drop-shadow-lg">
+                Unassign Renter
+              </h3>
+              <span className="text-gray-400">
                 * select the renter which one you want to unassign from the
                 apartment
               </span>
@@ -84,7 +83,7 @@ const UnAssignRenter = ({
             <div className={Styles.input__container}>
               <select
                 name="renter"
-                className=""
+                className="bg-slate-500 text-gray-200"
                 onChange={handleChange}
                 value={selectedData.renter}
               >
@@ -93,8 +92,7 @@ const UnAssignRenter = ({
                   ? renterData.map((item, index) =>
                       item.apartment_number !== "" && item.roomNumber !== "" ? (
                         <option key={index} value={JSON.stringify(item)}>
-                          Name: {item.firstname + " " + item.lastname} &#10148;
-                          Phone: {item.phone}
+                          Name: {item.fullname} &#10148; Phone: {item.phone}
                         </option>
                       ) : null
                     )
@@ -104,10 +102,10 @@ const UnAssignRenter = ({
 
             <button
               className={`removeButton ${Styles.submit_button}`}
-              disabled={loading}
+              disabled={isLoading}
               onClick={onSubmit}
             >
-              {loading ? <LoadingSpinner /> : "Unassign"}
+              {isLoading ? <LoadingSpinner /> : "Unassign"}
             </button>
           </form>
         ) : (
@@ -123,14 +121,14 @@ const UnAssignRenter = ({
 
             <button
               className={`removeButton ${Styles.submit_button}`}
-              disabled={loading}
+              disabled={isLoading}
               onClick={onSubmit}
               style={{
                 // margin: "10px 13%",
                 float: "right",
               }}
             >
-              {loading ? <LoadingSpinner /> : "Unassign"}
+              {isLoading ? <LoadingSpinner /> : "Unassign"}
             </button>
           </>
         )}

@@ -76,7 +76,7 @@ const createMultipleApartment = async (req, res) => {
       });
       await apartmentData.save();
       // console.log(apartmentData);
-      res.status(200).json({ message: "Create successfully" });
+      res.status(200).json(apartmentData);
     }
   } catch (error) {
     serverError(res, error);

@@ -1,18 +1,12 @@
-import { Modal, useMantineTheme } from "@mantine/core";
+import { Modal } from "@mantine/core";
 import Styles from "../../../Styles/ModalStyle.module.css";
 import { useMediaQuery } from "@mantine/hooks";
-import { useState } from "react";
+import { useEffect } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  allApartments,
-  createMultiApartment,
-} from "../../../redux/slices/apartmentSlice";
-import { setReload } from "../../../redux/slices/reloadSlice";
 import LoadingSpinner from "../../../Components/LoadingSpinner";
 import { toast } from "react-toastify";
-import { clearMessage } from "../../../redux/slices/message";
+import { useCreateApartmentMutation } from "../../../redux/features/apartment/RTK Query/apartmentApi";
 
 const validation = Yup.object().shape({
   numOfFloors: Yup.number()
@@ -22,12 +16,10 @@ const validation = Yup.object().shape({
 });
 
 const CreateBulkApartment = ({ modalOpened, setModalOpened }) => {
-  const theme = useMantineTheme();
   const isMobile = useMediaQuery("(max-width: 600px)");
-  const dispatch = useDispatch();
-  const [loading, setLoading] = useState(false);
-  const { apartmentData } = useSelector((state) => state.apartmentInfo);
-
+  const apartmentData = [];
+  const [createApartment, { isSuccess, isLoading }] =
+    useCreateApartmentMutation();
   const initialValues = {
     numOfFloors: 0,
   };
@@ -35,44 +27,36 @@ const CreateBulkApartment = ({ modalOpened, setModalOpened }) => {
   const resetInput = (e) => {
     e.target.value = "";
   };
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Successfully created");
+      setModalOpened(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccess]);
 
   return (
     <>
       <Modal
-        overlayColor={
-          theme.colorScheme === "dark"
-            ? theme.colors.dark[9]
-            : theme.colors.gray[2]
-        }
         overlayOpacity={0.55}
         overlayBlur={3}
-        size={isMobile ? "sm" : "lg"}
+        size={isMobile ? "sm" : "md"}
         // fullScreen={isMobile}
         opened={modalOpened}
         onClose={() => setModalOpened(false)}
+        classNames={{
+          modal: `bg-gray-300 dark:bg-gray-800`,
+          title: `modal__title`,
+          close: `modal__close`,
+        }}
       >
         <Formik
           initialValues={initialValues}
           validationSchema={validation}
           onSubmit={(values, { resetForm }) => {
             // same shape as initial values
-            // console.log(values);
-            setLoading(true);
-            dispatch(createMultiApartment(values))
-              .unwrap()
-              .then(() => {
-                setModalOpened(false);
-                setLoading(false);
-                dispatch(allApartments());
-
-                resetForm();
-                toast.success("Created multiple apartment");
-
-                dispatch(clearMessage());
-              })
-              .catch(() => {
-                setLoading(false);
-              });
+            createApartment(values);
+            resetForm();
           }}
         >
           {({ errors, touched }) => (
@@ -96,6 +80,7 @@ const CreateBulkApartment = ({ modalOpened, setModalOpened }) => {
                     : "Enter floor number"}
                 </label>
                 <Field
+                  className=" dark:bg-slate-800 dark:text-gray-200"
                   name="numOfFloors"
                   type="number"
                   onFocus={(e) => resetInput(e)}
@@ -107,11 +92,11 @@ const CreateBulkApartment = ({ modalOpened, setModalOpened }) => {
                 ) : null}
               </div>
               <button
-                className={Styles.submit_button}
+                className="submit_button mx-auto px-3 py-1"
                 type="submit"
-                disabled={loading}
+                disabled={isLoading}
               >
-                {loading ? <LoadingSpinner /> : "Create"}
+                {isLoading ? <LoadingSpinner /> : "Create"}
               </button>
             </Form>
           )}

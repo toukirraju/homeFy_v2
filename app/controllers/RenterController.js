@@ -20,13 +20,11 @@ const createRenter = async (req, res) => {
     username: req.body.username,
     phone: req.body.phone,
     password: hashedPass,
-    firstname: req.body.firstname,
-    lastname: req.body.lastname,
-    address: req.body.address,
-    city: req.body.city,
-    area: req.body.area,
-    postCode: req.body.postCode,
-    National_ID_Passport_no: req.body.National_ID_Passport_no,
+    fullname: req.body.fullname,
+    permanent_address: req.body.permanent_address,
+    street_no: req.body.street_no,
+    postcode: req.body.postcode,
+    NID_no: req.body.NID_no,
 
     // apartmentId: "",
     // apartment_number: "",
@@ -39,10 +37,8 @@ const createRenter = async (req, res) => {
     });
 
     if (!renter) {
-      await newRenter.save();
-      res.status(201).json({
-        message: "Successfully Created",
-      });
+      const renter = await newRenter.save();
+      res.status(201).json(renter);
     } else {
       return resourceError(res, "Renter Already Created!");
     }
@@ -379,7 +375,6 @@ const updateRenter = async (req, res) => {
   const renterId = req.params.id;
   // const { ownerId } = req.body;
   const { _id } = req.user;
-
   try {
     const renter = await RenterInfoModel.findById(renterId);
     if (renter.ownerId == _id) {

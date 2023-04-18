@@ -1,26 +1,25 @@
-
 /* new css start */
 
 /* model heading style  */
-.Modal_header{
-/* background: #000; */
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center;
+.Modal_header {
+  /* background: #000; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
-.Modal_header_title{
-margin: 20px 0;
-font-size: 16px;
-font-weight: bold;
-color: gray;
+.Modal_header_title {
+  margin: 20px 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: gray;
 }
-.Modal_header_subtitle{
-/* margin: 20px 0; */
-margin-bottom: 10px;
-color: gray;
-font-size: 12px;
-font-weight: 600;
+.Modal_header_subtitle {
+  /* margin: 20px 0; */
+  margin-bottom: 10px;
+  color: gray;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 /* model form style  */
@@ -28,7 +27,7 @@ font-weight: 600;
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding:  5px 0;
+  padding: 5px 0;
 }
 .input__container select {
   margin: 10px 0;
@@ -40,42 +39,42 @@ font-weight: 600;
   font-weight: 700;
   margin: 0 5px;
 }
-.address_container{
+.address_container {
   display: flex;
   gap: 10px;
 }
-.address_container input{
+.address_container input {
   width: 100%;
 }
-.checkbox_container{
+.checkbox_container {
   display: flex;
   justify-content: space-between;
   color: var(--gray);
   font-size: 14px;
   font-weight: 700;
 }
-.checkbox_1{
+.checkbox_1 {
   background: rgb(224, 224, 224);
   padding: 5px 10px;
   border-radius: 5px;
   display: flex;
   gap: 5px;
 }
-.submit_button{
+.submit_button {
   margin: auto;
   margin-top: 10px;
   padding: 10px 20px;
 }
 
 /* popup window start */
-.popUpWindow__body{
+.popUpWindow__body {
   margin-top: 10px;
 }
-.popUpWindow_container{
+.popUpWindow_container {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
 }
-.popUpWindow__innerCard{
+.popUpWindow__innerCard {
   background: rgb(255, 255, 255);
   box-shadow: 0 1px 4px 4px rgba(0, 0, 0, 0.1);
   margin: 3px 5px;
@@ -85,19 +84,18 @@ font-weight: 600;
   color: var(--gray);
 }
 
-.popUpWindow__card__content{
+.popUpWindow__card__content {
   display: grid;
   grid-template-columns: 1fr 6fr;
   align-items: center;
   font-size: 14px;
   font-weight: 600;
   text-transform: capitalize;
-  
 }
-.popUpWindow__card__icon{
+.popUpWindow__card__icon {
   margin-left: 5px;
 }
-.popUpWindow__card__elements{
+.popUpWindow__card__elements {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -111,7 +109,7 @@ font-weight: 600;
   border-bottom: 3px solid rgb(231, 228, 228);
 }
 
-.profile__Info__container{
+.profile__Info__container {
   display: grid;
   grid-template-columns: 2fr 4fr;
 }
@@ -119,10 +117,10 @@ font-weight: 600;
   margin: auto;
   margin-top: 10px;
 }
-.left__side img{
-height: 250px;
-object-fit: cover;
-border-radius: 10px;
+.left__side img {
+  height: 250px;
+  object-fit: cover;
+  border-radius: 10px;
 }
 
 .expend_apartment_info {
@@ -137,11 +135,11 @@ border-radius: 10px;
   color: gray;
   font-weight: bold;
 }
-.expend_apartment_info span:nth-child(1){
-margin-left: 10px;
+.expend_apartment_info span:nth-child(1) {
+  margin-left: 10px;
 }
 
-.Modal_button_container{
+.Modal_button_container {
   margin: 10px 0;
   padding: 0 10px;
   /* display: grid;
@@ -152,24 +150,21 @@ margin-left: 10px;
   align-items: center;
 }
 
-.popUpWindow_double_elements{
+.popUpWindow_double_elements {
   display: flex;
   justify-content: space-between;
-width: 100%;
-/* background: #000; */
+  width: 100%;
+  /* background: #000; */
 }
 
-.popUpWindow_double_elements div{
+.popUpWindow_double_elements div {
   width: 100%;
 }
 
-
-
 /* popup window end */
 
-
 /* inside modal card start */
-.widget__innerCard{
+.widget__innerCard {
   background: rgb(255, 255, 255);
   box-shadow: 0 1px 4px 4px rgba(0, 0, 0, 0.1);
   margin: 3px 5px;
@@ -178,7 +173,20 @@ width: 100%;
   margin-top: 6px;
   color: var(--gray);
 }
-.widget__card__content{
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .dark,
+  .popUpWindow__innerCard,
+  .widget__innerCard {
+    background: rgba(18, 20, 33, 0.643);
+    color: rgb(174, 174, 176);
+  }
+  .dark,
+  .popUpWindow__card__elements span:nth-child(1) {
+    color: rgb(234, 234, 234);
+  }
+}
+.widget__card__content {
   display: grid;
   grid-template-columns: 1fr 2fr 4fr;
   align-items: center;
@@ -186,7 +194,6 @@ width: 100%;
   font-size: 14px;
   font-weight: 600;
   text-transform: capitalize;
-  
 }
 
 .popUp__body {
@@ -195,7 +202,6 @@ width: 100%;
   color: var(--gray);
 }
 /* inside modal card end */
-
 
 /* new css end */
 
@@ -212,7 +218,6 @@ width: 100%;
   height: 2rem;
   margin-top: 15px;
 }
-
 
 .popUp__submit_btns {
   display: flex;
@@ -286,22 +291,21 @@ width: 100%;
   /* margin-right: auto; */
 }
 
-.switch > div:nth-child(1){
+.switch > div:nth-child(1) {
   display: flex;
   align-items: center;
   gap: 5px;
 }
 
 @media screen and (max-width: 768px) {
- 
-  .profile__Info__container{
+  .profile__Info__container {
     display: grid;
     grid-template-columns: 1fr;
   }
-  .left__side{
+  .left__side {
     margin-top: 20px;
   }
-  .left__side img{
-  height: 150px;
+  .left__side img {
+    height: 150px;
   }
 }

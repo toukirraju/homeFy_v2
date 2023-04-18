@@ -1,78 +1,61 @@
 import Styles from "./ModalStyle.module.css";
-import { Modal, useMantineTheme } from "@mantine/core";
-import { useMediaQuery } from "@mantine/hooks";
+import { Modal } from "@mantine/core";
 import { Formik, Form, Field } from "formik";
-import * as Yup from "yup";
-import { useDispatch } from "react-redux";
-import {
-  GetProfileInfo,
-  UpdatePersonalProfile,
-} from "../../../redux/slices/ownerSlice";
 import { toast } from "react-toastify";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LoadingSpinner from "../../../Components/LoadingSpinner";
-
-const SignupSchema = Yup.object().shape({
-  houseName: Yup.string()
-    .min(2, "Too Short!")
-    .max(50, "Too Long!")
-    .required("Required"),
-  houseNo: Yup.string()
-    .min(2, "Too Short!")
-    .max(50, "Too Long!")
-    .required("Required"),
-  postCode: Yup.string().required("Required"),
-});
+import { useUpdateUserProfileMutation } from "../../../redux/features/profile/RTK Query/profileApi";
 
 function ProfileUpdateModal({ modalOpened, setModalOpened, data }) {
-  const theme = useMantineTheme();
-  const isMobile = useMediaQuery("(max-width: 600px)");
-  const dispatch = useDispatch();
-  const [isLoading, setisLoading] = useState(false);
-
   const initialValues = {
     ...data,
   };
 
+  const [updateUserProfile, { isLoading, isSuccess }] =
+    useUpdateUserProfileMutation();
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Profile updated");
+      setModalOpened(false);
+    }
+  }, [isSuccess]);
+
   return (
     <Modal
-      overlayColor={
-        theme.colorScheme === "dark"
-          ? theme.colors.dark[9]
-          : theme.colors.gray[2]
-      }
+      classNames={{
+        modal: `bg-gray-300 dark:bg-gray-800`,
+        title: `modal__title`,
+        close: `modal__close`,
+      }}
       overlayOpacity={0.55}
       overlayBlur={3}
       size="sm"
-      fullScreen={isMobile}
       opened={modalOpened}
       onClose={() => setModalOpened(false)}
     >
       <div>
         <Formik
           initialValues={initialValues}
-          // validationSchema={SignupSchema}
           onSubmit={(values) => {
             // same shape as initial values
-            setisLoading(true);
-            dispatch(UpdatePersonalProfile(values))
-              .then(() => {
-                setisLoading(false);
-                toast.success("Profile updated");
-                setModalOpened(false);
-                dispatch(GetProfileInfo());
-              })
-              .catch((err) => toast.error("Somthing went wrong!"));
+            updateUserProfile(values);
           }}
         >
           {({ errors, touched }) => (
             <Form>
               <div className={Styles.address_container}>
                 <div className={Styles.input__container}>
-                  <label htmlFor="firstname" className={Styles.input__label}>
+                  <label
+                    htmlFor="firstname"
+                    className="my-1 px-2 text-sm text-gray-600 dark:text-gray-300 "
+                  >
                     First Name
                   </label>
-                  <Field name="firstname" />
+                  <Field
+                    className=" dark:bg-slate-900 dark:text-gray-200"
+                    name="firstname"
+                  />
                   {errors.firstname && touched.firstname ? (
                     <div className={Styles.input__error}>
                       {errors.firstname}
@@ -80,10 +63,16 @@ function ProfileUpdateModal({ modalOpened, setModalOpened, data }) {
                   ) : null}
                 </div>
                 <div className={Styles.input__container}>
-                  <label htmlFor="lastname" className={Styles.input__label}>
+                  <label
+                    htmlFor="lastname"
+                    className="my-1 px-2 text-sm text-gray-600 dark:text-gray-300 "
+                  >
                     Last Name
                   </label>
-                  <Field name="lastname" />
+                  <Field
+                    className=" dark:bg-slate-900 dark:text-gray-200"
+                    name="lastname"
+                  />
                   {errors.lastname && touched.lastname ? (
                     <div className={Styles.input__error}>{errors.lastname}</div>
                   ) : null}
@@ -91,73 +80,56 @@ function ProfileUpdateModal({ modalOpened, setModalOpened, data }) {
               </div>
 
               <div className={Styles.input__container}>
-                <label htmlFor="phone" className={Styles.input__label}>
+                <label
+                  htmlFor="phone"
+                  className="my-1 px-2 text-sm text-gray-600 dark:text-gray-300 "
+                >
                   Phone Number
                 </label>
-                <Field name="phone" />
+                <Field
+                  className=" dark:bg-slate-900 dark:text-gray-200"
+                  name="phone"
+                />
                 {errors.phone && touched.phone ? (
                   <div className={Styles.input__error}>{errors.phone}</div>
                 ) : null}
               </div>
 
-              {/* <div className={Styles.input__container}>
-                <label htmlFor="address" className={Styles.input__label}>
-                  Address
-                </label>
-                <Field name="address" type="text" />
-                {errors.address && touched.address ? (
-                  <div className={Styles.input__error}>{errors.address}</div>
-                ) : null}
-              </div>
-              <div className={Styles.address_container}>
-                <div>
-                  <label htmlFor="area" className={Styles.input__label}>
-                    Area
-                  </label>
-                  <Field name="area" type="text" />
-                  {errors.area && touched.area ? (
-                    <div className={Styles.input__error}>{errors.area}</div>
-                  ) : null}
-                </div>
-                <div>
-                  <label htmlFor="city" className={Styles.input__label}>
-                    City/Town
-                  </label>
-                  <Field name="city" type="text" />
-                  {errors.city && touched.city ? (
-                    <div className={Styles.input__error}>{errors.city}</div>
-                  ) : null}
-                </div>
-                <div>
-                  <label htmlFor="postCode" className={Styles.input__label}>
-                    Zip / Postcode
-                  </label>
-                  <Field name="postCode" type="text" />
-                  {errors.postCode && touched.postCode ? (
-                    <div className={Styles.input__error}>{errors.postCode}</div>
-                  ) : null}
-                </div>
-              </div> */}
               <div className={Styles.input__container}>
-                <label htmlFor="nid" className={Styles.input__label}>
+                <label
+                  htmlFor="nid"
+                  className="my-1 px-2 text-sm text-gray-600 dark:text-gray-300 "
+                >
                   National id number
                 </label>
-                <Field name="nid" type="number" />
+                <Field
+                  className=" dark:bg-slate-900 dark:text-gray-200"
+                  name="nid"
+                  type="number"
+                />
                 {errors.nid && touched.nid ? (
                   <div className={Styles.input__error}>{errors.nid}</div>
                 ) : null}
               </div>
               <div className={Styles.input__container}>
-                <label htmlFor="profession" className={Styles.input__label}>
+                <label
+                  htmlFor="profession"
+                  className="my-1 px-2 text-sm text-gray-600 dark:text-gray-300 "
+                >
                   Profession
                 </label>
-                <Field name="profession" type="text" />
+                <Field
+                  className=" dark:bg-slate-900 dark:text-gray-200"
+                  name="profession"
+                  type="text"
+                />
                 {errors.profession && touched.profession ? (
                   <div className={Styles.input__error}>{errors.profession}</div>
                 ) : null}
               </div>
+
               <button
-                className={Styles.submit_button}
+                className="submit_button mx-auto  mt-4 px-3 py-1 md:my-4"
                 type="submit"
                 disabled={isLoading}
               >

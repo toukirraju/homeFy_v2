@@ -41,6 +41,9 @@ const houseInfoSchema = new Schema(
       type: Number,
       require: true,
     },
+    houseImage: {
+      type: Object,
+    },
     documents: {
       nid: String,
       income_tax: String,

@@ -1,32 +1,36 @@
-import React, { useEffect } from "react";
 import "./Posts.css";
 import Post from "../Post/Post";
-import { useDispatch, useSelector } from "react-redux";
-// import { getTimelinePosts } from "../../actions/PostAction";
-import { useParams } from "react-router-dom";
-import { getUserPosts } from "../../../redux/slices/postSlice";
+import { useFetchPostsQuery } from "../../../redux/features/post/RTK Query/postApi";
+import { Loader } from "@mantine/core";
+import ErrorMessage from "../../ErrorMessage";
 
-const Posts = ({ data }) => {
-  // const { user } = useSelector((state) => state.authReducer.authData);
+const Posts = () => {
+  const { data: posts = [], isLoading, isError } = useFetchPostsQuery();
 
-  // if (!posts) return "no posts";
-  // if (params.id) posts = posts.filter((post) => post.userId === params.id);
+  //decide what to render
+  let content = null;
+  if (isLoading && !isError) {
+    content = (
+      <div className="mx-auto flex h-full flex-col items-center justify-center">
+        <Loader color="cyan" variant="bars" size="lg" />
+      </div>
+    );
+  }
 
-  return (
-    <div className="Posts">
-      {data.map((post, idx) => (
-        <>
-          <Post key={idx} data={post} />
-        </>
-      ))}
+  if (!isLoading && isError) {
+    content = (
+      <ErrorMessage message={"Somthing went wrong to fetching posts"} />
+    );
+  }
 
-      {/* {loading
-        ? "Loading post..."
-        : posts.map((post, id) => {
-            return <Post data={post} id={id} />;
-          })} */}
-    </div>
-  );
+  if (!isLoading && !isError && posts.length === 0) {
+    content = <h1>No post found!</h1>;
+  }
+  if (!isLoading && !isError && posts.length > 0) {
+    content = posts.map((post, idx) => <Post key={idx} data={post} />);
+  }
+
+  return <div className="Posts relative">{content}</div>;
 };
 
 export default Posts;

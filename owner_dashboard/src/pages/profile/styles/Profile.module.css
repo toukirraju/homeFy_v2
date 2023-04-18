@@ -1,15 +1,4 @@
-.profile_Header{
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
-.profile__nav{
-  /* background: #000; */
-width: 35%;
-}
-
-
-.tab__sections{
+.tab__sections {
   margin: 5px 0px;
 }
 
@@ -19,39 +8,35 @@ width: 35%;
  
 } */
 
-
-.house_info_wrapper{
+.house_info_wrapper {
   height: calc(100vh - 165px);
-    overflow-y: auto;
+  overflow-y: auto;
 }
-.house__create_button{
+.house__create_button {
   margin-top: 10px;
   padding: 5px 10px;
 }
 
-
 /*************** profile section start ******************/
-.profile__sections{
+.profile__sections {
   width: 100%;
   height: calc(100vh - 115px);
   overflow-y: auto;
 }
-.profile_container_1{
-display: flex;
+.profile_container_1 {
+  display: flex;
 }
-.profile_left{
-
+.profile_left {
 }
-.profile_right{
-margin: auto;
-
+.profile_right {
+  margin: auto;
 }
-.search_section{
+.search_section {
   position: relative;
   display: flex;
   flex-direction: column;
 }
-.search_button{
+.search_button {
   position: absolute;
   right: 0;
   height: 39px;
@@ -60,25 +45,24 @@ margin: auto;
 }
 
 /*************** right search output start ******************/
-.search_output{
-margin: 10px 0;
+.search_output {
+  margin: 10px 0;
 }
-.display_card{
+.display_card {
   display: flex;
   flex-direction: column;
   position: relative;
 }
-.display_card > div{
+.display_card > div {
   margin-bottom: 10px;
-  
 }
-.display_card_header{
-   margin-top: -1px;
-   margin-left: -1px;
+.display_card_header {
+  margin-top: -1px;
+  margin-left: -1px;
   display: flex;
   justify-content: space-between;
 }
-.display_card_badge{
+.display_card_badge {
   /* position: absolute; */
   font-size: 12px;
   font-weight: 600;
@@ -88,7 +72,8 @@ margin: 10px 0;
   border-top-left-radius: 8px;
   border-bottom-right-radius: 8px;
 }
-.display_card_badge_available{font-size: 12px;
+.display_card_badge_available {
+  font-size: 12px;
   font-weight: 600;
   padding: 4px 4px;
   border-bottom-left-radius: 8px;
@@ -97,15 +82,15 @@ margin: 10px 0;
   background: var(--btnHoverColor);
   color: white;
 }
-.display_card_body{
-padding: 0 10px;
+.display_card_body {
+  padding: 0 10px;
 }
-.display_card_body  span{
+.display_card_body span {
   font-weight: bold;
   margin-right: 5px;
-  }
-.display_card > button{
-margin-top: 10px;
+}
+.display_card > button {
+  margin-top: 10px;
 }
 .input__error {
   color: var(--red);
@@ -114,29 +99,24 @@ margin-top: 10px;
   margin: 0 5px;
 }
 /*************** right search output end ******************/
-.profile_container_2{
+.profile_container_2 {
   margin-top: 10px;
 }
-
-
-
 
 /****************** Post section start ************************/
 .Posts__wrapper > div {
   height: calc(100vh - 135px);
-    margin-top: 10px;
-    /* overflow-y: auto; */
-    margin-bottom: 10px;
-    border-radius: 10px;
-    display: grid;
-    grid-template-columns: 2fr 4fr;
+  margin-top: 10px;
+  /* overflow-y: auto; */
+  margin-bottom: 10px;
+  border-radius: 10px;
+  display: grid;
+  grid-template-columns: 2fr 4fr;
 }
 
-
-
-.Posts__container{
-overflow-y: auto;
-/* background: #000; */
+.Posts__container {
+  overflow-y: auto;
+  /* background: #000; */
 }
 
 /****************** Post section end ************************/
@@ -160,56 +140,43 @@ overflow-y: auto;
 }
 
 @media screen and (max-width: 769px) {
-  .profile_Header{
-    flex-direction: column;
-  }
-  .profile__nav{
-    /* background: #000; */
-  width: 100%;
-  }
-  
-  .Posts__wrapper{
-    width: calc(100vw );
-    
+  .Posts__wrapper {
+    width: calc(100vw);
   }
 
-  .Posts__wrapper > div{
+  .Posts__wrapper > div {
     height: calc(100vh - 190px);
-      margin-top: 10px;
-      overflow-y: auto;
-      overflow-x: hidden;
-      margin-bottom: 10px;
-      border-radius: 10px;
-      grid-template-columns: 1fr;
+    margin-top: 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    grid-template-columns: 1fr;
   }
-  .Posts__widget{
+  .Posts__widget {
     /* background: #000; */
     width: calc(100% - 4%);
-    }
-  .Posts__container{
+  }
+  .Posts__container {
     overflow-y: unset;
-    }
-  
-
-  .house_info_wrapper{
-    height: calc(100vh - 200px);
-      overflow-y: auto;
   }
 
-  .profile__sections{
+  .house_info_wrapper {
+    height: calc(100vh - 200px);
+    overflow-y: auto;
+  }
+
+  .profile__sections {
     height: calc(100vh - 180px);
   }
-  .profile_container_1{
+  .profile_container_1 {
     flex-direction: column;
-    }
-    .profile_left{
+  }
+  .profile_left {
     width: 100%;
-    }
-    .profile_right{
-      width: 100%;
-      margin-top: 40px;
-    }
-  
+  }
+  .profile_right {
+    width: 100%;
+    margin-top: 40px;
+  }
 }
-
- 

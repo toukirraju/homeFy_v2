@@ -50,6 +50,7 @@ const postSchema = new Schema(
       userId: String,
       rating: Number,
     },
+    images: Array,
     comments: {
       userId: String,
       comment: String,

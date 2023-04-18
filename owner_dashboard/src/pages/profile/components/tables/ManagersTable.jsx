@@ -2,19 +2,11 @@ import Style from "../../../../Styles/TableStyle.module.css";
 import { AgGridReact } from "ag-grid-react";
 import { useCallback, useRef, useState } from "react";
 import ConfirmationModal from "../../../../Components/modals/ConfirmationModal";
-import { useLocation } from "react-router-dom";
 
 const ManagersTable = ({ data }) => {
-  // console.log(data);
   const gridRef = useRef();
-  const { pathname } = useLocation();
-  const [month, setMonth] = useState(new Date());
   const [confirmationPopUp, setConfirmationPopUp] = useState(false);
   const [removeId, setRemoveId] = useState();
-  const dateFormatter = (params) => {
-    setMonth(params.value);
-    return new Date(params.value).toDateString();
-  };
 
   const sizeToFit = useCallback(() => {
     gridRef.current.api.sizeColumnsToFit();
@@ -28,14 +20,8 @@ const ManagersTable = ({ data }) => {
   }, []);
 
   const handleRemove = (value) => {
-    console.log(value);
-    // if (new Date(value.createdAt).getMonth() + 1 === new Date().getMonth() + 1) {
     setConfirmationPopUp(true);
     setRemoveId(value._id);
-    // } else {
-    //   // toast.error("you can't remove this value");
-    //   console.log("you can't remove this value");
-    // }
   };
   const defaultColDef = {
     sortable: true,
@@ -87,7 +73,7 @@ const ManagersTable = ({ data }) => {
       cellRenderer: (params) => (
         <div style={{ display: "flex", alignItems: "center" }}>
           <button
-            className="removeButton btns"
+            className="removeButton px-2"
             onClick={() => handleRemove(params.data)}
           >
             Delete manager

@@ -18,7 +18,7 @@ router.post(
 router.get("/", [authVerify.verifyToken], getAllApartments);
 
 //apartment update Route
-router.post(
+router.patch(
   "/update",
   [authVerify.verifyToken, authVerify.isOwner],
   updateApartmentInfo

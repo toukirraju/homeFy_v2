@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 import Style from "./ProfileCard.module.css";
-import Profle from "../../../../assets/userlogo.png";
-import { Link } from "react-router-dom";
 import {
-  UilHouseUser,
   UilPhoneAlt,
   UilUser,
   UilPen,
@@ -12,26 +9,22 @@ import {
   UilUserExclamation,
 } from "@iconscout/react-unicons";
 import ProfileUpdateModal from "../../modals/ProfileUpdateModal";
-import { useSelector } from "react-redux";
-import PostWidget from "../../../../Components/postComponents/PostWidget";
-// import { useMediaQuery } from "@mantine/hooks";
+import ProfileImage from "./ProfileImage";
 
 const ProfileCard = ({ data }) => {
-  // const isMobile = useMediaQuery("(max-width: 768px)");
-  const { widgetData, specificPosts } = useSelector((state) => state.posts);
-
   const [modalOpened, setModalOpened] = useState(false);
-  // const { user } = useSelector((state) => state.auth);
+
   return (
-    <div className={`card ${Style.ProfileCard_wrapper}`}>
-      <div className={` ${Style.Profile__image__section}`}>
-        <div className={` ${Style.profile_image}`}>
-          <img src={Profle} alt="" />
-        </div>
-        <div className={` ${Style.image__upload}`}>
-          <input type="file" />
-        </div>
-      </div>
+    // ${Style.ProfileCard_wrapper}
+    // ${Style.profile_image}
+    // ${Style.image__upload}
+    // ${Style.Profile__image__section}
+    // ${Style.owner__container__body}
+    <div
+      className={`card flex flex-col flex-wrap p-4  sm:flex-row md:justify-center`}
+    >
+      {/* image upload section */}
+      <ProfileImage profilePicture={data?.profilePicture} />
 
       <div className={` ${Style.edit__button}`}>
         <UilPen
@@ -46,8 +39,11 @@ const ProfileCard = ({ data }) => {
         />
       </div>
 
-      <div className={` ${Style.Post__widget__header}`}>
-        <div className={`${Style.owner__container__body}`}>
+      <div className={`lg:w-full`}>
+        <h1 className="border-b-2 border-gray-400 text-lg font-bold text-gray-400 drop-shadow-lg">
+          Personal Information
+        </h1>
+        <div className={``}>
           <div className={`${Style.owner_content}`}>
             <span>
               <UilUser />
@@ -61,7 +57,7 @@ const ProfileCard = ({ data }) => {
             <span> {data.phone}</span>
           </div>
         </div>
-        <div className={`${Style.owner__container__body}`}>
+        <div className={``}>
           <div className={`${Style.owner_content}`}>
             <span>
               <UilPostcard />
@@ -69,14 +65,14 @@ const ProfileCard = ({ data }) => {
             <span>{data.nid}</span>
           </div>
         </div>
-        <div className={`${Style.owner__container__body}`}>
-          <div className={`${Style.owner_content}`}>
+        <div className={`flex gap-2`}>
+          <div className={`${Style.owner_content} w-full`}>
             <span>
               <UilBriefcaseAlt />
             </span>
             <span> {data.profession}</span>
           </div>
-          <div className={`${Style.owner_content}`}>
+          <div className={`${Style.owner_content} w-full`}>
             <span>
               <UilUserExclamation />{" "}
             </span>

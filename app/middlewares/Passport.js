@@ -11,6 +11,7 @@ opts.secretOrKey = process.env.SECRET;
 module.exports = (passport) => {
   passport.use(
     new JwtStrategy(opts, (payload, done) => {
+      //check admin
       if (payload.isAdmin) {
         AdminModel.findOne({ _id: payload.id })
           .then((user) => {
@@ -25,6 +26,21 @@ module.exports = (passport) => {
             return done(error, false);
           });
       } else if (payload.role === "owner") {
+        //check owner
+        OwnerModel.findOne({ _id: payload.id })
+          .then((user) => {
+            if (!user) {
+              return done(null, false);
+            } else {
+              return done(null, user);
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+            return done(error, false);
+          });
+      } else if (payload.role === "manager") {
+        //check manager
         OwnerModel.findOne({ _id: payload.id })
           .then((user) => {
             if (!user) {
@@ -38,6 +54,7 @@ module.exports = (passport) => {
             return done(error, false);
           });
       } else {
+        //check renter
         RenterModel.findOne({ _id: payload.id })
           .then((user) => {
             if (!user) {

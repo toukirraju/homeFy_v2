@@ -1,70 +1,43 @@
 import Styles from "../../../Styles/ModalStyle.module.css";
-import { Modal, Switch, useMantineTheme } from "@mantine/core";
-import { useMediaQuery } from "@mantine/hooks";
+import { Modal, Switch } from "@mantine/core";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  allApartments,
-  createMultiApartment,
-  update,
-} from "../../../redux/slices/apartmentSlice";
-import { setReload } from "../../../redux/slices/reloadSlice";
 import LoadingSpinner from "../../../Components/LoadingSpinner";
 import { UilBuilding, UilReceipt } from "@iconscout/react-unicons";
 
 import { Formik, Form, Field } from "formik";
-import * as Yup from "yup";
 import { toast } from "react-toastify";
+import { useUpdateApartmentMutation } from "../../../redux/features/apartment/RTK Query/apartmentApi";
 
 const UpdateApartment = ({ updateModalOpened, setUpdateModalOpened, data }) => {
-  const theme = useMantineTheme();
-  const isMobile = useMediaQuery("(max-width: 600px)");
-  const dispatch = useDispatch();
   const [checked, setChecked] = useState(false);
   const [billChecked, setBillChecked] = useState(true);
-  const [loading, setLoading] = useState(false);
-  const { user } = useSelector((state) => state.auth.user);
   const [formData, setFormData] = useState(data);
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
   const initialValues = {
     ...data,
   };
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setLoading(true);
-    dispatch(update(formData))
-      .unwrap()
-      .then(() => {
-        setUpdateModalOpened(false);
-        setLoading(false);
-        dispatch(setReload());
-        // toast.success("Successfully registered!");
 
-        // dispatch(clearMessage());
-      })
-      .catch(() => {
-        setLoading(false);
-      });
-  };
+  const [updateApartment, { isSuccess, isLoading }] =
+    useUpdateApartmentMutation();
 
   useEffect(() => {
     setFormData(data);
   }, [data]);
-  // console.log("apart" + data);
-  const resetInput = (e) => {
-    e.target.value = "";
-  };
-  // console.log(data);
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Successfully Updated");
+      setUpdateModalOpened(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccess]);
   return (
     <>
       <Modal
-        overlayColor={
-          theme.colorScheme === "dark"
-            ? theme.colors.dark[9]
-            : theme.colors.gray[2]
-        }
+        classNames={{
+          modal: `bg-gray-300 dark:bg-gray-800`,
+          title: `modal__title`,
+          close: `modal__close`,
+        }}
         overlayOpacity={0.55}
         overlayBlur={3}
         size="sm"
@@ -75,24 +48,8 @@ const UpdateApartment = ({ updateModalOpened, setUpdateModalOpened, data }) => {
         <div>
           <Formik
             initialValues={initialValues}
-            // validationSchema={SignupSchema}
             onSubmit={(values) => {
-              // console.log(values);
-              setLoading(true);
-              dispatch(update(values))
-                .unwrap()
-                .then(() => {
-                  setUpdateModalOpened(false);
-                  setLoading(false);
-                  dispatch(allApartments());
-                  toast.success("Successfully Updated");
-
-                  // dispatch(clearMessage());
-                })
-                .catch(() => {
-                  toast.error("Somthing wrong!");
-                  setLoading(false);
-                });
+              updateApartment(values);
             }}
           >
             {({ errors, touched }) => (
@@ -134,7 +91,10 @@ const UpdateApartment = ({ updateModalOpened, setUpdateModalOpened, data }) => {
                         >
                           Apartment name
                         </label>
-                        <Field name="apartmentDetails.apartmentName" />
+                        <Field
+                          className=" dark:bg-slate-800 dark:text-gray-200"
+                          name="apartmentDetails.apartmentName"
+                        />
                         {errors.apartmentName && touched.apartmentName ? (
                           <div className={Styles.input__error}>
                             {errors.apartmentName}
@@ -148,7 +108,10 @@ const UpdateApartment = ({ updateModalOpened, setUpdateModalOpened, data }) => {
                         >
                           Apartment number
                         </label>
-                        <Field name="apartmentDetails.apartment_number" />
+                        <Field
+                          className=" dark:bg-slate-800 dark:text-gray-200"
+                          name="apartmentDetails.apartment_number"
+                        />
                         {errors.apartment_number && touched.apartment_number ? (
                           <div className={Styles.input__error}>
                             {errors.apartment_number}
@@ -166,6 +129,7 @@ const UpdateApartment = ({ updateModalOpened, setUpdateModalOpened, data }) => {
                           Apartment Type
                         </label>
                         <Field
+                          className=" dark:bg-slate-800 dark:text-gray-200"
                           name="apartmentDetails.apartmentType"
                           component="select"
                         >
@@ -186,7 +150,10 @@ const UpdateApartment = ({ updateModalOpened, setUpdateModalOpened, data }) => {
                         >
                           Room no
                         </label>
-                        <Field name="apartmentDetails.roomNumber" />
+                        <Field
+                          className=" dark:bg-slate-800 dark:text-gray-200"
+                          name="apartmentDetails.roomNumber"
+                        />
                         {errors.roomNumber && touched.roomNumber ? (
                           <div className={Styles.input__error}>
                             {errors.roomNumber}
@@ -204,6 +171,7 @@ const UpdateApartment = ({ updateModalOpened, setUpdateModalOpened, data }) => {
                           Beds
                         </label>
                         <Field
+                          className=" dark:bg-slate-800 dark:text-gray-200"
                           name="apartmentDetails.number_of_bed_room"
                           type="number"
                         />
@@ -222,6 +190,7 @@ const UpdateApartment = ({ updateModalOpened, setUpdateModalOpened, data }) => {
                           Balcony
                         </label>
                         <Field
+                          className=" dark:bg-slate-800 dark:text-gray-200"
                           name="apartmentDetails.number_of_balcony"
                           type="number"
                         />
@@ -243,6 +212,7 @@ const UpdateApartment = ({ updateModalOpened, setUpdateModalOpened, data }) => {
                           Kitchen
                         </label>
                         <Field
+                          className=" dark:bg-slate-800 dark:text-gray-200"
                           name="apartmentDetails.number_of_kitchen"
                           type="number"
                         />
@@ -261,6 +231,7 @@ const UpdateApartment = ({ updateModalOpened, setUpdateModalOpened, data }) => {
                           Bath
                         </label>
                         <Field
+                          className=" dark:bg-slate-800 dark:text-gray-200"
                           name="apartmentDetails.number_of_baths"
                           type="number"
                         />
@@ -279,6 +250,7 @@ const UpdateApartment = ({ updateModalOpened, setUpdateModalOpened, data }) => {
                         Apartment length
                       </label>
                       <Field
+                        className=" dark:bg-slate-800 dark:text-gray-200"
                         name="apartmentDetails.apartment_length"
                         type="number"
                       />
@@ -324,7 +296,11 @@ const UpdateApartment = ({ updateModalOpened, setUpdateModalOpened, data }) => {
                         <label htmlFor="rent" className={Styles.input__label}>
                           Rent
                         </label>
-                        <Field name="billDetails.rent" type="number" />
+                        <Field
+                          className=" dark:bg-slate-800 dark:text-gray-200"
+                          name="billDetails.rent"
+                          type="number"
+                        />
                         {errors.rent && touched.rent ? (
                           <div className={Styles.input__error}>
                             {errors.rent}
@@ -338,7 +314,11 @@ const UpdateApartment = ({ updateModalOpened, setUpdateModalOpened, data }) => {
                         >
                           Gas bill
                         </label>
-                        <Field name="billDetails.gas_bill" type="number" />
+                        <Field
+                          className=" dark:bg-slate-800 dark:text-gray-200"
+                          name="billDetails.gas_bill"
+                          type="number"
+                        />
                         {errors.gas_bill && touched.gas_bill ? (
                           <div className={Styles.input__error}>
                             {errors.gas_bill}
@@ -355,7 +335,11 @@ const UpdateApartment = ({ updateModalOpened, setUpdateModalOpened, data }) => {
                         >
                           Water bill
                         </label>
-                        <Field name="billDetails.water_bill" type="number" />
+                        <Field
+                          className=" dark:bg-slate-800 dark:text-gray-200"
+                          name="billDetails.water_bill"
+                          type="number"
+                        />
                         {errors.water_bill && touched.water_bill ? (
                           <div className={Styles.input__error}>
                             {errors.water_bill}
@@ -370,6 +354,7 @@ const UpdateApartment = ({ updateModalOpened, setUpdateModalOpened, data }) => {
                           Service charge
                         </label>
                         <Field
+                          className=" dark:bg-slate-800 dark:text-gray-200"
                           name="billDetails.service_charge"
                           type="number"
                         />
@@ -385,7 +370,11 @@ const UpdateApartment = ({ updateModalOpened, setUpdateModalOpened, data }) => {
                       <label htmlFor="others" className={Styles.input__label}>
                         Others
                       </label>
-                      <Field name="billDetails.others" type="number" />
+                      <Field
+                        className=" dark:bg-slate-800 dark:text-gray-200"
+                        name="billDetails.others"
+                        type="number"
+                      />
                       {errors.others && touched.others ? (
                         <div className={Styles.input__error}>
                           {errors.others}
@@ -396,11 +385,11 @@ const UpdateApartment = ({ updateModalOpened, setUpdateModalOpened, data }) => {
                 )}
 
                 <button
-                  className={Styles.submit_button}
+                  className="submit_button mx-auto px-3 py-1"
                   type="submit"
-                  disabled={loading}
+                  disabled={isLoading}
                 >
-                  {loading ? <LoadingSpinner /> : "Submit"}
+                  {isLoading ? <LoadingSpinner /> : "Submit"}
                 </button>
               </Form>
             )}

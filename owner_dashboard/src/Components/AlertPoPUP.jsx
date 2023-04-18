@@ -6,14 +6,7 @@ import { clearMessage } from "../redux/slices/message";
 const AlertPoPUP = ({ message }) => {
   const dispatch = useDispatch();
   return (
-    <div
-      style={{
-        position: "fixed",
-        zIndex: "555555",
-        top: "20px",
-        right: "20px",
-      }}
-    >
+    <div className="">
       <Alert
         icon={<UilExclamationCircle size={16} />}
         title="Error!"

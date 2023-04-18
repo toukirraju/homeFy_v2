@@ -1,8 +1,10 @@
-import { Modal, useMantineTheme } from "@mantine/core";
+import { Modal } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useEffect, useState } from "react";
-import ConfirmationModal from "../../../Components/modals/ConfirmationModal";
 import Styles from "../../../Styles/ModalStyle.module.css";
+import { useCreateTemporaryBillMutation } from "../../../redux/features/transactions/RTK Query/billApi";
+import { toast } from "react-toastify";
+import LoadingSpinner from "../../../Components/LoadingSpinner";
 
 const CreateTempBill = ({
   createTempBillModalOpened,
@@ -10,12 +12,12 @@ const CreateTempBill = ({
   renterData,
   temporaryData,
 }) => {
-  const theme = useMantineTheme();
   const isMobile = useMediaQuery("(max-width: 600px)");
 
-  const [confirmationPopUp, setConfirmationPopUp] = useState(false);
-  const [tempData, setTempData] = useState({});
   const [isSwitchOn, setIsSwitchOn] = useState(false);
+
+  const [createTemporaryBill, { isLoading, isSuccess }] =
+    useCreateTemporaryBillMutation();
 
   const [formData, setFormData] = useState({
     renterId: "",
@@ -36,37 +38,32 @@ const CreateTempBill = ({
 
   const submitHandler = (event) => {
     event.preventDefault();
-    setConfirmationPopUp(true);
-    // setTempData({
-    //   ...formData,
-    //   tempDue: parseInt(temporaryData.tempDue) + parseInt(formData.tempDue),
-    // });
-    setCreateTempBillModalOpened(false);
+    createTemporaryBill(formData);
   };
-  //   console.log(formData);
   useEffect(() => {
     setFormData({
       renterId: renterData._id,
-      renterName: renterData.firstname + " " + renterData.lastname,
+      renterName: renterData.fullname,
       electricity_bill: 0,
       others: 0,
       tempDue: 0,
     });
   }, [renterData, temporaryData]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      setCreateTempBillModalOpened(false);
+      toast.success("Temporary bill created");
+    }
+  }, [isSuccess]);
   return (
     <>
-      <ConfirmationModal
-        confirmationPopUp={confirmationPopUp}
-        setConfirmationPopUp={setConfirmationPopUp}
-        data={formData}
-        popUp_type="Create_Temporary_Bill"
-      />
       <Modal
-        overlayColor={
-          theme.colorScheme === "dark"
-            ? theme.colors.dark[9]
-            : theme.colors.gray[2]
-        }
+        classNames={{
+          modal: `bg-gray-300 dark:bg-gray-800`,
+          title: `modal__title`,
+          close: `modal__close`,
+        }}
         overlayOpacity={0.55}
         overlayBlur={3}
         size={isMobile ? "sm" : "md"}
@@ -75,31 +72,29 @@ const CreateTempBill = ({
         title="Create Temporary Bill"
       >
         <div
-          className={`${Styles.bill__header} card`}
+          className={`${Styles.bill__header} card dark:text-gray-200`}
           style={{ margin: "15px 0" }}
         >
-          <h3>
-            {renterData.firstname} {renterData.lastname}
-          </h3>
+          <h3>{renterData.fullname}</h3>
           <span className="subtitle">Apartment: {renterData.apartNo}</span>
         </div>
         <>
           <div className={`${Styles.bill__info}`}>
-            <p className="card">
+            <p className="card dark:text-gray-200">
               Electricity Bill:{" "}
               <b>{temporaryData ? temporaryData.electricity_bill : 0}</b>
             </p>
-            <p className="card">
+            <p className="card dark:text-gray-200">
               Others Bill: <b>{temporaryData ? temporaryData.others : 0}</b>
             </p>
 
-            <p className="card">
+            <p className="card dark:text-gray-200">
               Old Due: <b>{temporaryData ? temporaryData.tempDue : 0}</b>
             </p>
           </div>
         </>
         <div className={Styles.switch}>
-          <label>Manual add due bill</label>
+          <label className="dark:text-gray-200">Manual add due bill</label>
           <span
             style={{
               fontSize: "20px",
@@ -113,7 +108,7 @@ const CreateTempBill = ({
             {isSwitchOn ? (
               <i className="uil uil-toggle-on "></i>
             ) : (
-              <i className="uil uil-toggle-off off__btn"></i>
+              <i className="uil uil-toggle-off text-gray-400"></i>
             )}
           </span>
         </div>
@@ -121,8 +116,11 @@ const CreateTempBill = ({
           {isSwitchOn && (
             <>
               <div className={`${Styles.input__container} ${Styles.infoInput}`}>
-                <label className={Styles.input__label}>Due bill</label>
+                <label className="text-gray-600 dark:text-gray-300">
+                  Due bill
+                </label>
                 <input
+                  className=" dark:bg-slate-900 dark:text-gray-200"
                   type="number"
                   placeholder="Enter Due"
                   name="tempDue"
@@ -136,8 +134,11 @@ const CreateTempBill = ({
           )}
 
           <div className={`${Styles.input__container} ${Styles.infoInput}`}>
-            <label className={Styles.input__label}>Electricity Bill</label>
+            <label className="text-gray-600 dark:text-gray-300">
+              Electricity Bill
+            </label>
             <input
+              className=" dark:bg-slate-900 dark:text-gray-200"
               type="number"
               placeholder="Enter Electricity Bill"
               name="electricity_bill"
@@ -149,8 +150,11 @@ const CreateTempBill = ({
           </div>
 
           <div className={`${Styles.input__container} ${Styles.infoInput}`}>
-            <label className={Styles.input__label}>Others Bill</label>
+            <label className="text-gray-600 dark:text-gray-300">
+              Others Bill
+            </label>
             <input
+              className=" dark:bg-slate-900 dark:text-gray-200"
               type="number"
               placeholder="Enter Others Bill"
               name="others"
@@ -161,7 +165,12 @@ const CreateTempBill = ({
             />
           </div>
 
-          <button className={Styles.submit_button}>Submit</button>
+          <button
+            disabled={isLoading}
+            className="submit_button mx-auto mb-5 px-3 py-1"
+          >
+            {isLoading ? <LoadingSpinner /> : "submit"}
+          </button>
         </form>
       </Modal>
     </>

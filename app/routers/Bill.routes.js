@@ -13,8 +13,8 @@ const {
   updateTempBill,
   payableRenters,
   deleteTempBill,
-  checkForUnbilledRenters,
-} = require("../controllers/billController");
+  generatedDueBills,
+} = require("../controllers/BillController");
 
 //create bill Route
 router.post("/create", [authVerify.verifyToken], createBill);
@@ -38,7 +38,7 @@ router.get("/temp", [authVerify.verifyToken], allTempBills);
 //get user temp bill Route
 router.get("/temp/r/:id", [authVerify.verifyToken], userTempBill);
 //update user temporary bill Route
-router.post(
+router.patch(
   "/temp/update",
   [authVerify.verifyToken, authVerify.isOwner],
   updateTempBill
@@ -54,6 +54,10 @@ router.delete(
 router.get("/payable/:month/:year", [authVerify.verifyToken], payableRenters);
 
 //check unbilled renter on lastday of month
-router.get("/unbilled", checkForUnbilledRenters);
+router.post(
+  "/unbilled",
+  [authVerify.verifyToken, authVerify.isOwner],
+  generatedDueBills
+);
 
 module.exports = router;

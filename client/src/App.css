@@ -217,12 +217,12 @@ a {
 /*********************************************************** 3 dot loading spinner start *********************************************************/
 .spinner {
   margin: auto;
-  /* width: 74px; */
+  width: 74px;
   position: absolute;
   top: 50%; /* position the top  edge of the element at the middle of the parent */
   left: 50%; /* position the left edge of the element at the middle of the parent */
   transform: translate(-50%, -50%);
-  width: auto;
+  /* width: fit-content; */
   text-align: center;
 }
 
@@ -317,19 +317,19 @@ a {
 /* Dark mode */
 
 @media (prefers-color-scheme: dark) {
-  .card {
+  .dark .card {
     /* background: rgba(124, 124, 124, 0.9); */
     /* background: rgb(148 163 184 / 0.7); */
-    background-color: rgb(119, 136, 145);
-    box-shadow: 0 8px 32px 0 rgba(125, 221, 205, 0.37);
-    -webkit-box-shadow: 0 8px 32px 0 rgba(144, 173, 171, 0.37);
-    -moz-box-shadow: 0 8px 32px 0 rgba(133, 146, 151, 0.37);
+    background-color: rgb(25, 38, 45);
+    box-shadow: 0 8px 32px 0 rgba(14, 28, 26, 0.37);
+    -webkit-box-shadow: 0 8px 32px 0 rgba(14, 28, 26, 0.37);
+    -moz-box-shadow: 0 8px 32px 0 rgba(14, 28, 26, 0.37);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
     border: 1px solid rgba(153, 153, 153, 0.18);
     border-radius: 10px;
   }
-  .title {
+  .dark .title {
     color: rgb(238, 238, 238);
     font-weight: 700;
     --tw-drop-shadow: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
@@ -338,12 +338,12 @@ a {
       var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert)
       var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
   }
-  .subtitle {
+  .dark .subtitle {
     color: rgb(202, 201, 201);
     font-weight: 600;
   }
 
-  .mask {
+  .dark .mask {
     width: 100%;
     height: 100%;
     position: fixed;
@@ -352,9 +352,10 @@ a {
     top: 0;
     right: 0;
     border: 0;
-    background-color: #0e101a;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(148 163 184 / 0.05)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e");
-    mask-image: linear-gradient(to bottom, transparent, black);
-    -webkit-mask-image: linear-gradient(to bottom, #0000, #000);
+    background-color: #131623;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(148 163 184 / 0.05) '%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e");
+
+    mask-image: none;
+    -webkit-mask-image: none;
   }
 }

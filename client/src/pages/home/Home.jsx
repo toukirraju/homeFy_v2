@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import { fetchPosts } from "../../redux/features/posts/postSlice";
 import useAuth from "../../hooks/useAuth";
 import PostLoader from "../../Components/loader/PostLoader";
+import ErrorMessage from "../../Components/UI/Error/ErrorMessage";
 const Home = () => {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const dispatch = useDispatch();
@@ -64,6 +65,7 @@ const Home = () => {
         </div>
         <div className={HomeStyle.postSide__wrapper}>
           {/* Post Side */}
+          {/* <ErrorMessage /> */}
           {content}
         </div>
         <div className={HomeStyle.rightSide__wrapper}>

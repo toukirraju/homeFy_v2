@@ -30,11 +30,20 @@ const ImageCollage = ({ data }) => {
 
   return (
     <>
-      <Gallery
-        images={data}
-        onClick={(index) => openModal(index)}
-        enableImageSelection={false}
-      />
+      {data && (
+        <Gallery
+          images={data}
+          onClick={(index) => openModal(index)}
+          enableImageSelection={false}
+          maxRows={3}
+          thumbnailStyle={{ objectFit: "cover" }}
+          tileViewportStyle={{
+            width: "150px",
+          }}
+          margin={"auto"}
+        />
+      )}
+
       <Modal
         classNames={{
           modal: `${Style.modal__Body}`,
@@ -42,7 +51,6 @@ const ImageCollage = ({ data }) => {
           close: `${Style.modal__close}`,
         }}
         size="lg"
-        title={data[currentImageIndex].caption}
         opened={modalOpen}
         onClose={() => setModalOpen(false)}
       >

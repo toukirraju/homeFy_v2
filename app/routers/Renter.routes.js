@@ -40,13 +40,13 @@ router.get("/all", [authVerify.verifyToken], getQueryRenters);
 //find renter Route
 router.get("/find/:searchId", [authVerify.verifyToken], findRenter);
 //update renter Route
-router.put(
+router.patch(
   "/update/:id",
   [authVerify.verifyToken, authVerify.isOwner],
   updateRenter
 );
 //remove renter Route
-router.put(
+router.patch(
   "/remove/:id",
   [authVerify.verifyToken, authVerify.isOwner],
   removeRenterFromHome
@@ -63,13 +63,13 @@ router.delete(
 //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
 
 //assign renter Route
-router.post(
+router.patch(
   "/assign",
   [authVerify.verifyToken, authVerify.isOwner],
   assignRenter
 );
 //unassign renter Route
-router.post(
+router.patch(
   "/unassign",
   [authVerify.verifyToken, authVerify.isOwner],
   removeAssignedRenter

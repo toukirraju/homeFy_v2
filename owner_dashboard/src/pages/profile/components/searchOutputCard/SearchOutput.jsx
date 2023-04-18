@@ -41,7 +41,11 @@ const SearchOutput = ({ closeSearchModal, data }) => {
           closeSearchModal={closeSearchModal}
           data={data}
         />
-        <button disabled={data.ownerId} onClick={() => setModalOpened(true)}>
+        <button
+          className="submit_button"
+          disabled={data.ownerId}
+          onClick={() => setModalOpened(true)}
+        >
           Assign
         </button>
       </div>

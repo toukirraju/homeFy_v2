@@ -32,7 +32,7 @@ const PopUpWindow = ({ popUpModalOpened, setPopUpModalOpened, data }) => {
   const theme = useMantineTheme();
   const isMobile = useMediaQuery("(max-width: 600px)");
 
-  const { profileData } = useSelector((state) => state.owner);
+  const { user: profileData } = useSelector((state) => state.auth);
   // console.log(profileData.role);
 
   const [updateModalOpened, setUpdateModalOpened] = useState(false);
@@ -84,12 +84,17 @@ const PopUpWindow = ({ popUpModalOpened, setPopUpModalOpened, data }) => {
         size={isMobile ? "sm" : "md"}
         opened={popUpModalOpened}
         onClose={() => setPopUpModalOpened(false)}
+        classNames={{
+          modal: `modal__Body`,
+          title: `modal__title`,
+          close: `modal__close`,
+        }}
       >
         {data ? (
           <>
             <div>
               <div className={`card ${Styles.Modal_header}`}>
-                <h3 className={` ${Styles.Modal_header_title}`}>Actions</h3>
+                <h3 className={`py-3 dark:text-gray-300`}>Actions</h3>
               </div>
               <div className={Styles.popUpWindow__body}>
                 <div className={Styles.popUpWindow_container}>
@@ -364,7 +369,7 @@ const PopUpWindow = ({ popUpModalOpened, setPopUpModalOpened, data }) => {
             {profileData.role === "owner" && (
               <div className={`card ${Styles.Modal_button_container}`}>
                 <button
-                  className="removeButton btns"
+                  className="removeButton border-2 px-1 py-1"
                   onClick={() => handleRemove(data)}
                 >
                   remove
@@ -372,13 +377,13 @@ const PopUpWindow = ({ popUpModalOpened, setPopUpModalOpened, data }) => {
                 {data.renterId === "" && data.renterName === "" && (
                   <>
                     <button
-                      className=" btns"
+                      className="submit_button px-1 py-1"
                       onClick={() => setPostModalOpened(true)}
                     >
                       Post
                     </button>
                     <button
-                      className="submit_button btns"
+                      className="submit_button px-1 py-1"
                       onClick={() => setAssignModalOpened(true)}
                     >
                       Assign
@@ -387,7 +392,7 @@ const PopUpWindow = ({ popUpModalOpened, setPopUpModalOpened, data }) => {
                 )}
 
                 <button
-                  className="updateButton btns"
+                  className="updateButton border-2 px-1 py-1"
                   onClick={() => setUpdateModalOpened(true)}
                 >
                   Update

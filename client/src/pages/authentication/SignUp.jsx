@@ -18,9 +18,13 @@ const SignUp = () => {
           <div
             className={`${styles.right_container} ${styles.right__card__order}`}
           >
-            <Link to="/">
-              <img className={styles.right__image} src={logo} alt="" />
-            </Link>
+            <img className={styles.right__image} src={logo} alt="" />
+
+            <div class={styles.return__container}>
+              <Link to="/">
+                <span class={styles.return__button}>Return HomeFy</span>
+              </Link>
+            </div>
           </div>
         </div>
       </div>

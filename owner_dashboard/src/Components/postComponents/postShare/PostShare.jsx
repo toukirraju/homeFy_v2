@@ -1,19 +1,10 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Styles from "../../../Styles/ModalStyle.module.css";
 import "./PostShare.css";
-import ProfileImg from "../../../assets/user.png";
-import { useSelector, useDispatch } from "react-redux";
-import { Loader, Switch, Modal, useMantineTheme } from "@mantine/core";
+import { Switch, Modal } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import {
   UilScenery,
-  UilPlayCircle,
-  UilLocationPoint,
-  UilSchedule,
-  UilTimes,
-  UilBookReader,
-  UilBuilding,
-  UilUser,
   UilSimCard,
   UilLayerGroup,
   UilListOl,
@@ -27,20 +18,20 @@ import {
   UilFire,
   UilTear,
   UilWrench,
-  UilElipsisDoubleVAlt,
   UilSigma,
   UilEllipsisH,
+  UilTimes,
 } from "@iconscout/react-unicons";
-import { createPost } from "../../../redux/slices/postSlice";
 // import { uploadImage, uploadPost } from "../../actions/UploadAction";
 import LoadingSpinner from "../../LoadingSpinner";
 import { toast } from "react-toastify";
+import { useMakePostMutation } from "../../../redux/features/post/RTK Query/postApi";
 
 const PostShare = ({ postModalOpened, setPostModalOpened, data }) => {
-  const dispatch = useDispatch();
-  const theme = useMantineTheme();
   const isMobile = useMediaQuery("(max-width: 600px)");
-  const [loading, setLoading] = useState(false);
+  const [images, setImages] = useState([]);
+
+  const [makePost, { isLoading, isSuccess }] = useMakePostMutation();
 
   const [postData, setPostData] = useState({});
 
@@ -58,20 +49,12 @@ const PostShare = ({ postModalOpened, setPostModalOpened, data }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setLoading(true);
-    dispatch(createPost(postData))
-      .unwrap()
-      .then(() => {
-        setPostModalOpened(false);
-        setLoading(false);
-        // dispatch(setReload());
-        toast.success("Post done!");
-        // dispatch(clearMessage());
-      })
-      .catch(() => {
-        setLoading(false);
-      });
-    reset();
+    if (postData.images.length === 0) {
+      alert("Minimum 1 image will be required!");
+    } else {
+      makePost(postData);
+      reset();
+    }
   };
   useEffect(() => {
     setPostData({
@@ -79,80 +62,129 @@ const PostShare = ({ postModalOpened, setPostModalOpened, data }) => {
       description,
       isVisible: true,
       isNegotiable: state.billChecked === false ? true : false,
+      images,
     });
-  }, [description, state.billChecked, data]);
+  }, [description, images, state.billChecked, data]);
 
   const reset = () => {
     setDescription("");
     setPostData({});
   };
 
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Post done!");
+      setPostModalOpened(false);
+    }
+  }, [isSuccess]);
+
+  //Image section start
+
+  //image transform
+  const Transform = (file) => {
+    const reader = new FileReader();
+
+    if (file) {
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        // setProfileImage(reader.result);
+        setImages((prev) => [...prev, reader.result]);
+      };
+    } else {
+      // setProfileImage("");
+    }
+  };
+  const handleFileSelect = (event) => {
+    const file = event.target.files[0];
+    const fileType = file.type;
+    const fileSize = file.size;
+
+    // Check if file type is an image
+    if (!fileType.startsWith("image/")) {
+      alert("Please upload an image file");
+      // setProfileImage(null);
+      return;
+    }
+
+    // Check if file size is less than or equal to 1MB
+    if (fileSize > 1 * 1024 * 1024) {
+      alert("Please upload an image file with size less than or equal to 1MB");
+      // setProfileImage(null);
+      return;
+    }
+
+    if (file) {
+      Transform(file);
+    }
+  };
+
+  const handleRemoveImage = (image) => {
+    const newImages = images.filter((img) => img !== image);
+    setImages(newImages);
+  };
+
   return (
     <Modal
-      overlayColor={
-        theme.colorScheme === "dark"
-          ? theme.colors.dark[9]
-          : theme.colors.gray[2]
-      }
+      classNames={{
+        modal: `bg-gray-300 dark:bg-gray-800`,
+        title: `modal__title`,
+        close: `modal__close`,
+      }}
       overlayOpacity={0.55}
       overlayBlur={3}
-      size={isMobile ? "sm" : "lg"}
+      size={isMobile ? "lg" : "lg"}
       opened={postModalOpened}
       onClose={() => setPostModalOpened(false)}
     >
-      <div className="PostSHare">
-        <img src={ProfileImg} alt="" />
+      <div className="card">
         <div>
-          <input
-            // required
+          <textarea
+            className="w-full rounded-t-lg bg-gray-300 p-2 outline-none focus:border-b-2 focus:border-b-gray-400 dark:bg-slate-700 dark:text-gray-400 focus:dark:border-b-2"
             type="text"
             placeholder="Short description"
             onChange={(e) => setDescription(e.target.value)}
           />
           <div className="postOptions">
-            <div
-              className="option"
-              style={{ color: "var(--photo)" }}
-              // onClick={() => imageRef.current.click()}
+            <label
+              htmlFor="fileInput"
+              className="relative flex w-1/3 cursor-pointer items-center justify-center"
             >
-              <UilScenery />
-              Photo
-            </div>
-            {/* <div className="option" style={{ color: "var(--video)" }}>
-            <UilPlayCircle />
-            Video
-          </div> */}
-            <div className="option" style={{ color: "var(--location)" }}>
-              <UilLocationPoint />
-              Location
-            </div>
-            <div className="option" style={{ color: "var(--shedule)" }}>
-              <UilSchedule />
-              Schedule
-            </div>
-            <button
-              className="button ps-button"
-              onClick={handleSubmit}
-              disabled={loading}
-            >
-              {loading ? <LoadingSpinner /> : "Share"}
-            </button>
-            <div style={{ display: "none" }}>
+              <div className="option" style={{ color: "var(--photo)" }}>
+                <UilScenery />
+                Photo
+              </div>
+
               <input
+                id="fileInput"
+                className=" hidden dark:bg-slate-900 dark:text-gray-200"
+                name="profilePicture"
                 type="file"
-                name="myImage"
-                // ref={imageRef}
-                // onChange={onImageChange}
+                onChange={handleFileSelect}
               />
-            </div>
+            </label>
+
+            <button
+              className="submit_button ps-button mb-1"
+              onClick={handleSubmit}
+              disabled={isLoading}
+            >
+              {isLoading ? <LoadingSpinner /> : "Share"}
+            </button>
           </div>
 
-          {/* {image && (
-          <div className="previewImage">
-            <UilTimes onClick={() => setImage(null)} />
-            <img src={URL.createObjectURL(image)} alt="" />
-          </div>
-        )} */}
+          {images && (
+            <div className="mx-auto grid grid-cols-2">
+              {images.map((image, index) => (
+                <div key={index} className="relative">
+                  <img className=" aspect-auto " src={image} alt="" />
+                  <UilTimes
+                    className="absolute right-0 top-0 cursor-pointer text-red-400 hover:text-red-500"
+                    onClick={() => handleRemoveImage(image)}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
@@ -163,7 +195,6 @@ const PostShare = ({ postModalOpened, setPostModalOpened, data }) => {
           offLabel="OFF"
           checked={state.checked}
           onChange={(event) =>
-            // setChecked(event.currentTarget.checked)
             setState({
               ...state,
               checked: event.currentTarget.checked,

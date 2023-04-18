@@ -2,7 +2,7 @@ import Style from "./ApartmentInfoCard.module.css";
 
 const ApartmentInfoCard = ({ data }) => {
   return (
-    <div className={Style.apartment__wrapper}>
+    <div className={`card ${Style.apartment__wrapper}`}>
       <h4 className={Style.apartment__header}>Apartment Information</h4>
       {data === null ? (
         <h4>No apartment have been assigned</h4>

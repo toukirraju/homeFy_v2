@@ -1,8 +1,9 @@
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import Style from "../../styles/Dashboard.module.css";
 const CircularProgress = ({ data }) => {
-  const percentage =
-    (parseInt(data.paidRenters) * 100) / parseInt(data.activeRenters);
+  const percentage = Math.floor(
+    (parseInt(data.paidRenters) * 100) / parseInt(data.activeRenters)
+  );
   return (
     <div>
       <div className={`${Style.widget_header}`}>
@@ -18,7 +19,7 @@ const CircularProgress = ({ data }) => {
         </div>
       </div>
 
-      <div className={`${Style.circular_progress}`}>
+      <div className={`mx-auto w-12 md:w-28 lg:w-32`}>
         <CircularProgressbar
           value={isNaN(percentage) ? 0 : percentage}
           text={`Paid: ${isNaN(percentage) ? 0 : percentage}%`}

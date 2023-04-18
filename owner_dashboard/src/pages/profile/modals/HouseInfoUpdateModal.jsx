@@ -1,22 +1,21 @@
 import Styles from "./ModalStyle.module.css";
-import { Modal, useMantineTheme } from "@mantine/core";
+import { Modal } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import { useDispatch } from "react-redux";
-import { GetHouses, UpdateHouse } from "../../../redux/slices/ownerSlice";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import LoadingSpinner from "../../../Components/LoadingSpinner";
 import MapWindow from "../../../Components/CustomMap/MapWindow";
 import { UilLocationPoint } from "@iconscout/react-unicons";
+import { useUpdateHouseMutation } from "../../../redux/features/profile/RTK Query/profileApi";
 
 function HouseInfoUpdateModal({ modalOpened, setModalOpened, data }) {
-  const theme = useMantineTheme();
   const isMobile = useMediaQuery("(max-width: 600px)");
-  const dispatch = useDispatch();
-  const [isLoading, setisLoading] = useState(false);
+  // const [isLoading, setisLoading] = useState(false);
   const [mapWindowOpen, setMapWindowOpen] = useState(false);
 
   const [address, setAddress] = useState({});
+
+  const [updateHouse, { isLoading, isSuccess }] = useUpdateHouseMutation();
   // console.log(data);
   const [initialValues, setInitialValues] = useState({
     // ...data,
@@ -81,36 +80,34 @@ function HouseInfoUpdateModal({ modalOpened, setModalOpened, data }) {
 
     setInitialValues((prevalue) => {
       return {
-        ...prevalue, // Spread Operator
+        ...prevalue,
         [name]: value,
       };
     });
   };
 
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("House information updated");
+      setModalOpened(false);
+    }
+  }, [isSuccess]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // console.log(initialValues);
-    setisLoading(true);
-    dispatch(UpdateHouse(initialValues))
-      .then(() => {
-        setisLoading(false);
-        toast.success("House information updated");
-        setModalOpened(false);
-        dispatch(GetHouses());
-      })
-      .catch((err) => toast.error("Somthing went wrong!"));
+    updateHouse(initialValues);
   };
 
   return (
     <Modal
-      overlayColor={
-        theme.colorScheme === "dark"
-          ? theme.colors.dark[9]
-          : theme.colors.gray[2]
-      }
+      classNames={{
+        modal: `bg-gray-300 dark:bg-gray-800`,
+        title: `modal__title`,
+        close: `modal__close`,
+      }}
       overlayOpacity={0.55}
       overlayBlur={3}
-      size="sm"
+      size="lg"
       fullScreen={isMobile}
       opened={modalOpened}
       onClose={() => setModalOpened(false)}
@@ -118,10 +115,11 @@ function HouseInfoUpdateModal({ modalOpened, setModalOpened, data }) {
       <div>
         <form onSubmit={handleSubmit}>
           <div className={Styles.input__container}>
-            <label htmlFor="houseName" className={Styles.input__label}>
+            <label className="my-1 px-2 text-sm text-gray-600 dark:text-gray-300 ">
               House name
             </label>
             <input
+              className=" dark:bg-slate-900 dark:text-gray-200"
               required
               value={initialValues.houseName}
               onChange={handleChange}
@@ -131,10 +129,14 @@ function HouseInfoUpdateModal({ modalOpened, setModalOpened, data }) {
 
           <div className={Styles.address_container}>
             <div className={Styles.input__container}>
-              <label htmlFor="houseNo" className={Styles.input__label}>
+              <label
+                htmlFor="houseNo"
+                className="my-1 px-2 text-sm text-gray-600 dark:text-gray-300 "
+              >
                 House number
               </label>
               <input
+                className=" dark:bg-slate-900 dark:text-gray-200"
                 required
                 value={initialValues.houseNo}
                 onChange={handleChange}
@@ -142,10 +144,14 @@ function HouseInfoUpdateModal({ modalOpened, setModalOpened, data }) {
               />
             </div>
             <div className={Styles.input__container}>
-              <label htmlFor="streetNo" className={Styles.input__label}>
+              <label
+                htmlFor="streetNo"
+                className="my-1 px-2 text-sm text-gray-600 dark:text-gray-300 "
+              >
                 Street number
               </label>
               <input
+                className=" dark:bg-slate-900 dark:text-gray-200"
                 value={initialValues.streetNo}
                 onChange={handleChange}
                 name="streetNo"
@@ -154,10 +160,14 @@ function HouseInfoUpdateModal({ modalOpened, setModalOpened, data }) {
           </div>
           <div className={Styles.address_container}>
             <div className={Styles.input__container}>
-              <label htmlFor="number_of_floors" className={Styles.input__label}>
+              <label
+                htmlFor="number_of_floors"
+                className="my-1 px-2 text-sm text-gray-600 dark:text-gray-300 "
+              >
                 Number of floors
               </label>
               <input
+                className=" dark:bg-slate-900 dark:text-gray-200"
                 value={initialValues.number_of_floors}
                 onChange={handleChange}
                 name="number_of_floors"
@@ -167,11 +177,12 @@ function HouseInfoUpdateModal({ modalOpened, setModalOpened, data }) {
             <div className={Styles.input__container}>
               <label
                 htmlFor="number_of_apartments"
-                className={Styles.input__label}
+                className="my-1 px-2 text-sm text-gray-600 dark:text-gray-300 "
               >
                 Number of apartments
               </label>
               <input
+                className=" dark:bg-slate-900 dark:text-gray-200"
                 value={initialValues.number_of_apartments}
                 onChange={handleChange}
                 name="number_of_apartments"
@@ -189,6 +200,7 @@ function HouseInfoUpdateModal({ modalOpened, setModalOpened, data }) {
                   alignItems: "center",
                   cursor: "pointer",
                 }}
+                className="px-2 text-gray-600 dark:text-gray-400 "
                 onClick={() => setMapWindowOpen(true)}
               >
                 <UilLocationPoint /> Pick your location
@@ -199,11 +211,12 @@ function HouseInfoUpdateModal({ modalOpened, setModalOpened, data }) {
           <div className={Styles.input__container}>
             <label
               htmlFor="address_display_name"
-              className={Styles.input__label}
+              className="my-1 px-2 text-sm text-gray-600 dark:text-gray-300 "
             >
               Address
             </label>
             <input
+              className=" dark:bg-slate-900 dark:text-gray-200"
               required
               value={initialValues.address_display_name}
               onChange={handleChange}
@@ -214,10 +227,14 @@ function HouseInfoUpdateModal({ modalOpened, setModalOpened, data }) {
 
           <div className={Styles.address_container}>
             <div>
-              <label htmlFor="state_district" className={Styles.input__label}>
+              <label
+                htmlFor="state_district"
+                className="my-1 px-2 text-sm text-gray-600 dark:text-gray-300 "
+              >
                 Area
               </label>
               <input
+                className=" dark:bg-slate-900 dark:text-gray-200"
                 required
                 value={initialValues.state_district}
                 onChange={handleChange}
@@ -226,10 +243,14 @@ function HouseInfoUpdateModal({ modalOpened, setModalOpened, data }) {
               />
             </div>
             <div>
-              <label htmlFor="state" className={Styles.input__label}>
+              <label
+                htmlFor="state"
+                className="my-1 px-2 text-sm text-gray-600 dark:text-gray-300 "
+              >
                 City/Town
               </label>
               <input
+                className=" dark:bg-slate-900 dark:text-gray-200"
                 required
                 value={initialValues.state}
                 onChange={handleChange}
@@ -238,10 +259,14 @@ function HouseInfoUpdateModal({ modalOpened, setModalOpened, data }) {
               />
             </div>
             <div>
-              <label htmlFor="postCode" className={Styles.input__label}>
+              <label
+                htmlFor="postCode"
+                className="my-1 px-2 text-sm text-gray-600 dark:text-gray-300 "
+              >
                 Zip / Postcode
               </label>
               <input
+                className=" dark:bg-slate-900 dark:text-gray-200"
                 value={initialValues.postCode}
                 onChange={handleChange}
                 name="postCode"
@@ -252,10 +277,14 @@ function HouseInfoUpdateModal({ modalOpened, setModalOpened, data }) {
 
           <div className={Styles.address_container}>
             <div className={Styles.input__container}>
-              <label htmlFor="lat" className={Styles.input__label}>
+              <label
+                htmlFor="lat"
+                className="my-1 px-2 text-sm text-gray-600 dark:text-gray-300 "
+              >
                 Latitude
               </label>
               <input
+                className=" dark:bg-slate-900 dark:text-gray-200"
                 required
                 value={initialValues.lat}
                 onChange={handleChange}
@@ -264,10 +293,14 @@ function HouseInfoUpdateModal({ modalOpened, setModalOpened, data }) {
               />
             </div>
             <div className={Styles.input__container}>
-              <label htmlFor="lon" className={Styles.input__label}>
+              <label
+                htmlFor="lon"
+                className="my-1 px-2 text-sm text-gray-600 dark:text-gray-300 "
+              >
                 Longitude
               </label>
               <input
+                className=" dark:bg-slate-900 dark:text-gray-200"
                 required
                 value={initialValues.lon}
                 onChange={handleChange}
@@ -278,7 +311,7 @@ function HouseInfoUpdateModal({ modalOpened, setModalOpened, data }) {
           </div>
 
           <button
-            className={Styles.submit_button}
+            className="submit_button mx-auto mb-16 mt-4 px-3 py-1 md:my-4"
             type="submit"
             disabled={isLoading}
           >
