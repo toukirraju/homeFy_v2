@@ -15,6 +15,9 @@
 }
 
 /* Dark mode */
+.dark .sidebar {
+  background: rgba(10, 12, 20, 0.764);
+}
 @media (prefers-color-scheme: dark) {
   .dark .sidebar {
     background: rgba(10, 12, 20, 0.764);
@@ -179,6 +182,14 @@ ul {
     color: gray;
   }
   /* Dark mode */
+  .dark .nav__menu {
+    background: rgba(10, 12, 20, 1);
+  }
+  .dark .nav__link,
+  .nav__close,
+  .nav__toggle {
+    color: hsl(0, 2%, 65%);
+  }
   @media (prefers-color-scheme: dark) {
     .dark .nav__menu {
       background: rgba(10, 12, 20, 1);

@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/img-redundant-alt */
 import {
   UilHouseUser,
   UilPhoneAlt,
@@ -9,47 +10,56 @@ import Email from "../../../assets/email.png";
 import Chat from "../../../assets/send.png";
 import Call from "../../../assets/phone-call.png";
 
-import image1 from "../../../assets/image1.jpg";
-import image2 from "../../../assets/image2.jpg";
-import image5 from "../../../assets/image5.jpg";
-import image3 from "../../../assets/image3.jpg";
-import image4 from "../../../assets/image4.jpg";
-
-import ImageCollage from "../../imageCollage/ImageCollage";
+import PostImages from "./PostImages";
 
 const Post = ({ data }) => {
-  const images = [
-    {
-      src: image1,
-      width: 220,
-      height: 100,
-      caption: "After Rain (Jeshu John - designerspics.com)",
-    },
-    {
-      src: image2,
-      width: 120,
-      height: 100,
-      tags: [
-        { value: "Ocean", title: "Ocean" },
-        { value: "People", title: "People" },
-      ],
-      alt: "Boats (Jeshu John - designerspics.com)",
-    },
-
-    {
-      src: image3,
-      width: 120,
-      height: 100,
-    },
-    {
-      src: image4,
-      width: 220,
-      height: 100,
-    },
-  ];
   return (
     <div className={data.isVisible ? "Post" : "Inactive__Post"}>
-      {data && <ImageCollage data={images} />}
+      {data?.images.length !== 0 && <PostImages images={data?.images} />}
+
+      {/* <>
+        <div className="grid grid-cols-3 gap-4">
+          {data?.images?.map((image, index) => (
+            <Image
+              key={index}
+              src={image.secure_url}
+              alt={`Image ${index}`}
+              className={` cursor-pointer rounded-lg ${
+                index === 0 ? "col-span-2 row-span-2" : "col-span-1  row-span-1"
+              }`}
+              onClick={() => openModal(index)}
+            />
+          ))}
+        </div>
+
+        <Modal
+          classNames={{
+            modal: `modal__Body`,
+            title: `modal__title`,
+            close: `modal__close`,
+          }}
+          size="lg"
+          opened={modalOpen}
+          onClose={() => setModalOpen(false)}
+        >
+          <div className="relative  w-full ">
+            <Image
+              fit="contain"
+              radius="md"
+              src={data?.images[currentImageIndex].url}
+              alt={data?.images[currentImageIndex].alt}
+            />
+            <div className="absolute left-1/2 top-1/2 flex w-full -translate-x-1/2 -translate-y-1/2 transform items-center justify-between ">
+              <span className="flex  h-14 w-14 cursor-pointer items-center justify-center rounded-full  bg-slate-300 bg-opacity-20  hover:bg-opacity-70">
+                <UilAngleLeftB onClick={prevImage} />
+              </span>
+              <span className="flex h-14  w-14 cursor-pointer items-center justify-center rounded-full bg-slate-300 bg-opacity-20  hover:bg-opacity-70">
+                <UilAngleRightB onClick={nextImage} />
+              </span>
+            </div>
+          </div>
+        </Modal>
+      </> */}
 
       <div className="postDetails">
         {/*************************  apartment details section start *************************/}

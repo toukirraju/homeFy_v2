@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from "react";
+/* eslint-disable jsx-a11y/img-redundant-alt */
+import React, { useState } from "react";
 import {
   UilHouseUser,
   UilPhoneAlt,
@@ -9,28 +10,21 @@ import {
   UilTrashAlt,
   UilMinusCircle,
 } from "@iconscout/react-unicons";
-import { Image, Loader, Popover, Badge } from "@mantine/core";
+import { Loader, Popover, Badge, Modal, Image } from "@mantine/core";
 import "./Post.css";
 
 import Email from "../../../assets/email.png";
 import Chat from "../../../assets/send.png";
 import Call from "../../../assets/phone-call.png";
-import image1 from "../../../assets/image1.jpg";
-import image2 from "../../../assets/image2.jpg";
-import image5 from "../../../assets/image5.jpg";
-import image3 from "../../../assets/image3.jpg";
-import image4 from "../../../assets/image4.jpg";
 
 import EditPost from "../../modals/postModal/EditPost";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
-import ImageCollage from "../../imageCollage/ImageCollage";
 import {
   useDeletePostMutation,
   useMakePostMutation,
 } from "../../../redux/features/post/RTK Query/postApi";
-// import { useSelector } from "react-redux";
-// import { likePost } from "../../Api/PostRequest";
+import PostImages from "./PostImages";
 
 const Post = ({ data }) => {
   const { user: profileData } = useSelector((state) => state.auth);
@@ -88,50 +82,6 @@ const Post = ({ data }) => {
       });
   };
 
-  const ima = [
-    {
-      src: image1,
-      width: 320,
-      height: 174,
-      caption: "After Rain (Jeshu John - designerspics.com)",
-    },
-    {
-      src: image2,
-      width: 320,
-      height: 212,
-      tags: [
-        { value: "Ocean", title: "Ocean" },
-        { value: "People", title: "People" },
-      ],
-      alt: "Boats (Jeshu John - designerspics.com)",
-    },
-
-    {
-      src: image3,
-      width: 320,
-      height: 183,
-    },
-    {
-      src: image4,
-      width: 320,
-      height: 212,
-    },
-    {
-      src: image5,
-      width: 320,
-      height: 212,
-    },
-  ];
-  const images = data?.images.map((image) => {
-    return {
-      src: image.url,
-      width: 320,
-      height: 174,
-    };
-  });
-
-  useEffect(() => {}, [images, data?.images]);
-
   if (loading) {
     return (
       <div className="loading__screen">
@@ -143,7 +93,11 @@ const Post = ({ data }) => {
   return (
     <div className={data.isVisible ? "Post" : "Inactive__Post"}>
       {/* {data && <ImageCollage data={images} />} */}
-      {images && <ImageCollage data={images} />}
+
+      {data?.images.length !== 0 && <PostImages images={data?.images} />}
+
+      {/* {images && <ImageCollage data={images} />} */}
+
       <div className="postDetails">
         {/*************************  apartment details section start *************************/}
         <div className=" Post__innerCard">

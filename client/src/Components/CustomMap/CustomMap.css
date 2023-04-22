@@ -97,7 +97,14 @@
 }
 
 /* Dark mode */
+.dark .search-box {
+  background-color: rgb(40, 47, 52);
+  color: gray;
+}
 
+.dark .search__list {
+  background-color: rgb(188, 197, 202);
+}
 @media (prefers-color-scheme: dark) {
   .dark .search-box {
     background-color: rgb(40, 47, 52);

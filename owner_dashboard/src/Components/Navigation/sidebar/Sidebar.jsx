@@ -13,10 +13,14 @@ import { Popover } from "@mantine/core";
 import { userLoggedOut } from "../../../redux/features/auth/slice/authSlice";
 import { apiSlice } from "../../../redux/api/apiSlice";
 import { setDefaultHouse } from "../../../redux/features/profile/slice/profileSlice";
+import SettingsPopover from "./SettingsPopover";
+import { useMediaQuery } from "@mantine/hooks";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const isMobile = useMediaQuery("(max-width: 48em)");
 
   const [toggle, setToggle] = useState(false);
 
@@ -34,10 +38,10 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="sidebar">
-      <div className="nav container">
+    <div className="sidebar relative">
+      <div className="nav container ">
         {/*********************************** nav logo********************************** */}
-        <p className="nav__logo">
+        <p className="nav__logo z-10">
           <NavLink className="LinkUnset__hover" to="/home">
             HomeFy
           </NavLink>
@@ -86,6 +90,13 @@ const Sidebar = () => {
                 <i className="uil uil-message"></i> Message
               </NavLink>
             </li>
+            {isMobile && (
+              <li className="nav__item">
+                <span className="nav__link flex items-center justify-start">
+                  <SettingsPopover />
+                </span>
+              </li>
+            )}
           </ul>
           <i
             onClick={handleToggle}
@@ -95,7 +106,7 @@ const Sidebar = () => {
         </div>
         {/*********************************** nav lists  end********************************** */}
         {/*********************************** nav bottom buttons small screen start********************************** */}
-        <div className="nav__btns">
+        <div className="nav__btns z-10">
           <div className="nav__toggle" onClick={handleToggle}>
             <i className="uil uil-apps"></i>
           </div>
@@ -103,16 +114,16 @@ const Sidebar = () => {
         {/*********************************** nav bottom buttons small screen end********************************** */}
 
         {/*********************************** nav bottom buttons large screen start********************************** */}
-        <div className="nav__profile">
+        <div className="absolute bottom-3 left-4 flex w-full items-center justify-center gap-2 md:left-0">
           <img
-            className="h-10 w-10 cursor-pointer rounded-full shadow-sm shadow-gray-500"
+            className="h-10 w-10 cursor-pointer rounded-full shadow-sm shadow-gray-500 ring-2 ring-gray-500"
             src={user?.profilePicture ? user?.profilePicture?.url : profile}
             alt=""
             onClick={() => navigate("profile")}
           />
 
           {/******************* setting popover start  ****************** */}
-          <Popover
+          {/* <Popover
             width={200}
             position="bottom"
             classNames={{ dropdown: "dark:bg-gray-700" }}
@@ -141,7 +152,9 @@ const Sidebar = () => {
                 <DarkModeToggle />
               </div>
             </Popover.Dropdown>
-          </Popover>
+          </Popover> */}
+          {!isMobile && <SettingsPopover />}
+
           {/******************* setting popover end  ****************** */}
         </div>
         {/*********************************** nav bottom buttons large screen end********************************** */}

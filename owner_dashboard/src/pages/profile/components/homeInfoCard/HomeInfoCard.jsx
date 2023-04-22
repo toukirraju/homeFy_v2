@@ -20,18 +20,13 @@ const HomeInfoCard = ({ data }) => {
   const [defaultPopUpModalOpened, setDefaultPopUpModalOpened] = useState(false);
 
   return (
-    <div className="card my-2 flex w-full flex-col  py-5 sm:flex-row">
+    <div className="card relative my-2 flex w-full flex-col  py-5 sm:flex-row">
       {/* image section  */}
       <div className="mx-2 mt-5 flex w-auto flex-col items-center justify-center p-2 md:mt-0">
-        {/* <img
-          className={`mx-auto  h-48 w-48 object-cover xl:mr-2`}
-          src={logo}
-          alt=""
-        /> */}
         <HouseImage houseData={data} />
       </div>
       {/* button section  */}
-      <div className="edit__button">
+      <div className="absolute right-1 top-2 flex">
         <DefaultHousePopupModal
           defaultPopUpModalOpened={defaultPopUpModalOpened}
           setDefaultPopUpModalOpened={setDefaultPopUpModalOpened}
@@ -56,13 +51,14 @@ const HomeInfoCard = ({ data }) => {
           </>
         )}
 
-        <button className="">
-          <UilPen
-            width="2rem"
-            height="1.2rem"
-            onClick={() => setModalOpened(true)}
-          />
-        </button>
+        {/* <button className=""> */}
+        <UilPen
+          width="2rem"
+          height="1.2rem"
+          cursor="pointer"
+          onClick={() => setModalOpened(true)}
+        />
+        {/* </button> */}
         <HouseInfoUpdateModal
           modalOpened={modalOpened}
           setModalOpened={setModalOpened}

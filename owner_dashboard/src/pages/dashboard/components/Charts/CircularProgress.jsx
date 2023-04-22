@@ -19,7 +19,7 @@ const CircularProgress = ({ data }) => {
         </div>
       </div>
 
-      <div className={`mx-auto w-12 md:w-28 lg:w-32`}>
+      <div className={`mx-auto w-16 md:w-28 lg:w-32`}>
         <CircularProgressbar
           value={isNaN(percentage) ? 0 : percentage}
           text={`Paid: ${isNaN(percentage) ? 0 : percentage}%`}

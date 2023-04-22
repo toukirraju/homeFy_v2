@@ -44,14 +44,26 @@ const createPost = async (req, res) => {
 
         // post updating
         distroyImages(post.images)
-          .then(() => {
+          .then((distroRes) => {
             //image distroied complete
 
-            if (req.body.images.length !== 0) {
+            if (distroRes && req.body.images.length !== 0) {
               uploadImages(req.body.images)
                 .then((upImages) => {
-                  post.updateOne({ $set: { ...req.body, images: upImages } });
-                  res.status(200).json({ message: "post updated" });
+                  const filter = { _id: req.body._id };
+                  const update = {
+                    $set: {
+                      ...req.body,
+                      images: upImages,
+                    },
+                  };
+                  const options = { returnDocument: "after" };
+
+                  PostModel.findByIdAndUpdate(filter, update, options)
+                    .then(() => {
+                      res.status(200).json({ message: "post updated" });
+                    })
+                    .catch((err) => console.log(err));
                 })
                 .catch((error) => {
                   //problem with image upload

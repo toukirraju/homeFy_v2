@@ -1,6 +1,6 @@
 {
   "name": "owner_dashboard",
-  "homepage": "https://dashboard.homefy.billfactor.xyz",
+  "homepage": ".",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

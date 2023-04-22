@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-function DarkModeToggle({ id }) {
+function DarkModeToggle({ id, className }) {
   const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ function DarkModeToggle({ id }) {
   return (
     <button
       id={id}
-      className="rounded-full bg-gray-200 p-1 dark:bg-gray-800"
+      className={`rounded-full bg-gray-200 p-1 dark:bg-gray-800 ${className}`}
       onClick={() => toggleDarkMode()}
     >
       {darkMode ? (

@@ -243,6 +243,53 @@
 
 /* Dark mode */
 
+.dark .Post {
+  background-color: rgb(25, 38, 45);
+}
+.dark .content {
+  background-color: rgb(28, 42, 50);
+}
+
+.dark .Post_innerCard_title {
+  color: rgb(207, 201, 201);
+}
+.dark .content > span:nth-child(1) {
+  font-size: 12px;
+  color: rgb(209, 236, 243);
+  --tw-drop-shadow: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
+    drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast)
+    var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate)
+    var(--tw-sepia) var(--tw-drop-shadow);
+}
+.dark .content > span:nth-child(2) {
+  color: rgb(243, 243, 243);
+  --tw-drop-shadow: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
+    drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast)
+    var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate)
+    var(--tw-sepia) var(--tw-drop-shadow);
+}
+.dark .owner_content {
+  color: rgb(243, 243, 243);
+  --tw-drop-shadow: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
+    drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast)
+    var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate)
+    var(--tw-sepia) var(--tw-drop-shadow);
+}
+
+.dark .negotiable_message,
+.dark .innerCard__title,
+.dark .innerCard__subtitle {
+  color: rgb(209, 236, 243);
+  --tw-drop-shadow: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
+    drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast)
+    var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate)
+    var(--tw-sepia) var(--tw-drop-shadow);
+}
+
 @media (prefers-color-scheme: dark) {
   .dark .Post {
     background-color: rgb(25, 38, 45);

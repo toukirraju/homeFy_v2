@@ -24,6 +24,12 @@
 }
 
 /* Dark mode */
+.dark .Post {
+  background: rgba(9, 10, 27, 0.5);
+}
+.dark .Inactive__Post {
+  background: rgba(68, 68, 69, 0.5);
+}
 @media (prefers-color-scheme: dark) {
   .dark .Post {
     background: rgba(9, 10, 27, 0.5);
@@ -104,6 +110,9 @@
 }
 
 /* Dark mode */
+.dark .content {
+  background: rgba(36, 37, 65, 0.5);
+}
 @media (prefers-color-scheme: dark) {
   .dark .content {
     background: rgba(36, 37, 65, 0.5);

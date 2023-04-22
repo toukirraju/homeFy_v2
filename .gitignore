@@ -13,6 +13,9 @@
 
 # production
 /build
+/client/build
+/admin/build
+/owner_dashboard/build
 
 # misc
 config.env

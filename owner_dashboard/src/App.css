@@ -29,6 +29,9 @@
   background: #e2e1e1;
 }
 /* Dark mode */
+.dark .App {
+  background-color: #1a202c;
+}
 @media (prefers-color-scheme: dark) {
   .dark .App {
     background-color: #1a202c;
@@ -84,6 +87,9 @@
 }
 
 /* Dark mode */
+.dark .card {
+  background: rgba(255, 255, 255, 0.05);
+}
 @media (prefers-color-scheme: dark) {
   .dark .card {
     background: rgba(255, 255, 255, 0.05);
@@ -95,6 +101,9 @@
   font-weight: 700;
 }
 /* Dark mode */
+.dark .title {
+  color: rgb(215, 215, 215);
+}
 @media (prefers-color-scheme: dark) {
   .dark .title {
     color: rgb(215, 215, 215);
@@ -106,6 +115,9 @@
   font-weight: 600;
 }
 /* Dark mode */
+.dark .subtitle {
+  color: rgb(189, 189, 189);
+}
 @media (prefers-color-scheme: dark) {
   .dark .subtitle {
     color: rgb(189, 189, 189);
@@ -251,6 +263,9 @@ button:disabled {
 }
 
 /* Dark mode */
+.dark .submit_button {
+  box-shadow: 0 0 6px #eee;
+}
 @media (prefers-color-scheme: dark) {
   .dark .submit_button {
     box-shadow: 0 0 6px #eee;
@@ -270,6 +285,9 @@ button:disabled {
 }
 
 /* Dark mode */
+.dark .headerContainer {
+  color: rgb(217, 217, 217);
+}
 @media (prefers-color-scheme: dark) {
   .dark .headerContainer {
     color: rgb(217, 217, 217);
@@ -282,6 +300,17 @@ button:disabled {
 }
 
 /* Dark mode */
+.dark .ag-theme-alpine {
+  --ag-foreground-color: rgb(225, 225, 225);
+  --ag-background-color: rgb(22, 22, 43);
+  --ag-header-foreground-color: rgb(208, 208, 208);
+  --ag-header-background-color: rgb(41, 61, 85);
+  --ag-odd-row-background-color: rgb(0, 0, 0, 0.03);
+  --ag-header-column-resize-handle-color: rgb(126, 46, 132);
+
+  --ag-font-size: 17px;
+  --ag-font-family: monospace;
+}
 @media (prefers-color-scheme: dark) {
   .dark .ag-theme-alpine {
     --ag-foreground-color: rgb(225, 225, 225);
@@ -302,6 +331,14 @@ button:disabled {
   color: #110d0d;
 }
 /* Dark mode */
+.dark .mantine-l92qfj th {
+  background: #0f131f;
+  color: #cfcdcd;
+}
+.dark .mantine-l92qfj tr {
+  background: #0f131f;
+  color: #cfcdcd;
+}
 @media (prefers-color-scheme: dark) {
   .dark .mantine-l92qfj th {
     background: #0f131f;
@@ -334,6 +371,9 @@ button:disabled {
 }
 
 /* Dark mode */
+.dark .modal__Body {
+  background: rgba(9, 10, 27, 0.5);
+}
 @media (prefers-color-scheme: dark) {
   .dark .modal__Body {
     background: rgba(9, 10, 27, 0.5);

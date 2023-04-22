@@ -157,7 +157,7 @@ const Dashboard = () => {
             {apartmentWidget}
           </div>
 
-          <div className={`${WidStyle.widget__wrapper}`}>{activity}</div>
+          <div className={`${WidStyle.widget__wrapper} `}>{activity}</div>
         </div>
         <div className="table__sections relative">
           {/* <BillTable data={billData} /> */}

@@ -22,7 +22,7 @@ import {
   UilEllipsisH,
   UilTimes,
 } from "@iconscout/react-unicons";
-// import { uploadImage, uploadPost } from "../../actions/UploadAction";
+
 import LoadingSpinner from "../../LoadingSpinner";
 import { toast } from "react-toastify";
 import { useMakePostMutation } from "../../../redux/features/post/RTK Query/postApi";

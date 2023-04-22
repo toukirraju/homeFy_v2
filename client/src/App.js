@@ -9,6 +9,7 @@ import useAuthCheck from "./hooks/useAuthCheck";
 import PrivateRoute from "./utility/PrivateRoute";
 import Profile from "./pages/profile/Profile";
 import PublicRoute from "./utility/PublicRoute";
+import DarkModeToggle from "./Components/DarkModeToggle";
 
 function App() {
   const authChecked = useAuthCheck();
@@ -18,6 +19,10 @@ function App() {
   ) : (
     <div>
       <section className="mask"></section>
+      <span className="hidden">
+        <DarkModeToggle />
+      </span>
+
       <ToastContainer
         position="top-right"
         autoClose={5000}

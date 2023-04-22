@@ -20,13 +20,14 @@ const ProfileCard = ({ data }) => {
     // ${Style.image__upload}
     // ${Style.Profile__image__section}
     // ${Style.owner__container__body}
+    // ${Style.edit__button}
     <div
-      className={`card flex flex-col flex-wrap p-4  sm:flex-row md:justify-center`}
+      className={`card relative flex flex-col flex-wrap p-4 sm:flex-row md:justify-center`}
     >
       {/* image upload section */}
       <ProfileImage profilePicture={data?.profilePicture} />
 
-      <div className={` ${Style.edit__button}`}>
+      <div className={` absolute right-2 top-3 cursor-pointer `}>
         <UilPen
           width="2rem"
           height="1.2rem"

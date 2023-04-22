@@ -4,7 +4,7 @@
   background: rgb(255, 255, 255);
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   height: 250px;
-  width: 250px;
+  min-width: 250px;
 }
 .widget__header {
   background: var(--btnHoverColor);
@@ -50,6 +50,16 @@
 }
 
 /* Dark mode */
+.dark,
+.widget__wrapper,
+.widget__innerCard {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgb(204, 204, 204);
+}
+.dark,
+.widget__card__content :nth-child(2) {
+  color: rgb(176, 172, 172);
+}
 @media (prefers-color-scheme: dark) {
   .dark,
   .widget__wrapper,
@@ -67,7 +77,8 @@
   .widget__wrapper {
     /* height: 100%; */
     height: 250px;
-    width: 130px;
+    /* width: 130px; */
+    width: 98%;
   }
   .widget__innerCard {
     margin: 3px 0;

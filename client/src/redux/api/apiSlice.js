@@ -2,7 +2,12 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { userLoggedOut } from "../features/auth/authSlice";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:4040/api/v1",
+  // baseUrl: "http://localhost:4040/api/v1",
+  baseUrl: "https://api.h0mify.com/api/v1",
+
+  //https://h0mify.com/post/timeline/posts?_page=1&limit=2
+  //http://localhost:4040/api/v1/post/timeline/posts?_page=1&limit=2
+  //https://api.h0mify.com/api/v1/post/timeline/posts?_page=1&limit=2
   prepareHeaders: async (headers, { getState, endpoint }) => {
     const token = getState()?.auth?.token;
     if (token) {

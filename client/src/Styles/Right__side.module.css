@@ -46,8 +46,3 @@
     height: calc(100vh - 80%);
   }
 }
-
-/* Dark mode */
-
-@media (prefers-color-scheme: dark) {
-}
