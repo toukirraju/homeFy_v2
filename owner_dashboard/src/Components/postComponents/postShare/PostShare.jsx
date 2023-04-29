@@ -26,6 +26,7 @@ import {
 import LoadingSpinner from "../../LoadingSpinner";
 import { toast } from "react-toastify";
 import { useMakePostMutation } from "../../../redux/features/post/RTK Query/postApi";
+import { imageResizer } from "../../../utility/fileResizer";
 
 const PostShare = ({ postModalOpened, setPostModalOpened, data }) => {
   const isMobile = useMediaQuery("(max-width: 600px)");
@@ -80,24 +81,10 @@ const PostShare = ({ postModalOpened, setPostModalOpened, data }) => {
 
   //Image section start
 
-  //image transform
-  const Transform = (file) => {
-    const reader = new FileReader();
-
-    if (file) {
-      reader.readAsDataURL(file);
-      reader.onloadend = () => {
-        // setProfileImage(reader.result);
-        setImages((prev) => [...prev, reader.result]);
-      };
-    } else {
-      // setProfileImage("");
-    }
-  };
-  const handleFileSelect = (event) => {
+  const handleFileSelect = async (event) => {
     const file = event.target.files[0];
     const fileType = file.type;
-    const fileSize = file.size;
+    // const fileSize = file.size;
 
     // Check if file type is an image
     if (!fileType.startsWith("image/")) {
@@ -106,15 +93,20 @@ const PostShare = ({ postModalOpened, setPostModalOpened, data }) => {
       return;
     }
 
+    const { resizedImage, fileSize } = await imageResizer(
+      file,
+      1200, //maxWidth
+      630, //maxHeight
+      90 //quality
+    );
+
     // Check if file size is less than or equal to 1MB
     if (fileSize > 1 * 1024 * 1024) {
       alert("Please upload an image file with size less than or equal to 1MB");
-      // setProfileImage(null);
+      setImages((prev) => [...prev]);
       return;
-    }
-
-    if (file) {
-      Transform(file);
+    } else {
+      setImages((prev) => [...prev, resizedImage]);
     }
   };
 

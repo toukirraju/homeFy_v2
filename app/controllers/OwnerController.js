@@ -289,16 +289,16 @@ const removeHouseImage = async (req, res) => {
     const house = await HouseModel.findById({ _id: houseId });
     if (house) {
       if (house.ownerId === _id.toString()) {
-        if (req.body.public_id) {
+        if (req.body.houseImage.public_id) {
           const deleteRes = await cloudinary.uploader.destroy(
-            req.body.public_id
+            req.body.houseImage.public_id
           );
 
           if (deleteRes) {
             const filter = { _id: houseId };
             const update = {
               $set: {
-                profilePicture: null,
+                houseImage: null,
               },
             };
             const options = { returnDocument: "after" };

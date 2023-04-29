@@ -1,10 +1,16 @@
-import { UilCamera, UilCheck, UilTrashAlt } from "@iconscout/react-unicons";
+import {
+  UilCamera,
+  UilCheck,
+  UilTrashAlt,
+  UilTimes,
+} from "@iconscout/react-unicons";
 import { useState } from "react";
 import {
   useRemoveProfileImageMutation,
   useUpdateProfileImageMutation,
 } from "../../../../redux/features/profile/RTK Query/profileApi";
 import { Loader } from "@mantine/core";
+import { imageResizer } from "../../../../utility/fileResizer";
 
 const ProfileImage = ({ profilePicture }) => {
   const [profileImage, setProfileImage] = useState("");
@@ -18,20 +24,6 @@ const ProfileImage = ({ profilePicture }) => {
 
   const loading = isRemoveLoading || isUploadLoading;
 
-  //image transform
-  const Transform = (file) => {
-    const reader = new FileReader();
-
-    if (file) {
-      reader.readAsDataURL(file);
-      reader.onloadend = () => {
-        setProfileImage(reader.result);
-      };
-    } else {
-      setProfileImage("");
-    }
-  };
-
   const handleSubmitImage = () => {
     updateProfileImage({ profilePicture: profileImage });
     setProfileImage("");
@@ -41,10 +33,9 @@ const ProfileImage = ({ profilePicture }) => {
     removeProfileImage(imageData);
   };
 
-  const handleFileSelect = (event) => {
-    const file = event.target.files[0];
-    const fileType = file.type;
-    const fileSize = file.size;
+  const handleFileSelect = async (event) => {
+    const selectedFile = event.target.files[0];
+    const fileType = selectedFile.type;
 
     // Check if file type is an image
     if (!fileType.startsWith("image/")) {
@@ -53,15 +44,20 @@ const ProfileImage = ({ profilePicture }) => {
       return;
     }
 
+    const { resizedImage, fileSize } = await imageResizer(
+      selectedFile,
+      500, //maxWidth
+      500, //maxHeight
+      90 //quality
+    );
+
     // Check if file size is less than or equal to 1MB
     if (fileSize > 1 * 1024 * 1024) {
       alert("Please upload an image file with size less than or equal to 1MB");
       setProfileImage(null);
       return;
-    }
-
-    if (file) {
-      Transform(file);
+    } else {
+      setProfileImage(resizedImage);
     }
   };
 
@@ -90,12 +86,20 @@ const ProfileImage = ({ profilePicture }) => {
             //image not uploaded
 
             profileImage && (
-              <button
-                onClick={handleSubmitImage}
-                className="absolute right-3 top-0 h-6 w-6 rounded-full bg-slate-300 text-green-600 shadow-sm shadow-gray-400 hover:text-green-700"
-              >
-                <UilCheck />
-              </button>
+              <>
+                <button
+                  onClick={() => setProfileImage("")}
+                  className="absolute right-10 top-2 h-6 w-6 rounded-full bg-slate-300 text-red-400 shadow-sm shadow-gray-400 hover:text-red-500"
+                >
+                  <UilTimes />
+                </button>
+                <button
+                  onClick={handleSubmitImage}
+                  className="absolute right-3 top-0 h-6 w-6 rounded-full bg-slate-300 text-green-600 shadow-sm shadow-gray-400 hover:text-green-700"
+                >
+                  <UilCheck />
+                </button>
+              </>
             )
           )}
         </>

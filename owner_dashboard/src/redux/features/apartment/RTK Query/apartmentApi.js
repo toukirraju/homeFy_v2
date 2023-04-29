@@ -35,6 +35,7 @@ export const apartmnetApi = apiSlice.injectEndpoints({
           }
         } catch (error) {}
       },
+      invalidatesTags: ["AllApartments"],
     }),
 
     updateApartment: builder.mutation({

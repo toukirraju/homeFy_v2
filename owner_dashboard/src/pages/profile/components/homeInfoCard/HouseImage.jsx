@@ -7,11 +7,10 @@ import {
 import { useState } from "react";
 import {
   useRemoveHouseImageMutation,
-  useRemoveProfileImageMutation,
-  useUpdateProfileImageMutation,
   useUploadHouseImageMutation,
 } from "../../../../redux/features/profile/RTK Query/profileApi";
 import { Loader } from "@mantine/core";
+import { imageResizer } from "../../../../utility/fileResizer";
 
 const HouseImage = ({ houseData }) => {
   const [image, setImage] = useState("");
@@ -25,20 +24,6 @@ const HouseImage = ({ houseData }) => {
 
   const loading = isRemoveLoading || isUploadLoading;
 
-  //image transform
-  const Transform = (file) => {
-    const reader = new FileReader();
-
-    if (file) {
-      reader.readAsDataURL(file);
-      reader.onloadend = () => {
-        setImage(reader.result);
-      };
-    } else {
-      setImage("");
-    }
-  };
-
   const handleSubmitImage = () => {
     uploadHouseImage({ ...houseData, houseImage: image });
     setImage("");
@@ -48,10 +33,9 @@ const HouseImage = ({ houseData }) => {
     removeHouseImage(houseData);
   };
 
-  const handleFileSelect = (event) => {
+  const handleFileSelect = async (event) => {
     const file = event.target.files[0];
     const fileType = file.type;
-    const fileSize = file.size;
 
     // Check if file type is an image
     if (!fileType.startsWith("image/")) {
@@ -60,15 +44,20 @@ const HouseImage = ({ houseData }) => {
       return;
     }
 
+    const { resizedImage, fileSize } = await imageResizer(
+      file,
+      650, //maxWidth
+      650, //maxHeight
+      90 //quality
+    );
+
     // Check if file size is less than or equal to 1MB
     if (fileSize > 1 * 1024 * 1024) {
       alert("Please upload an image file with size less than or equal to 1MB");
       setImage(null);
       return;
-    }
-
-    if (file) {
-      Transform(file);
+    } else {
+      setImage(resizedImage);
     }
   };
 

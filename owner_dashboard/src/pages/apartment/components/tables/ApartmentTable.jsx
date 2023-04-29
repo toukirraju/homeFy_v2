@@ -182,7 +182,7 @@ const ApartmentTable = ({ data }) => {
 
   //filterd Data by floors
   const filteredData = data.filter(
-    (row) => row.apartmentDetails.floor === parseInt(selectedData.floor)
+    (row) => row?.apartmentDetails?.floor === parseInt(selectedData.floor)
   );
   //family apartment count
   let familyApartment = 0;
@@ -239,8 +239,8 @@ const ApartmentTable = ({ data }) => {
                   {data
                     ? [
                         ...new Set(
-                          data.map(
-                            (apartment) => apartment.apartmentDetails.floor
+                          data?.map(
+                            (apartment) => apartment?.apartmentDetails?.floor
                           )
                         ),
                       ].map((apartment, idx) => (

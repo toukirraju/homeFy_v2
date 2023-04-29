@@ -149,7 +149,7 @@ const LoginForm = () => {
                 </h3>
                 <ul className="md:list-disc">
                   <li className="text-gray-500">
-                    <b>username:</b> ownerdashboard
+                    <b>username:</b> dashboard
                   </li>
                   <li className="text-gray-500">
                     <b>password:</b> 12345
