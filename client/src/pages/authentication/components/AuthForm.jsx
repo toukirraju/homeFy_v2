@@ -43,7 +43,7 @@ const AuthForm = ({ authType }) => {
         name="username"
         value={formValue.username}
         onChange={handleChange}
-        title="E-mail"
+        title="Username/E-mail"
         icon={<i className={`fa-solid fa-envelope ${styles.form__icon}`}></i>}
         // onFocus={handleFocus}
         onBlur={handleBlur}
@@ -56,7 +56,7 @@ const AuthForm = ({ authType }) => {
           value={formValue.phone}
           onChange={handleChange}
           title="Phone"
-          authType="tel"
+          type="number"
           icon={<i className={`fa-solid fa-phone ${styles.form__icon}`}></i>}
           // onFocus={handleFocus}
           onBlur={handleBlur}

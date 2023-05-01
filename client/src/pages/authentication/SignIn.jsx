@@ -20,7 +20,12 @@ const SignIn = () => {
               <span>Are you Home owner ?</span>
               <span>You can't to manage your home properly?</span>
 
-              <button className="my-2 hover:bg-teal-700 duration-300  bg-teal-600 shadow-md shadow-gray-500 text-gray-300 drop-shadow-md font-bold py-1 px-2 flex justify-center items-center rounded-md">
+              <button
+                onClick={() => {
+                  window.open("https://dashboard.h0mify.com", "_blank");
+                }}
+                className="my-2 hover:bg-teal-700 duration-300  bg-teal-600 shadow-md shadow-gray-500 text-gray-300 drop-shadow-md font-bold py-1 px-2 flex justify-center items-center rounded-md"
+              >
                 Go for Dashboard <UilAngleRightB />
               </button>
 

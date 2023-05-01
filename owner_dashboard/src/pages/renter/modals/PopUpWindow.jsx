@@ -31,7 +31,6 @@ const PopUpWindow = ({ popUpModalOpened, setPopUpModalOpened, data }) => {
   const isMobile = useMediaQuery("(max-width: 600px)");
 
   const { user: profileData } = useSelector((state) => state.auth);
-  // console.log(profileData.role);
 
   const [checked, setChecked] = useState(false);
   const [billChecked, setBillChecked] = useState(false);
@@ -44,10 +43,8 @@ const PopUpWindow = ({ popUpModalOpened, setPopUpModalOpened, data }) => {
 
   const [confirmationPopUp, setConfirmationPopUp] = useState(false);
 
-  const { data: tempData = {} } =
+  const { data: tempData = {}, refetch } =
     billApi.endpoints.fetchRenterTemporaryBill.useQuery(data?._id);
-
-  // const [tempData, setTempData] = useState({});
   const [isAssignData, setIsAssignData] = useState();
   const [removeData, setRemoveData] = useState();
 
@@ -74,19 +71,7 @@ const PopUpWindow = ({ popUpModalOpened, setPopUpModalOpened, data }) => {
   };
   // make bill
   const billHandler = () => {
-    // setLoading(true);
-    // dispatch(renterTemporaryBill(data._id))
-    //   .unwrap()
-    //   .then((bill) => {
-    //     setLoading(false);
-    //     setPopUpModalOpened(false);
-    //     setBillModalOpened(true);
-    //     // setTempData(bill.renterTempBill);
-    //   })
-    //   .catch((error) => {
-    //     setLoading(false);
-    //     console.log(error);
-    //   });
+    refetch(data?._id);
     setPopUpModalOpened(false);
     setBillModalOpened(true);
   };

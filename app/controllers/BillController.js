@@ -3,6 +3,7 @@ const TempBillModel = require("../database/models/tempBillModel");
 const RenterModel = require("../database/models/renterModel");
 const mongoose = require("mongoose");
 const { serverError, resourceError } = require("../utils/error");
+const { sendInvoiceOnMessage } = require("../utils/smsTemplate");
 // const { sendMessage } = require("../../utils/methods");
 
 const payableRenters = async (req, res) => {
@@ -37,7 +38,7 @@ const payableRenters = async (req, res) => {
 };
 
 const createBill = async (req, res) => {
-  const { _id, defaultHomeID, role } = req.user;
+  const { _id, defaultHomeID, role, isHomifyPlus } = req.user;
   // const sms = req.body.isSMS;
   // const _id = "1981493110";
   // const name = "ChayaNirr";
@@ -99,6 +100,10 @@ const createBill = async (req, res) => {
     if (userBill.length == 0) {
       //creating bill
       const createdBill = await billData.save();
+
+      if (createdBill && req.body.isSMSOn && isHomifyPlus) {
+        sendInvoiceOnMessage(createdBill, req.body.phone);
+      }
 
       //push bill id on renter bills array
       await RenterModel.updateOne(

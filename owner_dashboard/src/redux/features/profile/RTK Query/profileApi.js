@@ -32,6 +32,17 @@ export const profileApi = apiSlice.injectEndpoints({
         method: "PATCH",
         body: data,
       }),
+      async onQueryStarted(args, { dispatch, queryFulfilled }) {
+        const { data } = await queryFulfilled;
+
+        if (data) {
+          let auth = JSON.parse(localStorage.getItem("auth"));
+          auth.user.defaultHomeID = args._id;
+          localStorage.setItem("auth", JSON.stringify(auth));
+
+          dispatch(updateProfile(auth.user));
+        }
+      },
       invalidatesTags: [
         "AllHouses",
         "AllManagers",

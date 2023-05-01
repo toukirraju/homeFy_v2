@@ -14,7 +14,9 @@ const RenterWidget = ({ data }) => {
       </div>
       <div className={Style.widget__container}>
         <div className={Style.widget__innerCard}>
-          <div className={Style.widget__card__content}>
+          <div
+            className={`${Style.widget__card__content} text-stone-600 dark:text-gray-400`}
+          >
             <span>
               <UilUsersAlt />
             </span>
@@ -26,7 +28,9 @@ const RenterWidget = ({ data }) => {
         </div>
 
         <div className={Style.widget__innerCard}>
-          <div className={Style.widget__card__content}>
+          <div
+            className={`${Style.widget__card__content} text-stone-600 dark:text-gray-400`}
+          >
             <span>
               <Badge
                 variant="gradient"
@@ -41,7 +45,9 @@ const RenterWidget = ({ data }) => {
         </div>
 
         <div className={Style.widget__innerCard}>
-          <div className={Style.widget__card__content}>
+          <div
+            className={`${Style.widget__card__content} text-stone-600 dark:text-gray-400`}
+          >
             <span>
               <UilUserCheck />
             </span>
@@ -50,7 +56,9 @@ const RenterWidget = ({ data }) => {
           </div>
         </div>
         <div className={Style.widget__innerCard}>
-          <div className={Style.widget__card__content}>
+          <div
+            className={`${Style.widget__card__content} text-stone-600 dark:text-gray-400`}
+          >
             <span>
               <UilUserTimes />
             </span>

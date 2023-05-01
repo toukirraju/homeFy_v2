@@ -39,10 +39,7 @@ const Home = () => {
     content = <h4>Somthing want wrong!</h4>;
   }
 
-  if (!isLoading && !isError && postResponse?.posts?.length === 0) {
-    content = <h3>Post not found</h3>;
-  }
-  if (!isLoading && !isError && postResponse?.posts?.length > 0) {
+  if (!isLoading && !isError && postResponse?.posts?.length >= 0) {
     content = (
       <Posts
         posts={postResponse?.posts}

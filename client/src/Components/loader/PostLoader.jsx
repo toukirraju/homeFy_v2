@@ -9,44 +9,9 @@ import Email from "../../assets/email.png";
 import Chat from "../../assets/send.png";
 import Call from "../../assets/phone-call.png";
 
-import image1 from "../../assets/image1.jpg";
-import image2 from "../../assets/image2.jpg";
-import image5 from "../../assets/image5.jpg";
-import image3 from "../../assets/image3.jpg";
-import image4 from "../../assets/image4.jpg";
-
 // import ImageCollage from "../../imageCollage/ImageCollage";
 
 const PostLoader = () => {
-  const images = [
-    {
-      src: image1,
-      width: 220,
-      height: 100,
-      caption: "After Rain (Jeshu John - designerspics.com)",
-    },
-    {
-      src: image2,
-      width: 120,
-      height: 100,
-      tags: [
-        { value: "Ocean", title: "Ocean" },
-        { value: "People", title: "People" },
-      ],
-      alt: "Boats (Jeshu John - designerspics.com)",
-    },
-
-    {
-      src: image3,
-      width: 120,
-      height: 100,
-    },
-    {
-      src: image4,
-      width: 220,
-      height: 100,
-    },
-  ];
   return (
     <div className="Post">
       {/* {data && <ImageCollage data={images} />} */}

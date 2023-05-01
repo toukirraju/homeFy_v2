@@ -6,7 +6,10 @@ import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import LoadingSpinner from "../../../Components/LoadingSpinner";
 import { toast } from "react-toastify";
-import { useCreateApartmentMutation } from "../../../redux/features/apartment/RTK Query/apartmentApi";
+import {
+  useCreateApartmentMutation,
+  useFetchApartmentsQuery,
+} from "../../../redux/features/apartment/RTK Query/apartmentApi";
 
 const validation = Yup.object().shape({
   numOfFloors: Yup.number()
@@ -17,9 +20,10 @@ const validation = Yup.object().shape({
 
 const CreateBulkApartment = ({ modalOpened, setModalOpened }) => {
   const isMobile = useMediaQuery("(max-width: 600px)");
-  const apartmentData = [];
+
   const [createApartment, { isSuccess, isLoading }] =
     useCreateApartmentMutation();
+  const { data: apartmentData = [] } = useFetchApartmentsQuery();
   const initialValues = {
     numOfFloors: 0,
   };

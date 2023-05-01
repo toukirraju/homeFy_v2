@@ -14,12 +14,13 @@ const register = async (req, res) => {
   const hashedPass = await bcrypt.hash(req.body.password, salt);
   req.body.password = hashedPass;
   const newRenter = new RenterInfoModel(req.body);
-  const { username } = req.body;
-  try {
-    const oldRenter = await RenterInfoModel.findOne({ username });
 
+  try {
+    const oldRenter = await RenterInfoModel.findOne({
+      $or: [{ username: req.body.username }, { phone: req.body.phone }],
+    });
     if (oldRenter) {
-      return resourceError(res, "username is already registered");
+      return resourceError(res, "username or phone is already registered");
     } else {
       const renter = await newRenter.save();
       const token = jwt.sign(
@@ -39,34 +40,27 @@ const register = async (req, res) => {
 
 ////////////// client Login ////////////////
 const login = async (req, res) => {
-  const { username, password } = req.body;
+  const { password } = req.body;
 
   try {
-    // const owner = await OwnerInfoModel.findOne({ username: username });
+    // const renter = await RenterInfoModel.findOne({ username });
+    let query = {};
+    let username = req.body.username;
+    if (/^\d+$/.test(username)) {
+      // if (username.charAt(0) === "0") {
+      //   username = username.substr(1); // Remove first character
+      // }
+      query.phone = username;
+      // query.phone = req.body.username;
+    } else if (
+      /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(username)
+    ) {
+      query.username = username;
+    } else {
+      query.username = username;
+    }
 
-    // if (owner) {
-    //   const validity = await bcrypt.compare(password, owner.password);
-
-    //   if (!validity) {
-    //     return resourceError(res, "Password dose not match");
-    //   } else {
-    //     const token = jwt.sign(
-    //       {
-    //         username: owner.username,
-    //         id: owner._id,
-    //         role: owner.role,
-    //         ownerId: owner.ownerId,
-    //       },
-    //       process.env.JWT_KEY,
-    //       { expiresIn: "1h" }
-    //     );
-    //     const { password, ...otherDetails } = owner._doc;
-    //     const user = otherDetails;
-    //     res.status(200).json({ user, token: `Bearer ${token}` });
-    //   }
-    // } else
-
-    const renter = await RenterInfoModel.findOne({ username });
+    const renter = await RenterInfoModel.findOne(query);
     if (renter) {
       const validity = await bcrypt.compare(password, renter.password);
 

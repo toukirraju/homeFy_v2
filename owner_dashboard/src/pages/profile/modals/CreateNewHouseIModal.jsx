@@ -69,6 +69,22 @@ function CreateNewHouseModal({ modalOpened, setModalOpened }) {
     if (isSuccess) {
       toast.success("New house created");
       setModalOpened(false);
+      setInitialValues({
+        houseName: "",
+        houseNo: "",
+        number_of_floors: "",
+        number_of_apartments: "",
+        address_display_name: "",
+        streetNo: "",
+        state: "",
+        state_district: "",
+        postCode: "",
+        lat: "",
+        lon: "",
+        country: "",
+        country_code: "",
+        place_id: "",
+      });
     }
   }, [isSuccess]);
 

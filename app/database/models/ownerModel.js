@@ -78,6 +78,10 @@ const ownerSchema = new Schema(
       income_tax: String,
       others_doc: String,
     },
+    isHomifyPlus: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

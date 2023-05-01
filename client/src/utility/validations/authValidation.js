@@ -25,14 +25,15 @@ export const authValidation = (
   // username check
   if (!values.username) {
     if (touchedFields.username || isSubmitting) {
-      errors.username = "Email is required";
+      errors.username = "Username/Email is required";
     }
-  } else if (
-    (touchedFields.username || isSubmitting) &&
-    !emailCheckRegex.test(values.username)
-  ) {
-    errors.username = "Invalid Email";
   }
+  // else if (
+  //   (touchedFields.username || isSubmitting) &&
+  //   !emailCheckRegex.test(values.username)
+  // ) {
+  //   errors.username = "Invalid Email";
+  // }
 
   // phone check
   if (!values.phone && authType === "signupForm") {

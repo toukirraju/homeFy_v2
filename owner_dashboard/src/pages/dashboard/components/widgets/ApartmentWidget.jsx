@@ -14,7 +14,9 @@ const ApartmentWidget = ({ data }) => {
       </div>
       <div className={Style.widget__container}>
         <div className={Style.widget__innerCard}>
-          <div className={Style.widget__card__content}>
+          <div
+            className={`${Style.widget__card__content} text-stone-600 dark:text-gray-400`}
+          >
             <span>
               <UilBuilding />
             </span>
@@ -23,7 +25,9 @@ const ApartmentWidget = ({ data }) => {
           </div>
         </div>
         <div className={Style.widget__innerCard}>
-          <div className={Style.widget__card__content}>
+          <div
+            className={`${Style.widget__card__content} text-stone-600 dark:text-gray-400`}
+          >
             <span>
               <UilCheckCircle />
             </span>
@@ -32,7 +36,9 @@ const ApartmentWidget = ({ data }) => {
           </div>
         </div>
         <div className={Style.widget__innerCard}>
-          <div className={Style.widget__card__content}>
+          <div
+            className={`${Style.widget__card__content} text-stone-600 dark:text-gray-400`}
+          >
             <span>
               <UilBedDouble />
             </span>
@@ -41,7 +47,9 @@ const ApartmentWidget = ({ data }) => {
           </div>
         </div>
         <div className={Style.widget__innerCard}>
-          <div className={Style.widget__card__content}>
+          <div
+            className={`${Style.widget__card__content} text-stone-600 dark:text-gray-400`}
+          >
             <span>
               <UilBed />
             </span>

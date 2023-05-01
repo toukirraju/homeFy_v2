@@ -31,17 +31,18 @@ const PostImages = ({ images }) => {
 
   return (
     <>
-      {/* // <img src={image.url} alt="" onClick={() => openModal(index)} /> */}
       <div className="grid grid-cols-3 gap-4">
         {images?.map((image, index) => (
           <LazyLoadImage
             src={image.secure_url}
             key={index}
-            wrapperClassName={` cursor-pointer rounded-lg ${
+            alt={`Image ${index}`}
+            wrapperClassName={` cursor-pointer  ${
               index === 0 ? "col-span-2 row-span-2" : "col-span-1  row-span-1"
             }`}
             onClick={() => openModal(index)}
             effect="blur"
+            className="rounded-lg"
           />
           // <img
           //   key={index}

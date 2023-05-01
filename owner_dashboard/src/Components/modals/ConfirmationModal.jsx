@@ -13,6 +13,7 @@ import {
   useDeleteTemporaryBillMutation,
 } from "../../redux/features/transactions/RTK Query/billApi";
 import { useRemoveManagerRoleMutation } from "../../redux/features/profile/RTK Query/profileApi";
+import ErrorMessage from "../ErrorMessage";
 
 function ConfirmationModal({
   confirmationPopUp,
@@ -54,7 +55,11 @@ function ConfirmationModal({
   //create bill
   const [
     createBill,
-    { isSuccess: createBillSuccess, isLoading: createBillLoading },
+    {
+      isSuccess: createBillSuccess,
+      isLoading: createBillLoading,
+      error: billError,
+    },
   ] = useCreateBillMutation();
 
   //remove manager
@@ -74,24 +79,7 @@ function ConfirmationModal({
         break;
 
       case "Create_Bill":
-        // console.log(data);
         createBill(data);
-        // setLoading(true);
-        // dispatch(createBill(data))
-        //   .unwrap()
-        //   .then(() => {
-        //     toast.success("Payment complete!");
-        //     setLoading(false);
-        //     setConfirmationPopUp(false);
-        //     dispatch(monthlyBill({ month, year }));
-        //     dispatch(temporaryBill());
-        //     dispatch(clearMessage());
-        //     // dispatch(setReload());
-        //   })
-        //   .catch(() => {
-        //     setLoading(false);
-        //   });
-        // props.onHide(false);
         break;
       case "Remove_Bill":
         deleteBill(data);
@@ -158,6 +146,8 @@ function ConfirmationModal({
         opened={confirmationPopUp}
         onClose={() => setConfirmationPopUp(false)}
       >
+        {billError && <ErrorMessage message={billError?.data?.message} />}
+
         {data ? (
           <>
             {popUp_type === "Remove_Apartment" ||

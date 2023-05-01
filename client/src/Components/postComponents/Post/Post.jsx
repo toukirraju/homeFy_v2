@@ -17,50 +17,6 @@ const Post = ({ data }) => {
     <div className={data.isVisible ? "Post" : "Inactive__Post"}>
       {data?.images.length !== 0 && <PostImages images={data?.images} />}
 
-      {/* <>
-        <div className="grid grid-cols-3 gap-4">
-          {data?.images?.map((image, index) => (
-            <Image
-              key={index}
-              src={image.secure_url}
-              alt={`Image ${index}`}
-              className={` cursor-pointer rounded-lg ${
-                index === 0 ? "col-span-2 row-span-2" : "col-span-1  row-span-1"
-              }`}
-              onClick={() => openModal(index)}
-            />
-          ))}
-        </div>
-
-        <Modal
-          classNames={{
-            modal: `modal__Body`,
-            title: `modal__title`,
-            close: `modal__close`,
-          }}
-          size="lg"
-          opened={modalOpen}
-          onClose={() => setModalOpen(false)}
-        >
-          <div className="relative  w-full ">
-            <Image
-              fit="contain"
-              radius="md"
-              src={data?.images[currentImageIndex].url}
-              alt={data?.images[currentImageIndex].alt}
-            />
-            <div className="absolute left-1/2 top-1/2 flex w-full -translate-x-1/2 -translate-y-1/2 transform items-center justify-between ">
-              <span className="flex  h-14 w-14 cursor-pointer items-center justify-center rounded-full  bg-slate-300 bg-opacity-20  hover:bg-opacity-70">
-                <UilAngleLeftB onClick={prevImage} />
-              </span>
-              <span className="flex h-14  w-14 cursor-pointer items-center justify-center rounded-full bg-slate-300 bg-opacity-20  hover:bg-opacity-70">
-                <UilAngleRightB onClick={nextImage} />
-              </span>
-            </div>
-          </div>
-        </Modal>
-      </> */}
-
       <div className="postDetails">
         {/*************************  apartment details section start *************************/}
         <div className=" Post__innerCard">
@@ -143,14 +99,8 @@ const Post = ({ data }) => {
         )}
 
         {/*************************  Bill details section End *************************/}
-        <div className="postDescription">
+        <div className="text-justify dark:text-gray-300 flex justify-center py-3">
           {data.description}
-          {/* A customer shared two recorded demos with me, each 1-hour long,
-          presented to their typical prospects. These two examples had the same
-          storyline and the only difference between them was the verbal style of
-          delivery. The content and the sequence of steps in each demo were
-          exactly alike. We had scheduled for me to see one more demo, but this
-          one was live. */}
         </div>
         {/*************************  House details section start *************************/}
         <div className=" Post__innerCard">

@@ -4,7 +4,7 @@
   background: rgb(255, 255, 255);
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   height: 250px;
-  min-width: 250px;
+  min-width: 240px;
 }
 .widget__header {
   background: var(--btnHoverColor);
@@ -45,32 +45,7 @@
 }
 .widget__card__content :nth-child(2) {
   font-size: 11px;
-  text-align: center;
-  color: gray;
-}
-
-/* Dark mode */
-.dark,
-.widget__wrapper,
-.widget__innerCard {
-  background: rgba(255, 255, 255, 0.05);
-  color: rgb(204, 204, 204);
-}
-.dark,
-.widget__card__content :nth-child(2) {
-  color: rgb(176, 172, 172);
-}
-@media (prefers-color-scheme: dark) {
-  .dark,
-  .widget__wrapper,
-  .widget__innerCard {
-    background: rgba(255, 255, 255, 0.05);
-    color: rgb(204, 204, 204);
-  }
-  .dark,
-  .widget__card__content :nth-child(2) {
-    color: rgb(176, 172, 172);
-  }
+  text-align: start;
 }
 
 @media screen and (max-width: 769px) {
@@ -90,6 +65,28 @@
   .widget__card__content :nth-child(2) {
     font-size: 11px;
     text-align: center;
-    color: gray;
+  }
+}
+
+/* Dark mode */
+
+.dark,
+.widget__wrapper {
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+.dark,
+.widget__innerCard {
+  background: rgba(255, 255, 255, 0.05);
+}
+@media (prefers-color-scheme: dark) {
+  .dark,
+  .widget__wrapper {
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  }
+  .dark,
+  .widget__innerCard {
+    background: rgba(255, 255, 255, 0.05);
   }
 }

@@ -42,9 +42,14 @@ const Sidebar = () => {
       <div className="nav container ">
         {/*********************************** nav logo********************************** */}
         <p className="nav__logo z-10">
-          <NavLink className="LinkUnset__hover" to="/home">
+          <a
+            className="LinkUnset__hover"
+            href="https://h0mify.com"
+            target="_blank"
+            rel="noreferrer"
+          >
             HomeFy
-          </NavLink>
+          </a>
         </p>
 
         {/*********************************** nav lists start********************************** */}

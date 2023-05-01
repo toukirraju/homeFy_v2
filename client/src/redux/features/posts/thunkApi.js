@@ -1,7 +1,7 @@
 import axios from "axios";
-import axiosInstance from "../../../utility/axios";
 
 const URL = "https://api.h0mify.com/api/v1/post";
+// const URL = "http://localhost:4040/api/v1/post";
 
 // export const getPost = async () => {
 //   const response = await axiosInstance.get(

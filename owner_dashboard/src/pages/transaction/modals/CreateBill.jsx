@@ -5,6 +5,7 @@ import { useState } from "react";
 import LoadingSpinner from "../../../Components/LoadingSpinner";
 import ConfirmationModal from "../../../Components/modals/ConfirmationModal";
 import useBillMaker from "../hooks/useBillMaker";
+import { useSelector } from "react-redux";
 
 const CreateBill = ({
   billModalOpened,
@@ -13,6 +14,8 @@ const CreateBill = ({
   temporaryBill,
 }) => {
   const isMobile = useMediaQuery("(max-width: 600px)");
+
+  const { user } = useSelector((state) => state.auth);
 
   const [isSwitchOn, setIsSwitchOn] = useState(false);
   const [isSMSOn, setIsSMSOn] = useState(true);
@@ -125,17 +128,20 @@ const CreateBill = ({
                     }
                   />
                 </div>
-                <div className={Styles.switch}>
-                  <span className="dark:text-gray-200">SMS</span>
-                  <Switch
-                    onLabel="ON"
-                    offLabel="OFF"
-                    checked={isSMSOn}
-                    onChange={(event) =>
-                      setIsSMSOn(event.currentTarget.checked)
-                    }
-                  />
-                </div>
+
+                {user?.isHomifyPlus && (
+                  <div className={Styles.switch}>
+                    <span className="dark:text-gray-200">SMS</span>
+                    <Switch
+                      onLabel="ON"
+                      offLabel="OFF"
+                      checked={isSMSOn}
+                      onChange={(event) =>
+                        setIsSMSOn(event.currentTarget.checked)
+                      }
+                    />
+                  </div>
+                )}
               </div>
 
               {isSwitchOn && (

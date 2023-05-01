@@ -1,11 +1,11 @@
 import { Modal } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import { useSelector } from "react-redux";
 
 import Styles from "../../../Styles/ModalStyle.module.css";
 
 import LoadingSpinner from "../../LoadingSpinner";
 import useAssign from "./hooks/useAssign";
+import { useFetchRentersQuery } from "../../../redux/features/renter/RTK Query/renterApi";
 
 const AssignRenter = ({
   assignModalOpened,
@@ -17,7 +17,7 @@ const AssignRenter = ({
 }) => {
   const isMobile = useMediaQuery("(max-width: 600px)");
 
-  const { allRenters: renters } = useSelector((state) => state.renter);
+  const { data: renters = [] } = useFetchRentersQuery();
 
   //custom useAssign hook
   const { loading, fatchApartments, selectedData, handleChange, onSubmit } =
