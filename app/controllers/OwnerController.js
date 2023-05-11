@@ -28,7 +28,10 @@ const UpdateOwnerPersonalProfile = async (req, res) => {
     if (owner) {
       const filter = { _id: req.user._id };
       const update = {
-        $set: req.body,
+        $set: {
+          ...req.body,
+          fullname: `${req.body.firstname} ${req.body.lastname}`,
+        },
       };
       const options = { returnDocument: "after" };
 

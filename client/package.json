@@ -27,6 +27,7 @@
     "react-chartjs-2": "^5.2.0",
     "react-datepicker": "^4.10.0",
     "react-dom": "^18.2.0",
+    "react-ga4": "^2.1.0",
     "react-image-file-resizer": "^0.4.8",
     "react-infinite-scroll-component": "^6.1.0",
     "react-lazy-load-image-component": "^1.5.6",

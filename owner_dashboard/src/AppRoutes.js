@@ -1,13 +1,14 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import Apartment from "./pages/apartment/Apartment";
 import Dashboard from "./pages/dashboard/Dashboard";
-import Message from "./pages/message/Message";
 import Profile from "./pages/profile/Profile";
 import Renter from "./pages/renter/Renter";
 import Transaction from "./pages/transaction/Transaction";
 import PrivateRoute from "./utility/PrivateRoute";
 import Authentication from "./pages/authentication/Authentication";
 import PublicRoute from "./utility/PublicRoute";
+import Conversation from "./pages/message/pages/Conversation";
+import Inbox from "./pages/message/pages/Inbox";
 
 const AppRoutes = () => {
   return (
@@ -49,15 +50,24 @@ const AppRoutes = () => {
             </PrivateRoute>
           }
         />
+
         <Route
-          path="/message"
+          path="/inbox"
           element={
             <PrivateRoute>
-              {" "}
-              <Message />{" "}
+              <Conversation />
             </PrivateRoute>
           }
         />
+        <Route
+          path="/inbox/:id"
+          element={
+            <PrivateRoute>
+              <Inbox />
+            </PrivateRoute>
+          }
+        />
+
         <Route
           path="/profile"
           element={

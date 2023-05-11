@@ -10,9 +10,13 @@ import PrivateRoute from "./utility/PrivateRoute";
 import Profile from "./pages/profile/Profile";
 import PublicRoute from "./utility/PublicRoute";
 import DarkModeToggle from "./Components/DarkModeToggle";
+import ReactGA from "react-ga4";
 
 function App() {
   const authChecked = useAuthCheck();
+
+  const tracking_id = "G-9ZCV1MYXZ6";
+  ReactGA.initialize(tracking_id);
 
   return !authChecked ? (
     <div>Checking authentication.......</div>

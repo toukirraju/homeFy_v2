@@ -1,8 +1,6 @@
 const OwnerInfoModel = require("../database/models/ownerModel");
 const RenterInfoModel = require("../database/models/renterModel");
 const AdminModel = require("../database/models/adminModel");
-// const registerValidator = require("../validator/registerValidator");
-// const loginValidator = require("../validator/loginValidator");
 const { serverError, resourceError } = require("../utils/error");
 
 const jwt = require("jsonwebtoken");
@@ -16,11 +14,17 @@ const register = async (req, res) => {
   const newRenter = new RenterInfoModel(req.body);
 
   try {
-    const oldRenter = await RenterInfoModel.findOne({
-      $or: [{ username: req.body.username }, { phone: req.body.phone }],
-    });
-    if (oldRenter) {
-      return resourceError(res, "username or phone is already registered");
+    const [isOwnerUsernameExist, isRenterUsernameExist, isAdminUsernameExist] =
+      await Promise.all([
+        OwnerInfoModel.findOne({ username: req.body.username }),
+        RenterInfoModel.findOne({
+          $or: [{ username: req.body.username }, { phone: req.body.phone }],
+        }),
+        AdminModel.findOne({ username: req.body.username }),
+      ]);
+
+    if (isRenterUsernameExist || isOwnerUsernameExist || isAdminUsernameExist) {
+      return resourceError(res, "username already taken. Try new one");
     } else {
       const renter = await newRenter.save();
       const token = jwt.sign(
@@ -131,13 +135,22 @@ const OwnerRegister = async (req, res) => {
   const salt = await bcrypt.genSalt(10);
   const hashedPass = await bcrypt.hash(req.body.password, salt);
   req.body.password = hashedPass;
+  req.body.fullname = `${req.body.firstname} ${req.body.lastname}`;
   const newOwner = new OwnerInfoModel(req.body);
   const { username, role } = req.body;
   try {
-    const oldOwner = await OwnerInfoModel.findOne({ username });
+    // const isOwnerUsernameExist = await OwnerInfoModel.findOne({ username });
+    // const isRenterUsernameExist = await RenterInfoModel.findOne({ username });
+    // const isAdminUsernameExist = await AdminModel.findOne({ username });
+    const [isOwnerUsernameExist, isRenterUsernameExist, isAdminUsernameExist] =
+      await Promise.all([
+        OwnerInfoModel.findOne({ username: req.body.username }),
+        RenterInfoModel.findOne({ username: req.body.username }),
+        AdminModel.findOne({ username: req.body.username }),
+      ]);
 
-    if (oldOwner) {
-      return resourceError(res, "username is already registered");
+    if (isRenterUsernameExist || isOwnerUsernameExist || isAdminUsernameExist) {
+      return resourceError(res, "username already taken. Try new one");
     }
 
     if (role === "owner" || role === "manager") {
@@ -168,11 +181,17 @@ const adminCreate = async (req, res) => {
   const hashedPass = await bcrypt.hash(req.body.password, salt);
   req.body.password = hashedPass;
   const newAdmin = new AdminModel({ createdAdmin: req.user._id, ...req.body });
-  const { username } = req.body;
+
   try {
-    const existingAdmin = await AdminModel.findOne({ username });
-    if (existingAdmin) {
-      return resourceError(res, "username is already registered");
+    const [isOwnerUsernameExist, isRenterUsernameExist, isAdminUsernameExist] =
+      await Promise.all([
+        OwnerInfoModel.findOne({ username: req.body.username }),
+        RenterInfoModel.findOne({ username: req.body.username }),
+        AdminModel.findOne({ username: req.body.username }),
+      ]);
+
+    if (isRenterUsernameExist || isOwnerUsernameExist || isAdminUsernameExist) {
+      return resourceError(res, "username already taken. Try new one");
     } else {
       const admin = await newAdmin.save();
       // const token = jwt.sign(

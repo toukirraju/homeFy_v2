@@ -47,28 +47,33 @@ const BarChartCompo = (props) => {
     datasets: [
       {
         label: "Total Rent",
-        data: Object.values(barChart).map(
-          (monthNumber) => monthNumber.totalRent
-        ),
-        backgroundColor: "rgba(255, 99, 132, 0.2)",
+        data: Array.from({ length: 12 }, (_, i) => {
+          const monthNumber = i + 1;
+          return barChart[monthNumber] ? barChart[monthNumber].totalRent : 0;
+        }),
+        backgroundColor: "rgba(255, 99, 132, 0.4)",
         borderColor: "rgba(255, 99, 132, 1)",
         borderWidth: 1,
       },
       {
         label: "Payable Amount",
-        data: Object.values(barChart).map(
-          (monthNumber) => monthNumber.payableAmount
-        ),
-        backgroundColor: "rgba(54, 162, 235, 0.2)",
+        data: Array.from({ length: 12 }, (_, i) => {
+          const monthNumber = i + 1;
+          return barChart[monthNumber]
+            ? barChart[monthNumber].payableAmount
+            : 0;
+        }),
+        backgroundColor: "rgba(54, 162, 235, 0.4)",
         borderColor: "rgba(54, 162, 235, 1)",
         borderWidth: 1,
       },
       {
         label: "Paid Amount",
-        data: Object.values(barChart).map(
-          (monthNumber) => monthNumber.paidAmount
-        ),
-        backgroundColor: "rgba(255, 206, 86, 0.2)",
+        data: Array.from({ length: 12 }, (_, i) => {
+          const monthNumber = i + 1;
+          return barChart[monthNumber] ? barChart[monthNumber].paidAmount : 0;
+        }),
+        backgroundColor: "rgba(255, 206, 86, 0.4)",
         borderColor: "rgba(255, 206, 86, 1)",
         borderWidth: 1,
       },

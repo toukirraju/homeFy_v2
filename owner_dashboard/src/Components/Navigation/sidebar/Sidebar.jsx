@@ -2,22 +2,11 @@ import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import "./Sidebar.css";
 import profile from "../../../assets/user.png";
-import setting from "../../../assets/cogicon.png";
-import about from "../../../assets/about.png";
-import help_center from "../../../assets/help_center.png";
-import feedback from "../../../assets/feedback.png";
-import logoutIcon from "../../../assets/logout.png";
-import { useDispatch, useSelector } from "react-redux";
-import DarkModeToggle from "../../DarkModeToggle";
-import { Popover } from "@mantine/core";
-import { userLoggedOut } from "../../../redux/features/auth/slice/authSlice";
-import { apiSlice } from "../../../redux/api/apiSlice";
-import { setDefaultHouse } from "../../../redux/features/profile/slice/profileSlice";
+import { useSelector } from "react-redux";
 import SettingsPopover from "./SettingsPopover";
 import { useMediaQuery } from "@mantine/hooks";
 
 const Sidebar = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const isMobile = useMediaQuery("(max-width: 48em)");
@@ -30,26 +19,25 @@ const Sidebar = () => {
     setToggle(!toggle);
   };
 
-  const handleLogout = () => {
-    dispatch(userLoggedOut());
-    localStorage.removeItem("auth");
-    dispatch(apiSlice.util.resetApiState());
-    dispatch(setDefaultHouse({}));
-  };
-
   return (
     <div className="sidebar relative">
       <div className="nav container ">
         {/*********************************** nav logo********************************** */}
         <p className="nav__logo z-10">
-          <a
-            className="LinkUnset__hover"
-            href="https://h0mify.com"
-            target="_blank"
-            rel="noreferrer"
-          >
-            HomeFy
-          </a>
+          {isMobile ? (
+            <NavLink className="LinkUnset__hover" to="/">
+              HomeFy
+            </NavLink>
+          ) : (
+            <a
+              className="LinkUnset__hover"
+              href="https://h0mify.com"
+              target="_blank"
+              rel="noreferrer"
+            >
+              HomeFy
+            </a>
+          )}
         </p>
 
         {/*********************************** nav lists start********************************** */}
@@ -89,7 +77,7 @@ const Sidebar = () => {
             </li>
             <li className="nav__item" onClick={handleToggle}>
               <NavLink
-                to="message"
+                to="inbox"
                 className="nav__link flex items-center justify-start"
               >
                 <i className="uil uil-message"></i> Message

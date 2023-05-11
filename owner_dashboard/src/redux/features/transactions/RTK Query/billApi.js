@@ -63,7 +63,12 @@ export const billApi = apiSlice.injectEndpoints({
         }
         //update cache pessimistically end
       },
-      invalidatesTags: ["TemporaryBills"],
+      invalidatesTags: [
+        "TemporaryBills",
+        "YarlyBills",
+        "RenterActivity",
+        "ChartData",
+      ],
     }),
 
     deleteBill: builder.mutation({
@@ -97,6 +102,12 @@ export const billApi = apiSlice.injectEndpoints({
         }
         //Delete  cache pessimistically end
       },
+      invalidatesTags: [
+        "TemporaryBills",
+        "YarlyBills",
+        "RenterActivity",
+        "ChartData",
+      ],
     }),
 
     createTemporaryBill: builder.mutation({

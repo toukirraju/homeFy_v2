@@ -28,27 +28,33 @@ const BarChartCompo = (props) => {
     datasets: [
       {
         label: "Total Rent",
-        data: Object.values(props.data).map(
-          (monthNumber) => monthNumber.totalRent
-        ),
+        data: props.data.reduce((acc, curr) => {
+          const monthIndex = curr.billMonth - 1;
+          acc[monthIndex] = curr.totalRent;
+          return acc;
+        }, Array(12).fill(0)),
         backgroundColor: "rgba(255, 99, 132, 0.8)",
         borderColor: "rgba(255, 99, 132, 1)",
         borderWidth: 1,
       },
       {
         label: "Payable Amount",
-        data: Object.values(props.data).map(
-          (monthNumber) => monthNumber.payableAmount
-        ),
+        data: props.data.reduce((acc, curr) => {
+          const monthIndex = curr.billMonth - 1;
+          acc[monthIndex] = curr.payableAmount;
+          return acc;
+        }, Array(12).fill(0)),
         backgroundColor: "rgba(54, 162, 235, 0.8)",
         borderColor: "rgba(54, 162, 235, 1)",
         borderWidth: 1,
       },
       {
         label: "Paid Amount",
-        data: Object.values(props.data).map(
-          (monthNumber) => monthNumber.paidAmount
-        ),
+        data: props.data.reduce((acc, curr) => {
+          const monthIndex = curr.billMonth - 1;
+          acc[monthIndex] = curr.paidAmount;
+          return acc;
+        }, Array(12).fill(0)),
         backgroundColor: "rgba(255, 206, 86, 0.8)",
         borderColor: "rgba(255, 206, 86, 1)",
         borderWidth: 1,

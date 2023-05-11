@@ -12,9 +12,11 @@ import {
   setMessage,
 } from "../../../redux/slices/message";
 import { authValidation } from "../../../utility/validations/authValidation";
+import { useGoogleAnalytics } from "../../../hooks/useGoogleAnalytics";
 
 export const useAuthHook = ({ authType }) => {
   const dispatch = useDispatch();
+  const { trackEvent } = useGoogleAnalytics();
   const [
     signIn,
     {
@@ -112,6 +114,7 @@ export const useAuthHook = ({ authType }) => {
           password: formValue.password,
         });
         // console.log(formValue);
+        trackEvent("User", "Logged in", "Signin");
       } else {
         console.log("Login error");
       }

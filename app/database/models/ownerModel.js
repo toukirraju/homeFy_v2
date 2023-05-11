@@ -19,6 +19,9 @@ const ownerSchema = new Schema(
       type: String,
       require: true,
     },
+    fullname: {
+      type: String,
+    },
     phone: {
       type: String,
       require: true,
