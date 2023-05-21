@@ -9,8 +9,35 @@ import Authentication from "./pages/authentication/Authentication";
 import PublicRoute from "./utility/PublicRoute";
 import Conversation from "./pages/message/pages/Conversation";
 import Inbox from "./pages/message/pages/Inbox";
+import withPullToRefresh from "./utility/withPullToRefresh";
+import { useState } from "react";
+import PullToRefresh from "react-pull-to-refresh";
 
 const AppRoutes = () => {
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const PullDownIcon = () => (
+    <div>
+      <span>Pull down to refresh</span>
+    </div>
+  );
+
+  const ReleaseIcon = () => (
+    <div>
+      <span>Release to refresh</span>
+    </div>
+  );
+
+  function onRefresh() {
+    setIsRefreshing(true);
+
+    // Make API calls or other asynchronous tasks here to fetch new data
+    window.location.reload();
+    // setTimeout(() => {
+    //   window.location.reload();
+    // }, 2000); // Simulate a delay for the API calls
+  }
+
   return (
     <div className="body_container">
       <Routes>
@@ -55,7 +82,9 @@ const AppRoutes = () => {
           path="/inbox"
           element={
             <PrivateRoute>
-              <Conversation />
+              <PullToRefresh onRefresh={onRefresh} refreshing={isRefreshing}>
+                <Conversation />
+              </PullToRefresh>
             </PrivateRoute>
           }
         />

@@ -37,7 +37,7 @@ export const conversationsApi = apiSlice.injectEndpoints({
                 conversation.updatedAt = data?.data?.updatedAt;
               } else {
                 return {
-                  data: [...draft.conversations, data?.data],
+                  conversations: [...draft.conversations, data?.data],
                   totalCount: Number(draft.totalCount),
                 };
               }

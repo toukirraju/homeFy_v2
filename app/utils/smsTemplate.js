@@ -70,7 +70,7 @@ const sendInvoiceOnMessage = (bill, phone) => {
   const greenwebsms = new URLSearchParams();
   greenwebsms.append("token", process.env.SMSTOKEN);
   greenwebsms.append("to", phone);
-  greenwebsms.append("message", templateEngShort);
+  greenwebsms.append("message", templateBnShort);
   axios
     .post("http://api.greenweb.com.bd/api.php", greenwebsms)
     .then((response) => {
