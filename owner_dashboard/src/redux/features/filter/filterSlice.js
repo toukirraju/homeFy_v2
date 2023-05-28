@@ -8,6 +8,7 @@ const initialState = {
   renterSearchId: "",
   renter: {},
   manager: {},
+  filterByFloor: "",
 };
 
 export const searchRenter = createAsyncThunk(
@@ -58,6 +59,9 @@ const filterSlice = createSlice({
     clearSearchId: (state) => {
       state.renterSearchId = "";
     },
+    filterByFloor: (state, action) => {
+      state.filterByFloor = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -91,5 +95,6 @@ const filterSlice = createSlice({
   },
 });
 
-export const { searchByRenter, clearSearchId } = filterSlice.actions;
+export const { searchByRenter, clearSearchId, filterByFloor } =
+  filterSlice.actions;
 export default filterSlice.reducer;

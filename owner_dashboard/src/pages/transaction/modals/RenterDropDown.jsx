@@ -6,6 +6,10 @@ import CreateTempBill from "./CreateTempBill";
 import LoadingSpinner from "../../../Components/LoadingSpinner";
 import RenterProfile from "../../renter/modals/RenterProfile";
 import { billApi } from "../../../redux/features/transactions/RTK Query/billApi";
+import RenterSelect from "./UI/RenterSelect";
+import { useDispatch, useSelector } from "react-redux";
+import { filterByFloor } from "../../../redux/features/filter/filterSlice";
+import FloorSelect from "./UI/FloorSelect";
 
 const RenterDropDown = ({
   renterDropDownModalOpened,
@@ -14,7 +18,7 @@ const RenterDropDown = ({
   data,
 }) => {
   const isMobile = useMediaQuery("(max-width: 600px)");
-
+  const dispatch = useDispatch();
   const [renterData, setRenterData] = useState({});
   const [profileModalOpened, setProfileModalOpened] = useState(false);
   const [createTempBillModalOpened, setCreateTempBillModalOpened] =
@@ -23,6 +27,8 @@ const RenterDropDown = ({
   const [selectedData, setSelectedData] = useState({
     renter: "",
   });
+
+  const filteredFloor = useSelector((state) => state.filter.filterByFloor);
 
   //manually fetch renter temp bill data
   const { data: tempData = {}, isLoading } =
@@ -50,25 +56,20 @@ const RenterDropDown = ({
     }
   };
 
+  const filterData = (item) => {
+    if (filteredFloor !== "") {
+      return (
+        item.apartment !== null &&
+        item.apartment.apartmentDetails.floor == filteredFloor
+      );
+    } else {
+      return item;
+    }
+  };
+
+  const filteredData = data?.filter(filterData);
   return (
     <>
-      {renterData && (
-        <CreateTempBill
-          createTempBillModalOpened={createTempBillModalOpened}
-          setCreateTempBillModalOpened={setCreateTempBillModalOpened}
-          renterData={renterData}
-          temporaryData={tempData}
-        />
-      )}
-
-      {renterData && (
-        <RenterProfile
-          profileModalOpened={profileModalOpened}
-          setProfileModalOpened={setProfileModalOpened}
-          data={renterData}
-        />
-      )}
-
       <Modal
         classNames={{
           modal: `bg-gray-300 dark:bg-gray-800`,
@@ -91,37 +92,14 @@ const RenterDropDown = ({
 
           {data ? (
             <form>
-              <div className={`card px-4 py-3 `} style={{ marginTop: "10px" }}>
-                <select
-                  // style={{ width: "100%", marginBottom: "10px" }}
-                  name="renter"
-                  className=" w-full dark:bg-slate-800 dark:text-gray-400"
-                  onChange={handleChange}
-                  value={selectedData.renter}
-                >
-                  <option value="" hidden>
-                    Select Renter
-                  </option>
-                  {data
-                    ? data
-                        .filter((item) => item.apartment !== null)
-                        .map((newitem, index) =>
-                          newitem.apartment.apartmentDetails
-                            .apartment_number !== "" &&
-                          newitem.apartment.apartmentDetails.roomNumber !==
-                            "" ? (
-                            <option key={index} value={JSON.stringify(newitem)}>
-                              &#10687; Name&#9500; {newitem.fullname} &#10148;
-                              Apartment:{" "}
-                              {
-                                newitem.apartment.apartmentDetails
-                                  .apartment_number
-                              }{" "}
-                            </option>
-                          ) : null
-                        )
-                    : null}
-                </select>
+              <div className={`card mt-3 grid grid-cols-5 gap-1 px-2 py-3`}>
+                <FloorSelect data={data} />
+
+                <RenterSelect
+                  data={filteredData}
+                  selectedData={selectedData}
+                  handleChange={handleChange}
+                />
               </div>
 
               <button
@@ -139,6 +117,24 @@ const RenterDropDown = ({
           )}
         </div>
       </Modal>
+
+      {/* Make  Temporary bill  */}
+      {renterData && (
+        <CreateTempBill
+          createTempBillModalOpened={createTempBillModalOpened}
+          setCreateTempBillModalOpened={setCreateTempBillModalOpened}
+          renterData={renterData}
+          temporaryData={tempData}
+        />
+      )}
+      {/* Show Renter Profile */}
+      {renterData && (
+        <RenterProfile
+          profileModalOpened={profileModalOpened}
+          setProfileModalOpened={setProfileModalOpened}
+          data={renterData}
+        />
+      )}
     </>
   );
 };

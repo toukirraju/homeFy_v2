@@ -3,6 +3,14 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .conversation-row-grid {
+    height: calc(100vh - 129px);
+
+    grid-template-rows: auto 1fr auto;
+  }
+}
+
 * {
   margin: 0;
   padding: 0;

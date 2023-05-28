@@ -8,6 +8,8 @@ import { billApi } from "../../../redux/features/transactions/RTK Query/billApi"
 import { monthIsBeforeOrOn25th } from "../../../utility/customFunctions";
 import GenerateDue from "../components/GenerateDue";
 import { useSelector } from "react-redux";
+import FloorSelect from "./UI/FloorSelect";
+import RenterSelect from "./UI/RenterSelect";
 
 const PayableRenters = ({
   payableModalOpened,
@@ -27,6 +29,7 @@ const PayableRenters = ({
   });
 
   const { user } = useSelector((state) => state.auth);
+  const filteredFloor = useSelector((state) => state.filter.filterByFloor);
 
   //manually fetch renter temp bill data
   const { refetch: refetchTempBill } =
@@ -55,6 +58,19 @@ const PayableRenters = ({
         console.log(error);
       });
   };
+
+  const filterData = (item) => {
+    if (filteredFloor !== "") {
+      return (
+        item.apartment !== null &&
+        item.apartment.apartmentDetails.floor == filteredFloor
+      );
+    } else {
+      return item;
+    }
+  };
+
+  const filteredData = data?.filter(filterData);
 
   return (
     <>
@@ -107,37 +123,16 @@ const PayableRenters = ({
                     ? "All Payment complete"
                     : "Select renter for creating bill."}
                 </span>
-                <select
-                  name="renter"
-                  className=" dark:bg-slate-800 dark:text-gray-200"
-                  onChange={handleChange}
-                  value={selectedData.renter}
-                >
-                  <option value="">Select Renter</option>
-                  {data
-                    ? data
-                        .filter((filterdItem) => filterdItem.apartment !== null)
-                        .sort(
-                          (a, b) =>
-                            a.apartment.apartmentDetails.floor -
-                            b.apartment.apartmentDetails.floor
-                        )
-                        .map((item, index) =>
-                          item.apartment.apartmentDetails.apartment_number !==
-                            "" &&
-                          item.apartment.apartmentDetails.roomNumber !== "" ? (
-                            <option key={index} value={JSON.stringify(item)}>
-                              Floor: {item.apartment.apartmentDetails.floor}{" "}
-                              &#10148; {item.apartment.renterName}
-                              &#10148; Apartment:{" "}
-                              {
-                                item.apartment.apartmentDetails.apartment_number
-                              }{" "}
-                            </option>
-                          ) : null
-                        )
-                    : null}
-                </select>
+
+                <div className={`grid grid-cols-5 gap-1 px-2 py-3`}>
+                  <FloorSelect data={data} />
+
+                  <RenterSelect
+                    data={filteredData}
+                    selectedData={selectedData}
+                    handleChange={handleChange}
+                  />
+                </div>
               </div>
 
               <button

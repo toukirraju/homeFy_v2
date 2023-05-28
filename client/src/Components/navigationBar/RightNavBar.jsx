@@ -38,16 +38,18 @@ const RightNavBar = () => {
     <>
       <div className={`card ${RightStyle.right__nav}`}>
         <div className={`${RightStyle.navIcons} dark:text-gray-300`}>
-          {pathname === "/profile" && (
+          {pathname !== "/home" && (
             <>
               <Link to="/">
                 <UilEstate />
               </Link>
             </>
           )}
-          <span onClick={() => setIsMessageOn((prev) => !prev)}>
+          {/* <span onClick={() => setIsMessageOn((prev) => !prev)}> */}
+          <Link to="/inbox">
             <UilMessage />
-          </span>
+          </Link>
+          {/* </span> */}
           <span>
             <UilBell />
           </span>

@@ -11,6 +11,8 @@ import Profile from "./pages/profile/Profile";
 import PublicRoute from "./utility/PublicRoute";
 import DarkModeToggle from "./Components/DarkModeToggle";
 import ReactGA from "react-ga4";
+import Conversation from "./pages/message/pages/Conversation";
+import Inbox from "./pages/message/pages/Inbox";
 
 function App() {
   const authChecked = useAuthCheck();
@@ -67,6 +69,25 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route
+            path="/inbox"
+            element={
+              <PrivateRoute>
+                {/* <PullToRefresh onRefresh={onRefresh} refreshing={isRefreshing}> */}
+                <Conversation />
+                {/* </PullToRefresh> */}
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/inbox/:id"
+            element={
+              <PrivateRoute>
+                <Inbox />
+              </PrivateRoute>
+            }
+          />
+
           <Route path="*" element={<Navigate to="/home" replace />} />
         </Routes>
       </>

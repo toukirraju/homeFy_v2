@@ -11,10 +11,26 @@ import Chat from "../../../assets/send.png";
 import Call from "../../../assets/phone-call.png";
 
 import PostImages from "./PostImages";
+import { useState } from "react";
+import SendMessageModal from "../../../pages/message/modals/SendMessageModal";
+import useAuth from "../../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 const Post = ({ data }) => {
+  const isLoggedIn = useAuth();
+  const navigate = useNavigate();
+  const [modalOpened, setModalOpened] = useState(false);
+  const [ownerUsername, setOwnerUsername] = useState(null);
+  const handleMessage = (value) => {
+    if (isLoggedIn) {
+      setModalOpened(true);
+      setOwnerUsername(value?.username);
+    } else {
+      navigate("/signin");
+    }
+  };
   return (
-    <div className={data.isVisible ? "Post" : "Inactive__Post"}>
+    <div className="Post">
       {data?.images.length !== 0 && <PostImages images={data?.images} />}
 
       <div className="postDetails">
@@ -144,12 +160,10 @@ const Post = ({ data }) => {
               fontSize: "12px",
               marginTop: "10px",
             }}
-          >
-            {/* 500 likes */}
-          </span>
+          ></span>
         </div>
 
-        <div>
+        {/* <div>
           <img
             src={Email}
             style={{ height: "30px", cursor: "pointer" }}
@@ -162,12 +176,23 @@ const Post = ({ data }) => {
               marginTop: "10px",
             }}
           >
-            {/* 1.5k comments */}
           </span>
-        </div>
+        </div> */}
 
-        <img src={Chat} style={{ height: "30px", cursor: "pointer" }} alt="" />
+        <img
+          src={Chat}
+          onClick={() => handleMessage(data?.owner)}
+          style={{ height: "30px", cursor: "pointer" }}
+          alt=""
+        />
       </div>
+      {ownerUsername && (
+        <SendMessageModal
+          modalOpened={modalOpened}
+          setModalOpened={setModalOpened}
+          ownerUsername={ownerUsername}
+        />
+      )}
     </div>
   );
 };
