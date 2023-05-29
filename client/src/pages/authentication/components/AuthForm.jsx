@@ -109,14 +109,13 @@ const AuthForm = ({ authType }) => {
       <AuthDecision />
 
       {/* submit button  */}
-      <div className={styles.center__button}>
-        <AuthButton
-          title={authType === "signupForm" ? "Register" : "Log in"}
-          authType="submit"
-          loading={loading}
-          disabled={loading}
-        />
-      </div>
+
+      <AuthButton
+        title={authType === "signupForm" ? "Register" : "Log in"}
+        authType="submit"
+        loading={loading}
+        disabled={loading}
+      />
     </form>
   );
 };

@@ -5,7 +5,7 @@ const AuthButton = ({ type, title, icon, disabled, loading }) => {
   return (
     <button
       type={type}
-      className={`${styles.btn} ${styles.form__submit__btn}`}
+      className={`w-full my-2 ${styles.btn} ${styles.form__submit__btn}`}
       disabled={disabled}
     >
       {loading ? (

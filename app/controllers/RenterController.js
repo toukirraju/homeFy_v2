@@ -4,6 +4,8 @@ const TempBillModel = require("../database/models/tempBillModel");
 const { serverError, resourceError } = require("../utils/error");
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
+const nodemailer = require("nodemailer");
+const jwt = require("jsonwebtoken");
 
 //************* Create new renter ***************\\
 
@@ -443,6 +445,106 @@ const deleteRenter = async (req, res) => {
   }
 };
 
+//************* Forgot password request by email (renter) ***************\\
+const forgotPassword = async (req, res) => {
+  const { username } = req.body;
+  try {
+    const existingRenter = await RenterInfoModel.findOne({ username });
+
+    if (!existingRenter) {
+      return resourceError(res, "User not exist!");
+    }
+
+    const secret = process.env.JWT_KEY + existingRenter.password;
+    const token = jwt.sign(
+      {
+        username: existingRenter.username,
+        _id: existingRenter._id,
+      },
+      secret,
+      { expiresIn: "5m" }
+    );
+
+    const link = `http://localhost:3000/reset-password/${existingRenter._id}/${token}`;
+
+    let transporter = nodemailer.createTransport({
+      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    let mailOptions = {
+      from: process.env.EMAIL,
+      to: username,
+      subject: "Reset Password",
+      text: `Change password within 5 minutes otherwise link will be expire
+      link- ${link}
+      `,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Email sent: " + info.response);
+        res.status(201).json({
+          message: "Please check your email for password reset instruction.",
+        });
+      }
+    });
+  } catch (error) {
+    serverError(res, error);
+  }
+};
+
+//************* reset password (renter) ***************\\
+const resetPassword = async (req, res) => {
+  const { id, token } = req.params;
+  const { password } = req.body;
+
+  try {
+    const existingRenter = await RenterInfoModel.findOne({ _id: id });
+
+    if (!existingRenter) {
+      return resourceError(res, "User not exist!");
+    }
+
+    const secret = process.env.JWT_KEY + existingRenter.password;
+    const decodedToken = jwt.verify(token, secret);
+
+    // Check if token has expired
+    if (Date.now() >= decodedToken.exp * 1000) {
+      return res
+        .status(400)
+        .json({
+          message:
+            "Token has expired. Please request a new password reset link.",
+        });
+    }
+
+    const encryptedPassword = await bcrypt.hash(password, 10);
+    await existingRenter.updateOne(
+      { _id: id },
+      {
+        $set: {
+          password: encryptedPassword,
+        },
+      }
+    );
+
+    res.status(201).json({
+      message: "Password updated",
+    });
+  } catch (error) {
+    serverError(res, error);
+  }
+};
+
 module.exports = {
   createRenter,
   PersonalProfile,
@@ -454,4 +556,6 @@ module.exports = {
   updateRenter,
   removeRenterFromHome,
   deleteRenter,
+  forgotPassword,
+  resetPassword,
 };

@@ -16,6 +16,8 @@ const {
   PersonalProfile,
   TemporaryBill,
   updateProfile,
+  forgotPassword,
+  resetPassword,
 } = require("../controllers/RenterController");
 
 //create renter Route
@@ -57,6 +59,11 @@ router.delete(
   [authVerify.verifyToken, authVerify.isOwner],
   deleteRenter
 );
+
+//************* Forgot password request by email (renter) ***************\\
+router.post("/forgot-password", forgotPassword);
+
+router.get("/reset-password/:id/:token", resetPassword);
 
 //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
 ////\\//\\//\\//\\//\\   Renter Assigning Routes  //\\//\\//\\//\\//\\//\\//

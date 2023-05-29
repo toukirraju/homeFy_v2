@@ -1,7 +1,7 @@
 import styles from "./styles/SignIn.module.css";
 import logo from "../../assets/logo.png";
 import AuthForm from "./components/AuthForm";
-import { Link } from "react-router-dom";
+import ReturnButton from "./components/ui/ReturnButton";
 const SignUp = () => {
   return (
     <div className={styles.auth__body}>
@@ -20,11 +20,7 @@ const SignUp = () => {
           >
             <img className={styles.right__image} src={logo} alt="" />
 
-            <div class={styles.return__container}>
-              <Link to="/">
-                <span class={styles.return__button}>Return HomeFy</span>
-              </Link>
-            </div>
+            <ReturnButton />
           </div>
         </div>
       </div>

@@ -13,6 +13,8 @@ import DarkModeToggle from "./Components/DarkModeToggle";
 import ReactGA from "react-ga4";
 import Conversation from "./pages/message/pages/Conversation";
 import Inbox from "./pages/message/pages/Inbox";
+import ForgetPassword from "./pages/authentication/ForgetPassword";
+import ResetPassword from "./pages/authentication/ResetPassword";
 
 function App() {
   const authChecked = useAuthCheck();
@@ -58,6 +60,24 @@ function App() {
             element={
               <PublicRoute>
                 <SignUp />
+              </PublicRoute>
+            }
+          />
+
+          <Route
+            path="/forget-password"
+            element={
+              <PublicRoute>
+                <ForgetPassword />
+              </PublicRoute>
+            }
+          />
+
+          <Route
+            path="/reset-password/:id/:token"
+            element={
+              <PublicRoute>
+                <ResetPassword />
               </PublicRoute>
             }
           />
