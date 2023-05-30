@@ -6,6 +6,7 @@ import AuthInput from "./components/ui/AuthInput";
 import AuthButton from "./components/ui/AuthButton";
 import { useState } from "react";
 import { useForgetPasswordMutation } from "../../redux/features/users/userApi";
+import Alert from "../../Components/UI/Alert";
 const ForgetPassword = () => {
   const [username, setUsername] = useState("");
   const [forgetPassword, { data, isLoading, isError, error, isSuccess }] =
@@ -27,15 +28,11 @@ const ForgetPassword = () => {
             <p className={styles.form__title}>Forgot Password</p>
 
             {isSuccess && data && (
-              <div className="w-full flex justify-center items-center text-white px-7 py-2 mb-2 rounded-md bg-green-600 bg-opacity-30 shadow-md border">
-                {data?.message}
-              </div>
+              <Alert message={data?.message} type="success" />
             )}
 
             {isError && error && (
-              <div className="w-full flex justify-center items-center text-white px-7 py-2 mb-2 rounded-md bg-red-600 bg-opacity-30 shadow-md border">
-                {error?.data?.message}
-              </div>
+              <Alert message={error?.data?.message} type="error" />
             )}
 
             <form onSubmit={handleSubmit}>

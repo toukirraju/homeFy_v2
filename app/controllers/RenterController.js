@@ -481,10 +481,19 @@ const forgotPassword = async (req, res) => {
     let mailOptions = {
       from: process.env.EMAIL,
       to: username,
-      subject: "Reset Password",
-      text: `Change password within 5 minutes otherwise link will be expire
-      link- ${link}
-      `,
+      subject: "Password Reset Instructions",
+      text: `Hi there,
+
+      You recently requested a password reset for your account on our website. To reset your password, please click on the following link:
+      
+      ${link}
+      
+      This link will expire in 5 minutes. If you do not click on the link within 5 minutes, you will need to request a new password reset.
+      
+      If you did not request a password reset, please disregard this email.
+      
+      Thanks,
+      The Homify Team`,
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -517,31 +526,29 @@ const resetPassword = async (req, res) => {
     const secret = process.env.JWT_KEY + existingRenter.password;
     const decodedToken = jwt.verify(token, secret);
 
-    // Check if token has expired
-    if (Date.now() >= decodedToken.exp * 1000) {
-      return res
-        .status(400)
-        .json({
-          message:
-            "Token has expired. Please request a new password reset link.",
-        });
-    }
-
-    const encryptedPassword = await bcrypt.hash(password, 10);
-    await existingRenter.updateOne(
-      { _id: id },
-      {
-        $set: {
-          password: encryptedPassword,
-        },
-      }
-    );
+    const salt = await bcrypt.genSalt(10);
+    const encryptedPassword = await bcrypt.hash(password, salt);
+    await existingRenter.updateOne({
+      $set: {
+        password: encryptedPassword,
+      },
+    });
 
     res.status(201).json({
       message: "Password updated",
     });
   } catch (error) {
-    serverError(res, error);
+    if (
+      error.name === "TokenExpiredError" ||
+      error.name === "JsonWebTokenError"
+    ) {
+      resourceError(
+        res,
+        "Token has expired. Please request a new password reset link."
+      );
+    } else {
+      serverError(res, error);
+    }
   }
 };
 

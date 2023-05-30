@@ -63,7 +63,7 @@ router.delete(
 //************* Forgot password request by email (renter) ***************\\
 router.post("/forgot-password", forgotPassword);
 
-router.get("/reset-password/:id/:token", resetPassword);
+router.post("/reset-password/:id/:token", resetPassword);
 
 //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
 ////\\//\\//\\//\\//\\   Renter Assigning Routes  //\\//\\//\\//\\//\\//\\//
