@@ -11,6 +11,7 @@ import {
   useSignUpMutation,
 } from "../../../redux/features/auth/RTK Query/authApi";
 import TextInput from "../../../Components/UI/TextInput";
+import Banner from "./Banner";
 
 const initialValues = {
   firstname: "",
@@ -134,29 +135,13 @@ const LoginForm = () => {
         } = formik;
         return (
           // Style.container Style.form__row
+
           <div className={`mx-5 mb-5 md:mx-10 lg:mx-28`}>
             {message && <AlertPoPUP message={message} />}
 
             <h3 className="my-5 text-center text-2xl font-extrabold text-gray-500 drop-shadow-lg dark:text-white">
               {isSignUp ? "Signup for new account" : "Dashboard Signin"}
             </h3>
-
-            {!isSignUp && (
-              <div className="text-gray-500 dark:text-slate-300">
-                <h3>
-                  if you want to check demo version then Sign in with given
-                  credentials
-                </h3>
-                <ul className="md:list-disc">
-                  <li className="text-gray-500">
-                    <b>username:</b> dashboard
-                  </li>
-                  <li className="text-gray-500">
-                    <b>password:</b> 12345
-                  </li>
-                </ul>
-              </div>
-            )}
 
             <form onSubmit={handleSubmit}>
               {isSignUp && (

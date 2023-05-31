@@ -3,6 +3,7 @@ import Style from "./styles/loginPage.module.css";
 import logo from "../../assets/homefyDashboardLogo.png";
 import { useNavigate } from "react-router-dom";
 import DarkModeToggle from "../../Components/DarkModeToggle";
+import Banner from "./components/Banner";
 const Authentication = () => {
   const navigate = useNavigate();
 
@@ -13,6 +14,7 @@ const Authentication = () => {
         <div className="absolute right-8 top-5">
           <DarkModeToggle />
         </div>
+        <Banner />
         <div
           className={`flex flex-col items-center justify-center md:flex-row`}
         >
