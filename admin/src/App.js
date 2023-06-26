@@ -8,6 +8,7 @@ import Redirect from "./Redirect";
 import AppRoutes from "./AppRoutes";
 import { useSelector } from "react-redux";
 import AuthVerify from "./utility/AuthVerify";
+import Layout from "./Components/Layout";
 
 function App() {
   const { user } = useSelector((state) => state.auth);
@@ -27,35 +28,17 @@ function App() {
         theme="colored"
       />
       {user ? (
-        <>
-          {/* if user have role */}
-          {user?.user.roles && <AppRoutes user={user} />}
-          {/* {user?.user.role === undefined && (
-            <Redirect destination="http://localhost:3000" />
-          )} */}
-        </>
+        <>{user?.user.roles && <AppRoutes user={user} />}</>
       ) : (
         <>
           <Routes>
-            {/* <Route path="/home" element={<Home />} /> */}
             <Route path="/auth" element={<Authentication />} />
             <Route path="*" element={<Navigate to="/auth" replace />} />
           </Routes>
         </>
       )}
+      {/* <Layout /> */}
     </>
-    // <div className="App">
-    //   <Routes>
-    //     <Route path="/" element={<Home />} />
-
-    //     <Route path="auth" element={<Authentication />} />
-
-    //     <Route
-    //       path="/dashboard"
-    //       element={<Redirect destination="http://localhost:3000" />}
-    //     />
-    //   </Routes>
-    // </div>
   );
 }
 

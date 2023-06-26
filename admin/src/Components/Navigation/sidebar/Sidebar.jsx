@@ -17,7 +17,7 @@ const Sidebar = () => {
       <div className="nav container">
         <p className="nav__logo">
           <NavLink className="LinkUnset__hover" to="/home">
-            HomeFy Admin
+            HomeFy
           </NavLink>
         </p>
 
@@ -43,11 +43,6 @@ const Sidebar = () => {
                 <i className="uil uil-invoice"></i> Transactions
               </NavLink>
             </li>
-            {/* <li className="nav__item" onClick={handleToggle}>
-              <NavLink to="message" className="nav__link">
-                <i class="uil uil-comment-image"></i>My posts
-              </NavLink>
-            </li> */}
             <li className="nav__item" onClick={handleToggle}>
               <NavLink to="message" className="nav__link">
                 <i className="uil uil-message"></i> Message
@@ -67,10 +62,10 @@ const Sidebar = () => {
           </div>
         </div>
         <div className="nav__profile">
-          <span className="circle"></span>
-
-          <div onClick={() => navigate("profile")}>
-            <img className="profile__image" src={profile} alt="" />
+          <div className="circle">
+            <div onClick={() => navigate("profile")}>
+              <img className="profile__image" src={profile} alt="" />
+            </div>
           </div>
 
           <button

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:4040/auth/admin/";
+const API_URL = "http://localhost:4040/api/v1/auth/admin/";
 // const API_URL = "https://billapi.billfactor.xyz/api/";
 
 const register = (formData) => {

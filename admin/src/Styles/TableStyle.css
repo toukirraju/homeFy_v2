@@ -1,0 +1,66 @@
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.dark table {
+  background: var(--bgDark);
+  color: rgb(242, 243, 244);
+}
+
+caption,
+th,
+td {
+  padding: 1rem;
+}
+
+caption,
+th {
+  text-align: left;
+}
+
+caption {
+  background: #c7c7c7;
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: white;
+  justify-content: space-between;
+}
+.dark caption {
+  background: #0c051e;
+}
+
+th {
+  background: hsl(0 0% 0% / 0.5);
+}
+
+tr:nth-of-type(2n) {
+  background: hsl(0, 0%, 66%);
+}
+.dark tr:nth-of-type(2n) {
+  background: hsl(0, 0%, 13%);
+  color: rgb(242, 243, 244);
+}
+
+@media (max-width: 650px) {
+  th {
+    display: none;
+  }
+  td {
+    display: grid;
+    grid-template-columns: 15ch auto;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+  }
+  td:first-child {
+    padding-top: 2rem;
+  }
+  td:last-child {
+    padding-bottom: 2rem;
+  }
+  td::before {
+    content: attr(data-cell) ": ";
+    font-weight: 700;
+    text-transform: capitalize;
+  }
+}

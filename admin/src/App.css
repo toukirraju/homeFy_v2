@@ -1,75 +1,40 @@
-:root {
-    --yellow: #f5c32c;
-    --orange: #fca61f;
-    --black: #242d49;
-    --red: #f92525;
-    --btnHoverColor: #5bc8ab;
-    --gray: rgba(36, 45, 73, 0.65);
-    --profileShadow: 0px 4px 17px 2px rgba(0, 0, 0, 0.25);
-    --hrColor: #cfcdcd;
-    --cardColor: rgba(255, 255, 255, 0.64);
-    /* --buttonBg: linear-gradient(98.63deg, #f9a225 0%, #f95f35 100%); */
-  
-    --buttonBg: linear-gradient(98.63deg, #5bc8ab 0%, #3cb7ca 100%);
-    --removeButtonBg: linear-gradient(98.63deg, #e15a3c 0%, #d86c3a 100%);
-    --warngingButton: linear-gradient(98.63deg, #b0f314 0%, #cdd620 100%);
-    --warningHoverColor: #e5ee41;
-    --inputColor: rgba(40, 52, 62, 0.07);
-    --photo: #4cb256;
-    --video: #4a4eb7;
-    --location: #ef5757;
-    --shedule: #e1ae4a;
-  }
+.App {
+  display: flex;
+  overflow: hidden;
+  color: var(--black);
+  background: #f3f3f3;
+  /* font-family: "Roboto", sans-serif; */
+  /* background: #000; */
+}
 
-  .App {
-    display: flex;
-    overflow: hidden;
-    color: var(--black);
-    background: #f3f3f3;
-    /* font-family: "Roboto", sans-serif; */
-    /* background: #000; */
-  }
+.body_container {
+  /* overflow: hidden; */
+  height: 100vh;
+  flex: 1;
+  margin: 0 10px 0;
+}
+.body__wrapper {
+  height: 87%;
+  margin-top: 10px;
+  overflow-y: auto;
+  margin-bottom: 10px;
+  border-radius: 10px;
+}
+.sidebar_container {
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
 
-  .body_container {
-    /* overflow: hidden; */
-    height: 100vh;
-    flex: 1;
-    margin: 0 10px 0;
-  }
-  .body__wrapper {
-    height: 87%;
-    margin-top: 10px;
-    overflow-y: auto;
-    margin-bottom: 10px;
-    border-radius: 10px;
-  }
-  .sidebar_container {
-    height: 100vh;
-    position: sticky;
-    top: 0;
-    left: 0;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-  }
-  
-  .error__msg {
-    padding: 10px 20px;
-    color: #e15a3c;
-  }
-  .card {
-    /* padding-bottom: 35px; */
-  
-    /* margin: 10px 0; */
-    background: rgba(255, 255, 255, 0.5);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 10px;
-  }
- 
-  
+.error__msg {
+  padding: 10px 20px;
+  color: #e15a3c;
+}
+
 .blur {
   position: absolute;
   width: 22rem;
@@ -81,13 +46,8 @@
 }
 
 .card {
-  /* padding-bottom: 35px; */
-
-  /* margin: 10px 0; */
-  background: rgba(255, 255, 255, 0.5);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
+  /* background: rgba(255, 255, 255, 0.5); */
+  box-shadow: 0 8px 32px 0 rgba(119, 122, 164, 0.37);
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 10px;
 }
@@ -302,8 +262,6 @@ button:disabled {
   height: 50px;
   align-items: center;
 }
-
-
 
 /* Scrollbar design start */
 
