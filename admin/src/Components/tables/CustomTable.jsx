@@ -5,7 +5,7 @@ const CustomTable = ({ title, headers, rowData }) => {
     <div>
       <table>
         <caption>
-          <div className="flex w-full justify-between items-center">
+          <div className="flex w-full shadow-lg rounded px-2 py-2 justify-between items-center">
             <span>{title}</span>
             <form>
               <input type="text" name="" placeholder="search..." />

@@ -1,20 +1,16 @@
 import "./App.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Routes, Route, Navigate } from "react-router-dom";
-import Authentication from "./pages/authentication/Authentication";
-import Home from "./pages/home/Home";
-import Redirect from "./Redirect";
 import AppRoutes from "./AppRoutes";
-import { useSelector } from "react-redux";
-import AuthVerify from "./utility/AuthVerify";
-import Layout from "./Components/Layout";
+import useAuthCheck from "./hooks/useAuthCheck";
 
 function App() {
-  const { user } = useSelector((state) => state.auth);
-  return (
+  const authChecked = useAuthCheck();
+  return !authChecked ? (
+    <div>Checking authentication.......</div>
+  ) : (
     <>
-      <AuthVerify />
+      {/* <AuthVerify /> */}
       <ToastContainer
         position="top-right"
         autoClose={5000}
@@ -27,17 +23,7 @@ function App() {
         pauseOnHover
         theme="colored"
       />
-      {user ? (
-        <>{user?.user.roles && <AppRoutes user={user} />}</>
-      ) : (
-        <>
-          <Routes>
-            <Route path="/auth" element={<Authentication />} />
-            <Route path="*" element={<Navigate to="/auth" replace />} />
-          </Routes>
-        </>
-      )}
-      {/* <Layout /> */}
+      <AppRoutes />
     </>
   );
 }

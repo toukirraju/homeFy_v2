@@ -1,7 +1,9 @@
 const passport = require("passport");
 const AdminModel = require("../database/models/adminModel");
 const OwnerModel = require("../database/models/ownerModel");
+const AdminRole = require("../database/models/adminRole");
 
+// Token verify
 verifyToken = (req, res, next) => {
   passport.authenticate("jwt", (err, user, info) => {
     if (err) {
@@ -21,24 +23,25 @@ verifyToken = (req, res, next) => {
   })(req, res, next);
 };
 
-isSuperAdmin = (req, res, next) => {
-  // console.log(req.user);
-  AdminModel.findById(req.user._id).exec((err, user) => {
-    if (err) {
-      res.status(500).send({ message: err });
-      return;
-    }
+// super admin role verify
+isSuperAdmin = async (req, res, next) => {
+  try {
+    const admin = await AdminModel.findById(req.user._id).populate({
+      path: "role",
+      model: "AdminRole",
+    });
 
-    if (
-      user.roles.indexOf("admin") !== -1 &&
-      user.roles.indexOf("editor") !== -1 &&
-      user.roles.indexOf("moderator") !== -1
-    ) {
+    const role = await AdminRole.findById(admin.role._id);
+
+    if (admin.isAdmin && role && role.name === admin.role.name) {
       next();
       return;
     }
+
     res.status(403).send({ message: "Require Super Admin Role!" });
-  });
+  } catch (err) {
+    res.status(500).send({ message: err });
+  }
 };
 
 isAdmin = (req, res, next) => {

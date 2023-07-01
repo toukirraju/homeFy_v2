@@ -1,26 +1,7 @@
 import Styles from "./ModalStyle.module.css";
 import { Modal, useMantineTheme } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
-import { OwnerInfo, updateHouseInfo } from "../../../redux/slices/ownerSlice";
-import LoadingSpinner from "../../../Components/LoadingSpinner";
-import AddressDropDown from "../../../Components/AddressDropDown";
 import { Formik, Form, Field } from "formik";
-import * as Yup from "yup";
-
-const SignupSchema = Yup.object().shape({
-  name: Yup.string()
-    .min(2, "Too Short!")
-    .max(50, "Too Long!")
-    .required("Required"),
-  phone: Yup.string()
-    .min(2, "Too Short!")
-    .max(50, "Too Long!")
-    .required("Required"),
-  postCode: Yup.string().required("Required"),
-});
 
 function CreateSubAdminModal({ modalOpened, setModalOpened }) {
   const theme = useMantineTheme();

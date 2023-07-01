@@ -7,7 +7,7 @@ import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 import "react-circular-progressbar/dist/styles.css";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
-import store from "./redux/store";
+import { store } from "./redux/store";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

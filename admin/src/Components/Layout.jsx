@@ -1,9 +1,11 @@
 import Sidebar from "./Navigation/sidebar/Sidebar";
 import styles from "../Styles/Layout.module.css";
 import Navbar from "./Navigation/Navbar";
+import useAuth from "../hooks/useAuth";
 
 const Layout = ({ children }) => {
-  return (
+  const isLoggedIn = useAuth();
+  return isLoggedIn ? (
     <div className={`h-screen ${styles.layout__container} `}>
       <div>
         <Sidebar />
@@ -15,6 +17,8 @@ const Layout = ({ children }) => {
         </div>
       </div>
     </div>
+  ) : (
+    children
   );
 };
 

@@ -30,8 +30,8 @@
   align-items: center;
 }
 
-.error__msg {
-  padding: 10px 20px;
+.error {
+  font-size: 12px;
   color: #e15a3c;
 }
 
@@ -59,13 +59,7 @@
   color: gray;
   font-weight: 600;
 }
-/* form {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-} */
+
 input,
 select {
   border: none;
@@ -75,60 +69,41 @@ select {
   padding: 10px;
   flex: 1;
 }
-.btns {
-  height: 35px;
-  padding: 7px;
-  margin: 2px;
+.dark input,
+select {
+  background-color: var(--gray);
 }
 
-button {
+.primaryButton {
   background-image: linear-gradient(
     to right,
     #02aab0 0%,
     #00cdac 51%,
     #02aab0 100%
   );
-  /* margin: 10px;
-  padding: 15px 45px; */
   text-align: center;
   text-transform: uppercase;
   transition: 0.5s;
   background-size: 200% auto;
   color: white;
-  box-shadow: 0 0 20px #eee;
+  box-shadow: 0 0 10px #eee;
   border-radius: 10px;
   display: block;
   cursor: pointer;
 }
 
-button:hover {
+.primaryButton:hover {
   background-position: right center; /* change the direction of the change here */
   color: #fff;
   text-decoration: none;
 }
 
-/* .button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  border: none;
-  border-radius: 0.5rem;
-  background: var(--buttonBg);
-  transition: all 100ms ease-out;
-} */
 button:disabled {
   /* height: 2rem; */
   background: silver;
   pointer-events: none;
   cursor: wait;
 }
-/* .button:hover {
-  cursor: pointer;
-  color: var(--btnHoverColor);
-  background: transparent;
-  border: 2px solid var(--btnHoverColor);
-} */
 
 .removeButton {
   background-image: linear-gradient(
@@ -137,8 +112,6 @@ button:disabled {
     #dd2476 51%,
     #ff512f 100%
   );
-  /* margin: 10px;
-  padding: 15px 45px; */
   text-align: center;
   text-transform: uppercase;
   transition: 0.5s;
@@ -156,22 +129,6 @@ button:disabled {
   text-decoration: none;
 }
 
-/* .removeButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  border: none;
-  border-radius: 0.5rem;
-  background: var(--removeButtonBg);
-  transition: all 100ms ease-out;
-}
-.removeButton:hover {
-  cursor: pointer;
-  color: var(--red);
-  background: transparent;
-  border: 2px solid var(--red);
-} */
 .removeButton:disabled {
   background: silver;
   pointer-events: none;
@@ -185,8 +142,6 @@ button:disabled {
     #ffc837 51%,
     #ff8008 100%
   );
-  /* margin: 10px;
-  padding: 15px 45px; */
   text-align: center;
   text-transform: uppercase;
   transition: 0.5s;
@@ -204,23 +159,6 @@ button:disabled {
   text-decoration: none;
 }
 
-/* .warningButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  border: none;
-  border-radius: 0.5rem;
-  background: var(--warngingButton);
-  transition: all 100ms ease-out;
-}
-.warningButton:hover {
-  cursor: pointer;
-  font-weight: 900;
-  color: var(--warningHoverColor);
-  background: transparent;
-  border: 3px solid var(--warningHoverColor);
-} */
 .warningButton:disabled {
   background: silver;
   pointer-events: none;
@@ -234,8 +172,6 @@ button:disabled {
     #edde5d 51%,
     #f09819 100%
   );
-  /* margin: 10px;
-  padding: 15px 45px; */
   text-align: center;
   text-transform: uppercase;
   transition: 0.5s;
@@ -364,28 +300,3 @@ button:disabled {
     z-index: 999;
   }
 }
-
-/* Dark mode */
-/* 
-@media (prefers-color-scheme: dark) {
-  .App {
-    background-color: black;
-    color: #f3f3f3;
-  }
-  .ag-root-wrapper {
-    border-color: transparent !important;
-    background: gray !important;
-    color: white !important;
-  }
-  .ag-theme-alpine {
-    --ag-header-height: 30px;
-    --ag-header-foreground-color: white;
-    --ag-header-background-color: gray;
-    --ag-header-cell-hover-background-color: rgb(80, 40, 140);
-    --ag-header-cell-moving-background-color: rgb(80, 40, 140);
-  }
-  .title,
-  .subtitle {
-    color: white;
-  }
-} */

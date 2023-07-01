@@ -1,26 +1,27 @@
 import LoginForm from "./components/LoginForm";
-import Style from "./styles/loginPage.module.css";
 import logo from "../../assets/homeFy_admin_Logo.png";
 import { useNavigate } from "react-router-dom";
+import DarkModeToggle from "../../Components/DarkModeToggle";
 const Authentication = () => {
   const navigate = useNavigate();
 
   return (
-    <>
-      <div className={Style.wrapper}>
-        <div className={Style.logo__side}>
-          <img
-            style={{ cursor: "pointer" }}
-            onClick={() => navigate("/")}
-            src={logo}
-            alt=""
-          />
-        </div>
-        <div className={Style.form__side}>
-          <LoginForm />
-        </div>
+    <div className="relative h-screen flex md:justify-around items-center justify-center  flex-col md:flex-row">
+      <div className="w-full flex justify-center">
+        <img
+          className="w-2/3"
+          onClick={() => navigate("/")}
+          src={logo}
+          alt=""
+        />
       </div>
-    </>
+      <div className="w-full flex justify-center">
+        <LoginForm />
+      </div>
+      <div className="absolute top-4 right-4">
+        <DarkModeToggle />
+      </div>
+    </div>
   );
 };
 

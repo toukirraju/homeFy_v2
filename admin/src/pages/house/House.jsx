@@ -1,9 +1,9 @@
-import BillLineChart from "./components/charts/BillLineChart";
+import RenterLineChart from "./components/charts/RenterLineChart";
 import PieChart from "./components/charts/PieChart";
 import RegionalBarChart from "./components/charts/RegionalBarChart";
 import CustomTable from "../../Components/tables/CustomTable";
 
-const Transaction = () => {
+const House = () => {
   const headers = [
     {
       header: "Title",
@@ -55,30 +55,23 @@ const Transaction = () => {
       ),
     },
   ];
-
   return (
     <>
-      {/* 
-      <div>1. Line chart for monthly created Transactions "for 1 year"</div>
-      <div>2. transactions widgets "total paid..."</div>
-      <div>3. regional transactions bar chart</div>
+      {/* <div>1. Line chart for monthly created renters "for 1 year"</div>
+      <div>2. pie chart for active/inactive renter</div>
+      <div>3. regional renters bar chart</div>
       <div>
-        4. all transactions table "newly created show first " bill can be find
-        by renter username or home owner username/phone number
-      </div>
-      <div>
-        5. all temporary bill table log "newly created show first " bill can be
-        find by renter username or home owner username/phone number
+        4. all renters table "newly created show first " renter can be find by
+        their username or home owner username/phone number
       </div> */}
-
       <div className="card dark:bg-slate-800 dark:text-slate-400 flex flex-col  items-center max-h-[200px] ">
         <div className="w-full border-b-2 px-3">
           <p className="text-sm mt-1 text-gray-600 dark:text-slate-400">
-            Monthly created Transactions
+            Yearly created renters
           </p>
         </div>
         <div className="w-full">
-          <BillLineChart />
+          <RenterLineChart />
         </div>
       </div>
 
@@ -93,46 +86,7 @@ const Transaction = () => {
 
       <div className="card">
         <CustomTable
-          title={"Newly created Bill"}
-          headers={headers}
-          rowData={[
-            {
-              title: "Test Title 1",
-              video_title: "Video Title 1",
-              totalMark: "4324",
-            },
-            {
-              title: "Test Title 2",
-              video_title: "Video Title 2",
-              totalMark: "34324",
-            },
-            {
-              title: "Test Title 3",
-              video_title: "Video Title 3",
-              totalMark: "14324",
-            },
-            {
-              title: "Test Title 4",
-              video_title: "Video Title 4",
-              totalMark: "4324",
-            },
-            {
-              title: "Test Title 5",
-              video_title: "Video Title5",
-              totalMark: "34324",
-            },
-            {
-              title: "Test Title 6",
-              video_title: "Video Title 6",
-              totalMark: "14324",
-            },
-          ]}
-        />
-      </div>
-
-      <div className="card my-2">
-        <CustomTable
-          title={"Newly created Temporary Bill"}
+          title={"Recent created apartment"}
           headers={headers}
           rowData={[
             {
@@ -172,4 +126,4 @@ const Transaction = () => {
   );
 };
 
-export default Transaction;
+export default House;

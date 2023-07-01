@@ -1,62 +1,98 @@
 import React from "react";
-import { Navigate, Route, Routes, useLocation } from "react-router-dom";
-import Sidebar from "./Components/Navigation/sidebar/Sidebar";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Apartment from "./pages/apartment/Apartment";
 import Dashboard from "./pages/dashboard/Dashboard";
-import Home from "./pages/home/Home";
 import Message from "./pages/message/Message";
 import Profile from "./pages/profile/Profile";
 import Renter from "./pages/renter/Renter";
 import Transaction from "./pages/transaction/Transaction";
 import Layout from "./Components/Layout";
+import Owner from "./pages/owner/Owner";
+import House from "./pages/house/House";
+import PrivateRoute from "./Components/ProtectedRoutes/PrivateRoute";
+import Authentication from "./pages/authentication/Authentication";
+import PublicRoute from "./Components/ProtectedRoutes/PublicRoute";
 
-const AppRoutes = ({ user }) => {
-  const location = useLocation();
+const AppRoutes = () => {
   return (
     <>
       <Layout>
-        {/* <div className="App">
-        <div
-          style={{
-            display: `${location.pathname === "/home" ? "none" : "flex"}`,
-          }}
-          className="sidebar_container"
-        >
-          <Sidebar />
-        </div>
-        <div className="body_container"> */}
         <Routes>
           <Route
-            path="/"
-            element={user ? <Dashboard /> : <Navigate to="/auth" />}
+            path="/dashboard"
+            element={
+              <PrivateRoute>
+                <Dashboard />{" "}
+              </PrivateRoute>
+            }
           />
           <Route
             path="apartment"
-            element={user ? <Apartment /> : <Navigate to="/auth" />}
+            element={
+              <PrivateRoute>
+                <Apartment />{" "}
+              </PrivateRoute>
+            }
           />
           <Route
             path="renter"
-            element={user ? <Renter /> : <Navigate to="/auth" />}
+            element={
+              <PrivateRoute>
+                <Renter />{" "}
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="owner"
+            element={
+              <PrivateRoute>
+                <Owner />{" "}
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="house"
+            element={
+              <PrivateRoute>
+                <House />{" "}
+              </PrivateRoute>
+            }
           />
           <Route
             path="transaction"
-            element={user ? <Transaction /> : <Navigate to="/auth" />}
+            element={
+              <PrivateRoute>
+                <Transaction />{" "}
+              </PrivateRoute>
+            }
           />
           <Route
             path="message"
-            element={user ? <Message /> : <Navigate to="/auth" />}
+            element={
+              <PrivateRoute>
+                <Message />{" "}
+              </PrivateRoute>
+            }
           />
           <Route
             path="profile"
-            element={user ? <Profile /> : <Navigate to="/auth" />}
+            element={
+              <PrivateRoute>
+                <Profile />{" "}
+              </PrivateRoute>
+            }
           />
-
-          {/* <Route path="/home" element={<Home />} /> */}
-
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route
+            path="/auth"
+            element={
+              <PublicRoute>
+                {" "}
+                <Authentication />{" "}
+              </PublicRoute>
+            }
+          />
+          <Route path="*" element={<Navigate to="/auth" replace />} />
         </Routes>
-        {/* </div>
-      </div> */}
       </Layout>
     </>
   );

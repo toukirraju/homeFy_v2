@@ -20,6 +20,10 @@ const adminSchema = new Schema(
       type: String,
       require: true,
     },
+    fullName: {
+      type: String,
+      require: true,
+    },
     phone: {
       type: String,
       require: true,
@@ -46,10 +50,10 @@ const adminSchema = new Schema(
     profession: {
       type: String,
     },
-    roles: {
-      type: [String],
-      require: true,
-      default: ["editor", "moderator"],
+    role: {
+      type: mongoose.Types.ObjectId,
+      ref: "AdminRole",
+      required: true,
     },
     isAdmin: {
       type: Boolean,
@@ -58,10 +62,6 @@ const adminSchema = new Schema(
     superAdmin: {
       type: Boolean,
       default: false,
-    },
-    createdAdmin: {
-      type: String,
-      require: true,
     },
     profilePicture: String,
   },

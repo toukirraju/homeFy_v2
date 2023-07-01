@@ -5,6 +5,7 @@ const { serverError, resourceError } = require("../utils/error");
 
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const { encryptData } = require("../utils/encryptionDecryption");
 
 //////////////// client register  ////////////
 const register = async (req, res) => {
@@ -219,7 +220,10 @@ const adminLogin = async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const existingAdmin = await AdminModel.findOne({ username });
+    const existingAdmin = await AdminModel.findOne({ username }).populate({
+      path: "role",
+      model: "AdminRole",
+    });
     if (existingAdmin) {
       const validity = await bcrypt.compare(password, existingAdmin.password);
 
@@ -230,7 +234,7 @@ const adminLogin = async (req, res) => {
           {
             username: existingAdmin.username,
             id: existingAdmin._id,
-            roles: existingAdmin.roles,
+            role: existingAdmin.role,
             isAdmin: existingAdmin.isAdmin,
             superAdmin: existingAdmin.superAdmin,
           },
@@ -239,7 +243,12 @@ const adminLogin = async (req, res) => {
         );
         const { password, ...otherDetails } = existingAdmin._doc;
         const user = otherDetails;
-        res.status(200).json({ user, token: `Bearer ${token}` });
+        //encrypted all data
+        const encryptedData = encryptData(
+          { user, token: `Bearer ${token}` },
+          process.env.SECRET
+        );
+        res.status(200).json(encryptedData);
       }
     } else {
       res.status(404).json({ message: "User does not exists" });

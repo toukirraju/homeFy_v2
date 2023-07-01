@@ -3,7 +3,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import "./Sidebar.css";
 import profile from "../../../assets/user.png";
 import { useDispatch } from "react-redux";
-import { logout } from "../../../redux/slices/auth";
+import { userLoggedOut } from "../../../redux/features/auth/authSlice";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
@@ -39,6 +39,16 @@ const Sidebar = () => {
               </NavLink>
             </li>
             <li className="nav__item" onClick={handleToggle}>
+              <NavLink to="owner" className="nav__link">
+                <i className="uil uil-users-alt"></i> Owners
+              </NavLink>
+            </li>
+            <li className="nav__item" onClick={handleToggle}>
+              <NavLink to="house" className="nav__link">
+                <i className="uil uil-users-alt"></i> Houses
+              </NavLink>
+            </li>
+            <li className="nav__item" onClick={handleToggle}>
               <NavLink to="transaction" className="nav__link">
                 <i className="uil uil-invoice"></i> Transactions
               </NavLink>
@@ -70,7 +80,7 @@ const Sidebar = () => {
 
           <button
             className="removeButton logout__btn"
-            onClick={() => dispatch(logout())}
+            onClick={() => dispatch(userLoggedOut())}
           >
             Logout
           </button>

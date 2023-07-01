@@ -2,9 +2,6 @@ import Style from "../../../../Styles/TableStyle.module.css";
 import { AgGridReact } from "ag-grid-react";
 import { useCallback, useRef } from "react";
 import { useState } from "react";
-import UpdateTempBill from "../../../../Components/modals/billModal/UpdateTempBill";
-import ConfirmationModal from "../../../../Components/modals/ConfirmationModal";
-import UpdateSubAdminModal from "../../modals/UpdateSubAdminModal";
 
 const AdminTable = ({ data }) => {
   const [adminData, setAdminData] = useState({});
@@ -108,17 +105,6 @@ const AdminTable = ({ data }) => {
 
   return (
     <>
-      <ConfirmationModal
-        confirmationPopUp={confirmationPopUp}
-        setConfirmationPopUp={setConfirmationPopUp}
-        data={removeId}
-        popUp_type="Remove_Temporary_Bill"
-      />
-      <UpdateSubAdminModal
-        updateAdminModalOpened={updateAdminModalOpened}
-        setUpdateAdminModalOpened={setUpdateAdminModalOpened}
-        data={adminData}
-      />
       <div className={`card ${Style.table_container}`}>
         <div className={Style.table__header}>
           <h3 className="title">Admins</h3>
