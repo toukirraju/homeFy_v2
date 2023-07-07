@@ -9,19 +9,46 @@ const bcrypt = require("bcrypt");
 
 //********* Get All Admins ************\\
 
-const GetAllAdmins = async (req, res) => {
-  // let { _id } = req.user;
+const GetAdmins = async (req, res) => {
+  const { page = 1, limit = 10, username } = req.query;
 
-  let admins = await AdminModel.find({
-    // ownerId: _id,
-  });
+  const filter = {};
+  if (username) {
+    filter.username = { $regex: new RegExp(username, "i") };
+  }
+
   try {
-    if (admins) {
-      admins = admins.map((admin) => {
-        const { password, ...otherDetails } = admin._doc;
-        return otherDetails;
+    const admins = await AdminModel.aggregate([
+      { $match: filter },
+      { $project: { password: 0 } },
+      { $sort: { createdAt: -1 } },
+      { $skip: (page - 1) * limit },
+      { $limit: parseInt(limit) },
+      // Populate the role field using the AdminRole model
+      {
+        $lookup: {
+          from: "adminroles",
+          localField: "role",
+          foreignField: "_id",
+          as: "role",
+        },
+      },
+      // Unwind the role array to get a single object
+      { $unwind: "$role" },
+    ]);
+
+    const count = await AdminModel.find(filter).countDocuments();
+
+    if (admins.length > 0) {
+      res.status(200).json({
+        admins,
+        pagination: {
+          totalPages: Math.ceil(count / limit),
+          currentPage: page,
+          previousPage: page - 1 > 0 ? page - 1 : null,
+          nextPage: page + 1 <= Math.ceil(count / limit) ? page + 1 : null,
+        },
       });
-      res.status(200).json(admins);
     } else {
       return resourceError(res, "No admin found");
     }
@@ -154,7 +181,7 @@ const DeleteAdminProfile = async (req, res) => {
 };
 
 module.exports = {
-  GetAllAdmins,
+  GetAdmins,
   createSubAdmin,
   UpdatePersonalProfile,
   UpdateAdminProfile,

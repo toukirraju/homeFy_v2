@@ -69,7 +69,7 @@ const Apartment = () => {
       </div>
 
       {/* Table  */}
-      <div className="card">
+      <div className="card my-3">
         <CustomTable
           title={"Recent created apartment"}
           headers={headers}
@@ -101,6 +101,218 @@ const Apartment = () => {
             },
             {
               title: "Test Title 6",
+              video_title: "Video Title 6",
+              totalMark: "14324",
+            },
+            {
+              title: "Test Title 7",
+              video_title: "Video Title 1",
+              totalMark: "4324",
+            },
+            {
+              title: "Test Title 8",
+              video_title: "Video Title 2",
+              totalMark: "34324",
+            },
+            {
+              title: "Test Title 9",
+              video_title: "Video Title 3",
+              totalMark: "14324",
+            },
+            {
+              title: "Test Title 10",
+              video_title: "Video Title 4",
+              totalMark: "4324",
+            },
+            {
+              title: "Test Title 11",
+              video_title: "Video Title5",
+              totalMark: "34324",
+            },
+            {
+              title: "Test Title 12",
+              video_title: "Video Title 6",
+              totalMark: "14324",
+            },
+
+            {
+              title: "Test Title 13",
+              video_title: "Video Title 1",
+              totalMark: "4324",
+            },
+            {
+              title: "Test Title 14",
+              video_title: "Video Title 2",
+              totalMark: "34324",
+            },
+            {
+              title: "Test Title 15",
+              video_title: "Video Title 3",
+              totalMark: "14324",
+            },
+            {
+              title: "Test Title 16",
+              video_title: "Video Title 4",
+              totalMark: "4324",
+            },
+            {
+              title: "Test Title 17",
+              video_title: "Video Title5",
+              totalMark: "34324",
+            },
+            {
+              title: "Test Title 6",
+              video_title: "Video Title 6",
+              totalMark: "14324",
+            },
+            {
+              title: "Test Title 7",
+              video_title: "Video Title 1",
+              totalMark: "4324",
+            },
+            {
+              title: "Test Title 8",
+              video_title: "Video Title 2",
+              totalMark: "34324",
+            },
+            {
+              title: "Test Title 9",
+              video_title: "Video Title 3",
+              totalMark: "14324",
+            },
+            {
+              title: "Test Title 10",
+              video_title: "Video Title 4",
+              totalMark: "4324",
+            },
+            {
+              title: "Test Title 24",
+              video_title: "Video Title5",
+              totalMark: "34324",
+            },
+            {
+              title: "Test Title 24",
+              video_title: "Video Title 6",
+              totalMark: "14324",
+            },
+            {
+              title: "Test Title 1",
+              video_title: "Video Title 1",
+              totalMark: "4324",
+            },
+            {
+              title: "Test Title 2",
+              video_title: "Video Title 2",
+              totalMark: "34324",
+            },
+            {
+              title: "Test Title 3",
+              video_title: "Video Title 3",
+              totalMark: "14324",
+            },
+            {
+              title: "Test Title 4",
+              video_title: "Video Title 4",
+              totalMark: "4324",
+            },
+            {
+              title: "Test Title 5",
+              video_title: "Video Title5",
+              totalMark: "34324",
+            },
+            {
+              title: "Test Title 6",
+              video_title: "Video Title 6",
+              totalMark: "14324",
+            },
+            {
+              title: "Test Title 7",
+              video_title: "Video Title 1",
+              totalMark: "4324",
+            },
+            {
+              title: "Test Title 8",
+              video_title: "Video Title 2",
+              totalMark: "34324",
+            },
+            {
+              title: "Test Title 9",
+              video_title: "Video Title 3",
+              totalMark: "14324",
+            },
+            {
+              title: "Test Title 10",
+              video_title: "Video Title 4",
+              totalMark: "4324",
+            },
+            {
+              title: "Test Title 11",
+              video_title: "Video Title5",
+              totalMark: "34324",
+            },
+            {
+              title: "Test Title 12",
+              video_title: "Video Title 6",
+              totalMark: "14324",
+            },
+
+            {
+              title: "Test Title 13",
+              video_title: "Video Title 1",
+              totalMark: "4324",
+            },
+            {
+              title: "Test Title 14",
+              video_title: "Video Title 2",
+              totalMark: "34324",
+            },
+            {
+              title: "Test Title 15",
+              video_title: "Video Title 3",
+              totalMark: "14324",
+            },
+            {
+              title: "Test Title 16",
+              video_title: "Video Title 4",
+              totalMark: "4324",
+            },
+            {
+              title: "Test Title 17",
+              video_title: "Video Title5",
+              totalMark: "34324",
+            },
+            {
+              title: "Test Title 6",
+              video_title: "Video Title 6",
+              totalMark: "14324",
+            },
+            {
+              title: "Test Title 7",
+              video_title: "Video Title 1",
+              totalMark: "4324",
+            },
+            {
+              title: "Test Title 8",
+              video_title: "Video Title 2",
+              totalMark: "34324",
+            },
+            {
+              title: "Test Title 9",
+              video_title: "Video Title 3",
+              totalMark: "14324",
+            },
+            {
+              title: "Test Title 10",
+              video_title: "Video Title 4",
+              totalMark: "4324",
+            },
+            {
+              title: "Test Title 24",
+              video_title: "Video Title5",
+              totalMark: "34324",
+            },
+            {
+              title: "Test Title 48",
               video_title: "Video Title 6",
               totalMark: "14324",
             },

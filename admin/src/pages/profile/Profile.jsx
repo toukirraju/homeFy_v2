@@ -26,33 +26,22 @@ const Profile = () => {
 
           <Tabs.Panel value="profile">
             <div className={` ${Style.profile__sections}`}>
-              <ProfileCard data={user?.user} />
+              <ProfileCard data={user} />
             </div>
           </Tabs.Panel>
 
           <Tabs.Panel value="admins">
             <div className={` ${Style.profile__sections}`}>
-              <button
-                className={Style.create_button}
-                onClick={() => setModalOpened(true)}
-              >
+              <button className="" onClick={() => setModalOpened(true)}>
                 create new Sub admin
               </button>
               <CreateSubAdminModal
                 modalOpened={modalOpened}
                 setModalOpened={setModalOpened}
               />
-              <div className={` ${Style.profile_wrapper}`}>
-                <div className={` ${Style.container_1}`}>
-                  <div className={` ${Style.left_side}`}>
-                    <AdminTable data={adminData} />
-                  </div>
-                  <div className={` ${Style.right_side}`}></div>
-                </div>
+              <div>
+                <AdminTable data={adminData} />
               </div>
-              <div>1. super admin can create/update/delete sub-admin</div>
-              <div>2. super admin can assign role for sub-admin</div>
-              <div>3. super admin can active/deactivate user account</div>
             </div>
           </Tabs.Panel>
         </Tabs>

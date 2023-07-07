@@ -1,99 +1,65 @@
 import Style from "../../../../Styles/TableStyle.module.css";
 import { AgGridReact } from "ag-grid-react";
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useState } from "react";
+import CustomTable from "../../../../Components/tables/CustomTable";
+import { useGetAdminsQuery } from "../../../../redux/features/profile/profileApi";
+import { useSelector } from "react-redux";
 
-const AdminTable = ({ data }) => {
-  const [adminData, setAdminData] = useState({});
-  const [removeId, setRemoveId] = useState();
-  const [confirmationPopUp, setConfirmationPopUp] = useState(false);
-  const [updateAdminModalOpened, setUpdateAdminModalOpened] = useState(false);
-  const gridRef = useRef();
+const AdminTable = () => {
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [username, setUsername] = useState("");
 
-  const sizeToFit = useCallback(() => {
-    gridRef.current.api.sizeColumnsToFit();
-  }, []);
-  const autoSizeAll = useCallback((skipHeader) => {
-    const allColumnIds = [];
-    gridRef.current.columnApi.getColumns().forEach((column) => {
-      allColumnIds.push(column.getId());
-    });
-    gridRef.current.columnApi.autoSizeColumns(allColumnIds, skipHeader);
-  }, []);
+  const { admins, pagination } = useSelector((state) => state.profile);
+
+  const { data, isLoading, isError, error, refetch } = useGetAdminsQuery({
+    page,
+    limit,
+    username,
+  });
+
+  useEffect(() => {
+    refetch({ page, limit, username });
+  }, [limit]);
+
   const dateFormatter = (params) => {
     return new Date(params.value).toDateString();
   };
+  console.log(admins);
 
-  const handleUpdate = (value) => {
-    setAdminData(value);
-    setUpdateAdminModalOpened(true);
-  };
+  const handleUpdate = (value) => {};
 
-  const handleRemove = (bill) => {
-    // if (new Date(bill.createdAt).getMonth() + 1 === new Date().getMonth() + 1) {
-    setConfirmationPopUp(true);
-    setRemoveId(bill._id);
-    // } else {
-    //   // toast.error("you can't remove this bill");
-    //   console.log("you can't remove this bill");
-    // }
-  };
-  const defaultColDef = {
-    sortable: true,
-    filter: true,
-    floatingFilter: true,
-  };
-  const columns = [
+  const handleRemove = (bill) => {};
+
+  const headers = [
     {
-      headerName: "Name",
-      field: "name",
-      resizable: true,
-      width: 150,
+      header: "Name",
+      rowField: "fullName",
     },
     {
-      headerName: "Phone",
-      field: "phone",
-      resizable: true,
-      width: 100,
-    },
-    {
-      headerName: "Role",
-      field: "role",
-      resizable: true,
-      cellStyle: function (params) {
-        if (params.data.tempDue) {
-          return {
-            color: "white",
-            backgroundColor: "#5bc887",
-            fontWeight: 900,
-          };
-        } else {
-          return null;
-        }
-      },
+      header: "Phone",
+      rowField: "phone",
     },
 
-    { headerName: "Email", field: "email", resizable: true, width: 100 },
-    { headerName: "Address", field: "address", resizable: true, width: 100 },
-    { headerName: "City", field: "city", resizable: true, width: 100 },
-    { headerName: "Area", field: "area", resizable: true, width: 100 },
-    { headerName: "Postcode", field: "postCode", resizable: true, width: 100 },
-    { headerName: "Nid", field: "nid", resizable: true, width: 100 },
+    { header: "Email", rowField: "username" },
+    { header: "Address", rowField: "address" },
+    { header: "City", rowField: "city" },
+    { header: "Area", rowField: "area" },
+    { header: "Postcode", rowField: "postCode" },
+    { header: "Nid", rowField: "nid" },
     {
-      headerName: "Actions",
-      field: "_id",
-      resizable: true,
-      pinned: "right",
-      cellRenderer: (params) => (
-        <div style={{ display: "flex", alignItems: "center" }}>
+      header: "Actions",
+      rowField: (params) => (
+        <div className="flex gap-2">
           <button
-            className="updateButton btns"
+            className="updateButton btns px-2"
             onClick={() => handleUpdate(params.data)}
           >
             update
           </button>
           <button
-            className="removeButton btns"
+            className="removeButton btns px-2"
             onClick={() => handleRemove(params.data)}
           >
             Remove
@@ -103,43 +69,33 @@ const AdminTable = ({ data }) => {
     },
   ];
 
-  return (
-    <>
-      <div className={`card ${Style.table_container}`}>
-        <div className={Style.table__header}>
-          <h3 className="title">Admins</h3>
-        </div>
-        <div className="ag-theme-alpine" style={{ height: 350, width: "100%" }}>
-          <AgGridReact
-            ref={gridRef}
-            rowData={data}
-            columnDefs={columns}
-            defaultColDef={defaultColDef}
-          />
-        </div>
-        <div className={Style.table_resize_buttons}>
-          <i
-            className={`${"uil uil-arrows-h-alt"} ${Style.button}`}
-            onClick={() => {
-              autoSizeAll(false);
-            }}
-          ></i>
-          <i
-            className={`${"uil uil-arrows-merge"} ${Style.button}`}
-            onClick={() => {
-              autoSizeAll(true);
-            }}
-          ></i>
-          <i
-            className={`${"uil uil-arrows-shrink-h"} ${Style.button}`}
-            onClick={() => {
-              sizeToFit();
-            }}
-          ></i>
-        </div>
+  let content;
+
+  if (isLoading) {
+    return (content = <div>Loading...</div>);
+  }
+
+  if (isError) {
+    return (content = <div>Error: </div>);
+  }
+
+  if (!isLoading && !isError && data?.admins.length > 0) {
+    return (content = (
+      <div className="card my-3">
+        <CustomTable
+          title={"All Admin"}
+          headers={headers}
+          rowData={admins}
+          serverCurrentPage={pagination.currentPage}
+          serverTotalPages={pagination.totalPages}
+          setPage={setPage}
+          setLimit={setLimit}
+        />
       </div>
-    </>
-  );
+    ));
+  }
+
+  return content;
 };
 
 export default AdminTable;
