@@ -10,10 +10,8 @@ export const postsApi = apiSlice.injectEndpoints({
       query: (page) =>
         `/timeline/posts?_page=${page}&limit=${process.env.REACT_APP_POSTS_PER_PAGE}`,
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
-        console.log("getMorePOsts called");
         try {
           const responsedData = await queryFulfilled;
-          // console.log(JSON.stringify(responsedData.data));
 
           if (responsedData.data.posts?.length > 0) {
             // update post cache pessimistically

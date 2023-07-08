@@ -1,68 +1,65 @@
-.profile_Header{
+.profile_Header {
   display: flex;
   align-items: center;
   width: 100%;
 }
-.profile__nav{
+.profile__nav {
   /* background: #000; */
-width: 35%;
+  width: 35%;
 }
 
-
-.tab__sections{
+.tab__sections {
   margin: 5px 15px;
+  overflow-x: auto;
 }
 
-
-
-.Posts__wrapper{
+.Posts__wrapper {
   height: calc(100vh - 135px);
-    margin-top: 10px;
-    overflow-y: auto;
-    margin-bottom: 10px;
-    border-radius: 10px;
+  margin-top: 10px;
+  overflow-y: auto;
+  margin-bottom: 10px;
+  border-radius: 10px;
 }
-.house_info_wrapper{
+.house_info_wrapper {
   height: calc(100vh - 135px);
-    overflow-y: auto;
-    /* background: #000; */
+  overflow-y: auto;
+  /* background: #000; */
 }
 
-.widgets{
+.widgets {
   display: grid;
   grid-template-columns: 2fr 1fr;
   align-items: center;
   justify-content: flex-start;
   margin-bottom: 20px;
 }
-.left_widget_container{
+.left_widget_container {
   left: 0;
-  
 }
-.right_widget_container{
+.right_widget_container {
   margin: auto;
 }
 /* *********
  Post section start 
 *********** */
 
-.Posts__section{
+.Posts__section {
   height: calc(100vh - 130px);
   overflow-y: auto;
 }
-.post_container_1{
+.post_container_1 {
   margin-top: 10px;
-display: flex;
-gap: 1rem;
+  display: flex;
+  gap: 1rem;
 }
-.left_container{
-width: 50%;
-}
-.right_container{
+.left_container {
   width: 50%;
 }
-.post_container_2{
-margin-top: 10px;
+.right_container {
+  width: 50%;
+}
+.post_container_2 {
+  margin-top: 10px;
 }
 
 /* *********
@@ -73,20 +70,20 @@ margin-top: 10px;
  Profile section start 
 *********** */
 
-.profile__sections{
+.profile__sections {
   width: 100%;
+  overflow-x: auto;
   /* height: 100px; */
- 
 }
-.create_button{
+.create_button {
   margin: 10px 0;
   padding: 10px;
 }
-.profile_wrapper{
+.profile_wrapper {
   height: calc(100vh - 170px);
   overflow-y: auto;
 }
-.container_1{
+.container_1 {
   display: flex;
   width: 100%;
   gap: 8px;
@@ -95,17 +92,15 @@ margin-top: 10px;
   /* justify-content: flex-start; */
   /* margin-bottom: 20px; */
 }
-.left_side{
-width: 70%;
+.left_side {
+  width: 70%;
 }
-.right_side{
+.right_side {
   width: 30%;
 }
-.container_2{
-
+.container_2 {
 }
-.container_3{
-
+.container_3 {
 }
 .scrollUp__icon {
   color: var(--orange);
@@ -127,29 +122,29 @@ width: 70%;
 }
 
 @media screen and (max-width: 769px) {
-  .profile_Header{
+  .profile_Header {
     flex-direction: column;
   }
-  .profile__nav{
+  .profile__nav {
     /* background: #000; */
-  width: 100%;
-  }
-  .profile__sections{
     width: 100%;
-     
+  }
+  .profile__sections {
+    width: 100%;
+    overflow-x: auto;
   }
 
-  .Posts__wrapper{
+  .Posts__wrapper {
     height: calc(100vh - 190px);
-      margin-top: 10px;
-      overflow-y: auto;
-      margin-bottom: 10px;
-      border-radius: 10px;
+    margin-top: 10px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+    border-radius: 10px;
   }
 
-  .house_info_wrapper{
+  .house_info_wrapper {
     height: calc(100vh - 200px);
-      overflow-y: auto;
+    overflow-y: auto;
   }
 
   /* .Profile__wrapper {

@@ -43,6 +43,7 @@ const GetAdmins = async (req, res) => {
       res.status(200).json({
         admins,
         pagination: {
+          totalRecords: Number(count),
           totalPages: Math.ceil(count / limit),
           currentPage: page,
           previousPage: page - 1 > 0 ? page - 1 : null,
@@ -123,20 +124,26 @@ const UpdatePersonalProfile = async (req, res) => {
 
 const UpdateAdminProfile = async (req, res) => {
   const id = req.params.id;
-  const { _id } = req.user;
   try {
-    const admin = await AdminModel.findById({ _id: id });
+    const filter = { _id: id };
+    const update = {
+      $set: {
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        fullName: `${req.body.firstname} ${req.body.lastname}`,
+        address: req.body.address,
+        country: req.body.country,
+        country_code: req.body.country_code,
+        postcode: req.body.postcode,
+        state: req.body.state,
+        state_district: req.body.state_district,
+        nid: req.body.nid,
+      },
+    };
+    const options = { returnDocument: "after" };
 
-    if (admin) {
-      if (admin.createdAdmin === _id.toString()) {
-        await admin.updateOne({ $set: req.body });
-        res.status(200).json({ message: "Profile updated" });
-      } else {
-        return resourceError(res, "Action forbidden");
-      }
-    } else {
-      return resourceError(res, "Does not recognize user");
-    }
+    const result = await AdminModel.findByIdAndUpdate(filter, update, options);
+    result && res.status(200).json(result);
   } catch (error) {
     serverError(res, error);
   }
@@ -146,34 +153,15 @@ const UpdateAdminProfile = async (req, res) => {
 
 const DeleteAdminProfile = async (req, res) => {
   const id = req.params.id;
-  const { _id } = req.user;
 
   try {
-    const admin = await AdminModel.findById(id);
-    if (admin) {
-      if (admin.createdAdmin === _id.toString()) {
-        await admin.deleteOne();
-        res.status(201).json({
-          message: "admin deleted!",
-        });
-      } else {
-        return resourceError(res, "Action forbidden");
-      }
+    const adminDeleted = await AdminModel.findByIdAndDelete(id);
+    if (adminDeleted) {
+      res.status(201).json({
+        message: "admin deleted!",
+      });
     } else {
-      return resourceError(res, "user not found");
-    }
-  } catch (error) {
-    serverError(res, error);
-  }
-
-  try {
-    const admin = await AdminModel.findById({ _id: req.body._id });
-
-    if (admin) {
-      await admin.updateOne({ $set: req.body });
-      res.status(200).json({ message: "Profile updated" });
-    } else {
-      return resourceError(res, "Does not recognize user");
+      return resourceError(res, "Action forbidden");
     }
   } catch (error) {
     serverError(res, error);

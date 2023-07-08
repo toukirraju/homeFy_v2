@@ -1,40 +1,85 @@
 import Styles from "./ModalStyle.module.css";
-import { Modal, useMantineTheme } from "@mantine/core";
+import { Modal } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import { Formik, Form, Field } from "formik";
-import * as Yup from "yup";
-
-const SignupSchema = Yup.object().shape({
-  houseName: Yup.string()
-    .min(2, "Too Short!")
-    .max(50, "Too Long!")
-    .required("Required"),
-  houseNo: Yup.string()
-    .min(2, "Too Short!")
-    .max(50, "Too Long!")
-    .required("Required"),
-  postCode: Yup.string().required("Required"),
-});
+import MapWindow from "../../../Components/CustomMap/MapWindow";
+import { useEffect, useState } from "react";
+import { useUpdateAdminMutation } from "../../../redux/features/profile/profileApi";
+import { toast } from "react-toastify";
 
 function UpdateSubAdminModal({
   updateAdminModalOpened,
   setUpdateAdminModalOpened,
   data,
 }) {
-  const theme = useMantineTheme();
   const isMobile = useMediaQuery("(max-width: 600px)");
+  const [mapWindowOpen, setMapWindowOpen] = useState(false);
+  const [address, setAddress] = useState({});
 
-  const initialValues = {
+  const [updateAdmin, { isSuccess }] = useUpdateAdminMutation();
+
+  const [initialValues, setInitialValues] = useState({
     ...data,
+    address: "",
+    country: "",
+    country_code: "",
+    postcode: "",
+    state: "",
+    state_district: "",
+    nid: "",
+  });
+
+  useEffect(() => {
+    setInitialValues({ ...data });
+  }, [updateAdminModalOpened]);
+
+  useEffect(() => {
+    if (address?.address) {
+      const { country, country_code, postcode, state, state_district } =
+        address.address;
+
+      setInitialValues({
+        ...initialValues,
+        address: address.display_name,
+        country: country,
+        country_code: country_code,
+        postcode: postcode,
+        state: state,
+        state_district: state_district,
+      });
+    }
+  }, [address]);
+
+  const handleChange = (event) => {
+    let value = event.target.value;
+    let name = event.target.name;
+
+    setInitialValues((prevalue) => {
+      return {
+        ...prevalue,
+        [name]: value,
+      };
+    });
   };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    updateAdmin(initialValues);
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      setUpdateAdminModalOpened(false);
+      toast.success("Updated!");
+    }
+  }, [isSuccess]);
 
   return (
     <Modal
-      overlayColor={
-        theme.colorScheme === "dark"
-          ? theme.colors.dark[9]
-          : theme.colors.gray[2]
-      }
+      classNames={{
+        modal: `bg-gray-300 dark:bg-gray-800`,
+        title: `modal__title`,
+        close: `modal__close`,
+      }}
       overlayOpacity={0.55}
       overlayBlur={3}
       size="sm"
@@ -43,127 +88,84 @@ function UpdateSubAdminModal({
       onClose={() => setUpdateAdminModalOpened(false)}
     >
       <div>
-        <Formik
-          initialValues={initialValues}
-          // validationSchema={SignupSchema}
-          onSubmit={(values) => {
-            // same shape as initial values
-            console.log(values);
-          }}
-        >
-          {({ errors, touched }) => (
-            <Form>
-              <div className={Styles.input__container}>
-                <label htmlFor="name" className={Styles.input__label}>
-                  Name
-                </label>
-                <Field name="name" />
-                {errors.name && touched.name ? (
-                  <div className={Styles.input__error}>{errors.name}</div>
-                ) : null}
-              </div>
-              <div className={Styles.input__container}>
-                <label htmlFor="phone" className={Styles.input__label}>
-                  Phone Number
-                </label>
-                <Field name="phone" />
-                {errors.phone && touched.phone ? (
-                  <div className={Styles.input__error}>{errors.phone}</div>
-                ) : null}
-              </div>
-              <div className={Styles.input__container}>
-                <label htmlFor="email" className={Styles.input__label}>
-                  Email
-                </label>
-                <Field name="email" />
-                {errors.email && touched.email ? (
-                  <div className={Styles.input__error}>{errors.email}</div>
-                ) : null}
-              </div>
-              <div className={Styles.input__container}>
-                <label htmlFor="password" className={Styles.input__label}>
-                  Password
-                </label>
-                <Field name="password" type="password" />
-                {errors.password && touched.password ? (
-                  <div className={Styles.input__error}>{errors.password}</div>
-                ) : null}
-              </div>
-              <div className={Styles.input__container}>
-                <label htmlFor="address" className={Styles.input__label}>
-                  Address
-                </label>
-                <Field name="address" type="text" />
-                {errors.address && touched.address ? (
-                  <div className={Styles.input__error}>{errors.address}</div>
-                ) : null}
-              </div>
-              <div className={Styles.address_container}>
-                <div>
-                  <label htmlFor="city" className={Styles.input__label}>
-                    City
-                  </label>
-                  <Field name="city" type="text" />
-                  {errors.city && touched.city ? (
-                    <div className={Styles.input__error}>{errors.city}</div>
-                  ) : null}
-                </div>
-                <div>
-                  <label htmlFor="area" className={Styles.input__label}>
-                    Area
-                  </label>
-                  <Field name="area" type="text" />
-                  {errors.area && touched.area ? (
-                    <div className={Styles.input__error}>{errors.area}</div>
-                  ) : null}
-                </div>
-                <div>
-                  <label htmlFor="postCode" className={Styles.input__label}>
-                    Zip / Postcode
-                  </label>
-                  <Field name="postCode" type="text" />
-                  {errors.postCode && touched.postCode ? (
-                    <div className={Styles.input__error}>{errors.postCode}</div>
-                  ) : null}
-                </div>
-              </div>
-              <div className={Styles.input__container}>
-                <label htmlFor="nid" className={Styles.input__label}>
-                  National id number
-                </label>
-                <Field name="nid" type="text" />
-                {errors.nid && touched.nid ? (
-                  <div className={Styles.input__error}>{errors.nid}</div>
-                ) : null}
-              </div>
-              <div className={Styles.input__container}>
-                <label htmlFor="role" className={Styles.input__label}>
-                  Role:
-                </label>
-                <div className={Styles.checkbox_container}>
-                  <div className={Styles.checkbox_1}>
-                    <label htmlFor="admin">Admin</label>
-                    <Field type="checkbox" name="role" value="admin" />
-                    {errors.admin && <p>{errors.admin}</p>}
-                  </div>
-                  <div className={Styles.checkbox_1}>
-                    <label htmlFor="editor">Editor</label>
-                    <Field type="checkbox" name="role" value="editor" />
-                    {errors.editor && <p>{errors.editor}</p>}
-                  </div>
-                  <div className={Styles.checkbox_1}>
-                    <label htmlFor="moderator">Moderator</label>
-                    <Field type="checkbox" name="role" value="moderator" />
-                    {errors.moderator && <p>{errors.moderator}</p>}
-                  </div>
-                </div>
-              </div>
-              <button className={Styles.submit_button} type="submit">
-                Submit
-              </button>
-            </Form>
-          )}
-        </Formik>
+        <form onSubmit={handleSubmit}>
+          <div className={Styles.input__container}>
+            <label className="my-1 px-2 text-sm text-gray-600 dark:text-gray-300 ">
+              First Name
+            </label>
+            <input
+              className=" dark:bg-slate-900 dark:text-gray-200"
+              required
+              value={initialValues.firstname}
+              onChange={handleChange}
+              name="firstname"
+            />
+          </div>
+
+          <div className={Styles.input__container}>
+            <label className="my-1 px-2 text-sm text-gray-600 dark:text-gray-300 ">
+              Last Name
+            </label>
+            <input
+              className=" dark:bg-slate-900 dark:text-gray-200"
+              required
+              value={initialValues.lastname}
+              onChange={handleChange}
+              name="lastname"
+            />
+          </div>
+
+          <div className={Styles.input__container}>
+            <label className="my-1 px-2 text-sm text-gray-600 dark:text-gray-300 ">
+              Phone Number
+            </label>
+            <input
+              className=" dark:bg-slate-900 dark:text-gray-200"
+              required
+              value={initialValues.phone}
+              onChange={handleChange}
+              name="phone"
+            />
+          </div>
+
+          <div className={Styles.input__container}>
+            <label className="my-1 px-2 text-sm text-gray-600 dark:text-gray-300 ">
+              National Id
+            </label>
+            <input
+              className=" dark:bg-slate-900 dark:text-gray-200"
+              required
+              value={initialValues.nid}
+              onChange={handleChange}
+              name="nid"
+            />
+          </div>
+
+          <div className={Styles.input__container}>
+            <label
+              htmlFor="address"
+              className={`dark:text-gray-100 ${Styles.input__label}`}
+            >
+              Address
+            </label>
+            {initialValues.address
+              ? initialValues.address
+              : address?.display_name}
+          </div>
+
+          <div className={Styles.input__container}>
+            <span onClick={() => setMapWindowOpen(true)}>Map</span>
+            <MapWindow
+              mapWindowOpen={mapWindowOpen}
+              setMapWindowOpen={setMapWindowOpen}
+              setAddress={setAddress}
+            />
+          </div>
+
+          <button className="primaryButton px-3 py-2" type="submit">
+            Submit
+          </button>
+        </form>
       </div>
     </Modal>
   );

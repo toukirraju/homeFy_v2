@@ -23,7 +23,7 @@ router.post(
 router.put("/personal/update", [authVerify.verifyToken], UpdatePersonalProfile);
 
 //********* Update Admin Profile ************//
-router.put(
+router.patch(
   "/update/:id",
   [authVerify.verifyToken, authVerify.isSuperAdmin],
   UpdateAdminProfile

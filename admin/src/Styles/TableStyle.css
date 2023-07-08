@@ -53,14 +53,22 @@ tr:nth-of-type(2n) {
     padding: 0.5rem 1rem;
   }
   td:first-child {
-    padding-top: 2rem;
+    /* padding-top: 2rem; */
   }
   td:last-child {
-    padding-bottom: 2rem;
+    /* padding-bottom: 2rem; */
   }
   td::before {
-    content: attr(data-cell) ": ";
+    content: attr(data-cell);
     font-weight: 700;
     text-transform: capitalize;
+    background: #bebdbd;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    border-radius: 10px;
+  }
+  .mantine-1s8spa1 {
+    display: block;
   }
 }

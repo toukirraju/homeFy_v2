@@ -7,27 +7,11 @@ import LoadingSpinner from "../../../Components/LoadingSpinner";
 import { toast } from "react-toastify";
 import { useLoginMutation } from "../../../redux/features/auth/authApi";
 import Error from "../../../Components/Error";
+import loginSchema from "../../../utility/validators/loginSchema.js";
 
 const initialValues = {
   username: "",
   password: "",
-};
-
-const validate = (values) => {
-  let errors = {};
-  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
-
-  if (!values.username) {
-    errors.username = "Username is required";
-  }
-
-  if (!values.password) {
-    errors.password = "Password is required";
-  } else if (values.password.length < 4) {
-    errors.password = "Password too short";
-  }
-
-  return errors;
 };
 
 const LoginForm = () => {
@@ -52,7 +36,7 @@ const LoginForm = () => {
   return (
     <Formik
       initialValues={initialValues}
-      validate={validate}
+      validate={loginSchema}
       onSubmit={submitForm}
     >
       {(formik) => {

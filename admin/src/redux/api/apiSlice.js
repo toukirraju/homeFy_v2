@@ -29,6 +29,6 @@ export const apiSlice = createApi({
     }
     return result;
   },
-  tagTypes: [],
+  tagTypes: ["AllAdmins"],
   endpoints: (builder) => ({}),
 });

@@ -4,6 +4,8 @@ import "./Sidebar.css";
 import profile from "../../../assets/user.png";
 import { useDispatch } from "react-redux";
 import { userLoggedOut } from "../../../redux/features/auth/authSlice";
+import { FaHouseUser } from "react-icons/fa";
+import { BsHouses } from "react-icons/bs";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
@@ -24,37 +26,65 @@ const Sidebar = () => {
         <div className="nav__menu" style={toggle ? { bottom: "0" } : null}>
           <ul className="nav__list">
             <li className="nav__item" onClick={handleToggle}>
-              <NavLink to="/" className="nav__link">
+              <NavLink
+                to="/dashboard"
+                state={{ page: "Dashboard" }}
+                className="nav__link"
+              >
                 <i className="uil uil-create-dashboard"></i> Dashboard
               </NavLink>
             </li>
             <li className="nav__item" onClick={handleToggle}>
-              <NavLink to="apartment" className="nav__link">
+              <NavLink
+                to="apartment"
+                state={{ page: "Apartment" }}
+                className="nav__link"
+              >
                 <i className="uil uil-building"></i> Apartments
               </NavLink>
             </li>
             <li className="nav__item" onClick={handleToggle}>
-              <NavLink to="renter" className="nav__link">
+              <NavLink
+                to="renter"
+                state={{ page: "Renters" }}
+                className="nav__link"
+              >
                 <i className="uil uil-users-alt"></i> Renters
               </NavLink>
             </li>
             <li className="nav__item" onClick={handleToggle}>
-              <NavLink to="owner" className="nav__link">
-                <i className="uil uil-users-alt"></i> Owners
+              <NavLink
+                to="owner"
+                state={{ page: "Owners" }}
+                className="nav__link flex items-center gap-2"
+              >
+                <FaHouseUser className="text-lg" /> <span>Owners</span>
               </NavLink>
             </li>
             <li className="nav__item" onClick={handleToggle}>
-              <NavLink to="house" className="nav__link">
-                <i className="uil uil-users-alt"></i> Houses
+              <NavLink
+                to="house"
+                state={{ page: "Houses" }}
+                className="nav__link flex items-center gap-2"
+              >
+                <BsHouses className="text-lg" /> <span>Houses</span>
               </NavLink>
             </li>
             <li className="nav__item" onClick={handleToggle}>
-              <NavLink to="transaction" className="nav__link">
+              <NavLink
+                to="transaction"
+                state={{ page: "Transactions" }}
+                className="nav__link"
+              >
                 <i className="uil uil-invoice"></i> Transactions
               </NavLink>
             </li>
             <li className="nav__item" onClick={handleToggle}>
-              <NavLink to="message" className="nav__link">
+              <NavLink
+                to="message"
+                state={{ page: "Message" }}
+                className="nav__link"
+              >
                 <i className="uil uil-message"></i> Message
               </NavLink>
             </li>
@@ -73,7 +103,11 @@ const Sidebar = () => {
         </div>
         <div className="nav__profile">
           <div className="circle">
-            <div onClick={() => navigate("profile")}>
+            <div
+              onClick={() =>
+                navigate("profile", { state: { page: "Profile" } })
+              }
+            >
               <img className="profile__image" src={profile} alt="" />
             </div>
           </div>

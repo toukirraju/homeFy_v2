@@ -39,3 +39,26 @@ body {
 .dark body {
   background: var(--bgDark);
 }
+
+/********************************************************** popup Modal design start  ***********************************************************/
+.modal__Body {
+  background: rgba(9, 10, 27, 0.8);
+}
+.modal__title {
+  color: aliceblue;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 0 20px;
+}
+.modal__close {
+  background: rgb(255, 255, 255);
+  border-radius: 50%;
+}
+.modal__close:hover {
+  color: rgb(153, 0, 0);
+}
+
+/* Dark mode */
+.dark .modal__Body {
+  background: rgba(9, 10, 27, 0.5);
+}

@@ -2,6 +2,7 @@ import { useState } from "react";
 import "../../Styles/TableStyle.css";
 import TableRow from "./TableRow";
 import Pagination from "./Pagination";
+import { Box } from "@mantine/core";
 
 const CustomTable = ({
   title,
@@ -37,39 +38,59 @@ const CustomTable = ({
   };
 
   return (
-    <div>
-      <table>
-        <caption>
-          <div className="flex w-full shadow-lg rounded px-2 py-2 justify-between items-center">
-            <span>{title}</span>
-            <form>
-              <input type="text" name="" placeholder="search..." />
-            </form>
+    <Box
+      sx={(theme) => ({
+        height: 440,
+        width: "calc(100vw - 270px)",
+        // Media query with value from theme
+        [`@media (max-width: ${theme.breakpoints.md}px)`]: {
+          height: "100vh - 200px",
+          width: "calc(100vw - 20px)",
+        },
+      })}
+    >
+      <div>
+        <table className="">
+          <caption>
+            <div className="flex w-full shadow-lg rounded px-2 py-2 justify-between items-center">
+              <span>{title}</span>
+              <form>
+                <input type="text" name="" placeholder="search..." />
+              </form>
+            </div>
+          </caption>
+
+          <div className="h-72 w-8/12 bg-red-400 overflow-auto">
+            <thead>
+              <tr>
+                {headers?.map((header) => (
+                  <th
+                    key={header.header}
+                    className={header.classNames}
+                    width={header.width}
+                  >
+                    {header.header}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+
+            <tbody>
+              <TableRow headers={headers} displayRows={displayRows} />
+            </tbody>
           </div>
-        </caption>
+        </table>
 
-        <thead>
-          <tr>
-            {headers?.map((header) => (
-              <th key={header.header}>{header.header}</th>
-            ))}
-          </tr>
-        </thead>
-
-        <tbody>
-          <TableRow headers={headers} displayRows={displayRows} />
-        </tbody>
-      </table>
-
-      {/* Pagination controls */}
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        handlePageChange={handlePageChange}
-        rowsPerPage={rowsPerPage}
-        handleRowsPerPageChange={handleRowsPerPageChange}
-      />
-    </div>
+        {/* Pagination controls */}
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          handlePageChange={handlePageChange}
+          rowsPerPage={rowsPerPage}
+          handleRowsPerPageChange={handleRowsPerPageChange}
+        />
+      </div>
+    </Box>
   );
 };
 

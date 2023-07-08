@@ -1,70 +1,122 @@
-import Style from "../../../../Styles/TableStyle.module.css";
-import { AgGridReact } from "ag-grid-react";
-import { useCallback, useEffect, useRef } from "react";
+import { useRef } from "react";
 import { useState } from "react";
-import CustomTable from "../../../../Components/tables/CustomTable";
-import { useGetAdminsQuery } from "../../../../redux/features/profile/profileApi";
+import { BiEdit, BiTrash } from "react-icons/bi";
+import {
+  useDeleteAdminMutation,
+  useGetAdminsQuery,
+} from "../../../../redux/features/profile/profileApi";
 import { useSelector } from "react-redux";
+import UpdateSubAdminModal from "../../modals/UpdateSubAdminModal";
+import { Box, Button, Group, Text } from "@mantine/core";
+import { DataTable } from "mantine-datatable";
 
 const AdminTable = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [username, setUsername] = useState("");
+  const [updateAdminModalOpened, setUpdateAdminModalOpened] = useState(false);
+  const [selectedAdmin, setSelectedAdmin] = useState({});
 
   const { admins, pagination } = useSelector((state) => state.profile);
 
-  const { data, isLoading, isError, error, refetch } = useGetAdminsQuery({
+  const { data, isLoading, isError } = useGetAdminsQuery({
     page,
     limit,
     username,
   });
 
-  useEffect(() => {
-    refetch({ page, limit, username });
-  }, [limit]);
+  const [deleteAdmin, { isSuccess }] = useDeleteAdminMutation();
 
-  const dateFormatter = (params) => {
-    return new Date(params.value).toDateString();
+  const scrollViewportRef = useRef(null);
+
+  const loadMoreRecords = () => {
+    if (pagination.totalPages !== page) {
+      setPage(page + 1);
+    }
   };
-  console.log(admins);
+  const reset = () => {
+    // Make sure to scroll to top after resetting records
+    scrollViewportRef.current?.scrollTo(0, 0);
+  };
 
-  const handleUpdate = (value) => {};
+  const handleUpdate = (value) => {
+    setSelectedAdmin(value);
+    setUpdateAdminModalOpened(true);
+  };
 
-  const handleRemove = (bill) => {};
+  const handleRemove = (admin) => {
+    deleteAdmin(admin._id);
+  };
 
-  const headers = [
+  const columns = [
     {
-      header: "Name",
-      rowField: "fullName",
+      Header: "Name",
+      accessor: "fullName",
+      render: (row) => <CustomCell value={row.fullName} accessor="fullName" />,
     },
     {
-      header: "Phone",
-      rowField: "phone",
+      Header: "Phone",
+      accessor: "phone",
+      render: (row) => <CustomCell value={row.phone} accessor="phone" />,
     },
 
-    { header: "Email", rowField: "username" },
-    { header: "Address", rowField: "address" },
-    { header: "City", rowField: "city" },
-    { header: "Area", rowField: "area" },
-    { header: "Postcode", rowField: "postCode" },
-    { header: "Nid", rowField: "nid" },
     {
-      header: "Actions",
-      rowField: (params) => (
-        <div className="flex gap-2">
-          <button
-            className="updateButton btns px-2"
-            onClick={() => handleUpdate(params.data)}
-          >
-            update
-          </button>
-          <button
-            className="removeButton btns px-2"
-            onClick={() => handleRemove(params.data)}
-          >
-            Remove
-          </button>
-        </div>
+      Header: "Email",
+      accessor: "username",
+      render: (row) => <CustomCell value={row.username} accessor="username" />,
+    },
+
+    {
+      Header: "Nid",
+      accessor: "nid",
+      render: (row) => <CustomCell value={row.nid} accessor="nid" />,
+    },
+    {
+      accessor: "address",
+      render: (row) => <CustomCell value={row.address} accessor="address" />,
+    },
+    {
+      Header: "Country",
+      accessor: "country",
+      render: (row) => <CustomCell value={row.country} accessor="country" />,
+    },
+    {
+      Header: "state",
+      accessor: "state",
+      render: (row) => <CustomCell value={row.state} accessor="state" />,
+    },
+    {
+      Header: "state_district",
+      accessor: "state_district",
+      render: (row) => (
+        <CustomCell value={row.state_district} accessor="state_district" />
+      ),
+    },
+    {
+      Header: "Postcode",
+      accessor: "postcode",
+      render: (row) => <CustomCell value={row.postcode} accessor="postcode" />,
+    },
+    {
+      Header: "Role",
+      accessor: "role.name",
+      render: (row) => <CustomCell value={row.role.name} accessor="role" />,
+    },
+    {
+      accessor: "actions",
+      render: (row) => (
+        <td data-cell="actions">
+          <div className="flex w-full justify-center gap-2 text-2xl">
+            <BiEdit
+              className="text-blue-500 hover:bg-slate-300/90 hover:rounded"
+              onClick={() => handleUpdate(row)}
+            />
+            <BiTrash
+              className="text-red-500 hover:bg-red-200/90 hover:rounded"
+              onClick={() => handleRemove(row)}
+            />
+          </div>
+        </td>
       ),
     },
   ];
@@ -72,30 +124,69 @@ const AdminTable = () => {
   let content;
 
   if (isLoading) {
-    return (content = <div>Loading...</div>);
+    content = <div>Loading...</div>;
   }
 
   if (isError) {
-    return (content = <div>Error: </div>);
+    content = <div>Error: </div>;
   }
 
   if (!isLoading && !isError && data?.admins.length > 0) {
-    return (content = (
-      <div className="card my-3">
-        <CustomTable
-          title={"All Admin"}
-          headers={headers}
-          rowData={admins}
-          serverCurrentPage={pagination.currentPage}
-          serverTotalPages={pagination.totalPages}
-          setPage={setPage}
-          setLimit={setLimit}
+    content = (
+      <>
+        <Box
+          sx={(theme) => ({
+            height: "calc(100vh - 270px)",
+            width: "calc(100vw - 270px)",
+            // Media query with value from theme
+            [`@media (max-width: 758px)`]: {
+              height: "100vh - 200px",
+              width: "calc(100vw)",
+            },
+          })}
+        >
+          <DataTable
+            withColumnBorders
+            striped
+            records={admins}
+            columns={columns}
+            textSelectionDisabled
+            classNames={{
+              root: "bg-transparent",
+              pagination: "bg-transparent text-gray-300",
+            }}
+            // rowStyle={{ background: "transparent" }}
+            totalRecords={admins.length}
+            fetching={isLoading}
+            onScrollToBottom={loadMoreRecords}
+            scrollViewportRef={scrollViewportRef}
+          />
+        </Box>
+
+        <Group mt="sm" mx="xs" position="apart">
+          <Text size="sm">
+            Showing {admins.length} records of {pagination.totalRecords}
+            {admins.length < pagination.totalRecords &&
+              ", scroll to bottom to load more"}
+          </Text>
+          <Button variant="light" onClick={reset}>
+            Go To Top
+          </Button>
+        </Group>
+
+        <UpdateSubAdminModal
+          updateAdminModalOpened={updateAdminModalOpened}
+          setUpdateAdminModalOpened={setUpdateAdminModalOpened}
+          data={selectedAdmin}
         />
-      </div>
-    ));
+      </>
+    );
   }
 
-  return content;
+  return <div className="my-3">{content}</div>;
 };
 
 export default AdminTable;
+const CustomCell = ({ value, accessor }) => {
+  return <td data-cell={accessor}>{value}</td>;
+};

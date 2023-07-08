@@ -7,6 +7,8 @@ const TableRow = ({ headers, displayRows }) => {
         <tr key={index}>
           {headers?.map((header) => (
             <td
+              className={` ${header.classNames}`}
+              width={header.width}
               data-cell={header.header}
               key={header.rowField || header.header}
             >

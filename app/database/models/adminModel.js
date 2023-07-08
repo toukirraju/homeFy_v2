@@ -32,15 +32,23 @@ const adminSchema = new Schema(
       type: String,
       require: true,
     },
-    city: {
+    country: {
       type: String,
       require: true,
     },
-    area: {
+    country_code: {
       type: String,
       require: true,
     },
-    postCode: {
+    postcode: {
+      type: String,
+      require: true,
+    },
+    state: {
+      type: String,
+      require: true,
+    },
+    state_district: {
       type: String,
       require: true,
     },
