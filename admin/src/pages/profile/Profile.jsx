@@ -1,10 +1,8 @@
-import Style from "./styles/Profile.module.css";
 import { useSelector } from "react-redux";
 import { Tabs } from "@mantine/core";
 import ProfileCard from "./components/profileCard/ProfileCard";
 import { useState } from "react";
 import CreateSubAdminModal from "./modals/CreateSubAdminModal";
-import { houseInfoData, adminData, OwnerData, UsersData } from "./Data";
 import AdminTable from "./components/tables/AdminTable";
 
 const Profile = () => {

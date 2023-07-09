@@ -28,7 +28,22 @@ require("./app/middlewares/Passport")(passport);
 ///////************************End Points Start******************************\\\\\\
 
 app.use("/api/v1/auth", require("./app/routers/Auth.routes"));
+
 app.use("/api/v1/admin", require("./app/routers/admin/Admin.routes"));
+app.use("/api/v1/admin/houses", require("./app/routers/admin/Houses.routes"));
+app.use(
+  "/api/v1/admin/owners",
+  require("./app/routers/admin/OwnersAdmin.routes")
+);
+app.use(
+  "/api/v1/admin/renters",
+  require("./app/routers/admin/RentersAdmin.routes")
+);
+app.use(
+  "/api/v1/admin/apartments",
+  require("./app/routers/admin/ApartmentsAdmin.routes")
+);
+
 app.use("/api/v1/owner", require("./app/routers/Owner.routes"));
 app.use("/api/v1/apartment", require("./app/routers/Apartment.routes"));
 app.use("/api/v1/renter", require("./app/routers/Renter.routes"));

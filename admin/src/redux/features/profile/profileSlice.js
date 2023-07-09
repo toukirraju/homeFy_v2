@@ -10,7 +10,6 @@ const profileSlice = createSlice({
   initialState,
   reducers: {
     getAdmins: (state, action) => {
-      // state.admins = [state.admins,  ...action.payload.admins];
       const { admins } = action.payload;
       admins.forEach((admin) => {
         // Check if the admin already exists in the admins array
@@ -35,7 +34,6 @@ const profileSlice = createSlice({
     },
 
     deleteAdmin: (state, action) => {
-      // state.admins = [state.admins,  ...action.payload.admins];
       const { _id } = action.payload;
 
       // Check if the admin already exists in the admins array

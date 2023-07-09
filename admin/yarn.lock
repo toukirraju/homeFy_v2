@@ -1684,38 +1684,25 @@
     react-remove-scroll "^2.5.5"
     react-textarea-autosize "8.3.4"
 
-"@mantine/dates@^5.10.0":
-  version "5.10.0"
-  resolved "https://registry.yarnpkg.com/@mantine/dates/-/dates-5.10.0.tgz#cc07f43a4c3ea2c30ae370be752e56b8cc63f81a"
-  integrity sha512-gK+BiXaTY9X1ESjRPNI7CASYx/QseDolNUJBqvXw6YB19QQ/PFCnyoj3xGiJUqiYfzKbFDKfTVSkP5cR6SHljA==
+"@mantine/dates@^6.0.16":
+  version "6.0.16"
+  resolved "https://registry.yarnpkg.com/@mantine/dates/-/dates-6.0.16.tgz#d0b01920f66bcb519a12e73b6aa1f4d6fdc338d5"
+  integrity sha512-vYtdY6LM0dcL3DpEOu0m3Xj1Q3ndPO0+gPJFwcOl5dRMl9YfDo+Y/cFN3UF67ybKfsNTSN4QtGb30G0F0gP56g==
   dependencies:
-    "@mantine/utils" "5.10.0"
+    "@mantine/utils" "6.0.16"
 
 "@mantine/hooks@^6.0.16":
   version "6.0.16"
   resolved "https://registry.yarnpkg.com/@mantine/hooks/-/hooks-6.0.16.tgz#507c322347659424a915ec6b541d848f53abcf6a"
   integrity sha512-DnfMYSTSjYxbQJ80TzKHO5gRXGTIQKxBnRQVc+n4RANTwgWMiwEmxIwqRjbulfLzIhEvplskhqGgElunIAfw7g==
 
-"@mantine/styles@6.0.16":
+"@mantine/styles@6.0.16", "@mantine/styles@^6.0.16":
   version "6.0.16"
   resolved "https://registry.yarnpkg.com/@mantine/styles/-/styles-6.0.16.tgz#625e5be80fc964fa6634f10e798c19f5a4c265ce"
   integrity sha512-0rDE3BzJOKVdPAbnL3XokVWNYgo1z323UgAURdB+WvzwZY7PhblwvrxUDwvvV77qCUENg2vU0LKHqTQD1DDLTg==
   dependencies:
     clsx "1.1.1"
     csstype "3.0.9"
-
-"@mantine/styles@^5.10.0":
-  version "5.10.0"
-  resolved "https://registry.yarnpkg.com/@mantine/styles/-/styles-5.10.0.tgz#52b05a36baeb0b613009e915757461e42a27ae28"
-  integrity sha512-3JBM5LWJHb4Yk7jymPiSuaBJRoe2CgA7KoyYWgabwBP115GlHPb1rQCcavJsobHV4U+wFfZEEUnVBpaAaXqgmw==
-  dependencies:
-    clsx "1.1.1"
-    csstype "3.0.9"
-
-"@mantine/utils@5.10.0":
-  version "5.10.0"
-  resolved "https://registry.yarnpkg.com/@mantine/utils/-/utils-5.10.0.tgz#d77bdbd4fbf0ef7b10dd0c6480ce9a035dd31ae9"
-  integrity sha512-mHnNm0ajIa8qLAIEwv82N6+7YKecynOA3I8vzgBHXS2x4HwGsHITFYGmMh2LNpx5dRL034tObfEFYZXqncyEDw==
 
 "@mantine/utils@6.0.16":
   version "6.0.16"

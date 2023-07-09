@@ -1,11 +1,10 @@
-import { Loader, Switch, Modal, useMantineTheme } from "@mantine/core";
+import { Loader, Switch, Modal } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useState } from "react";
 import LoadingSpinner from "../LoadingSpinner";
 import CustomMap from "./CustomMap";
 
 const MapWindow = ({ mapWindowOpen, setMapWindowOpen, setAddress }) => {
-  const theme = useMantineTheme();
   const isMobile = useMediaQuery("(max-width: 600px)");
 
   const [location, setLocation] = useState([]);

@@ -1,48 +1,43 @@
-const AdminModel = require("../../database/models/adminModel");
-const AdminRole = require("../../database/models/adminRole");
-const OwnerInfoModel = require("../../database/models/ownerModel");
-const RenterInfoModel = require("../../database/models/renterModel");
 const { serverError, resourceError } = require("../../utils/error");
 
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
+const HouseInfo = require("../../database/models/houseInfoModel");
 
-//********* Get All Admins ************\\
+//********* Get All Houses ************\\
 
-const GetAdmins = async (req, res) => {
-  const { page = 1, limit = 10, username } = req.query;
+const GetHouses = async (req, res) => {
+  const { page = 1, limit = 10 } = req.query;
 
   const filter = {};
-  if (username) {
-    filter.username = { $regex: new RegExp(username, "i") };
-  }
+  // if (username) {
+  //   filter.username = { $regex: new RegExp(username, "i") };
+  // }
 
   try {
-    const admins = await AdminModel.aggregate([
+    const houses = await HouseInfo.aggregate([
       { $match: filter },
-      { $project: { password: 0 } },
       { $sort: { createdAt: -1 } },
       { $skip: (page - 1) * limit },
       { $limit: parseInt(limit) },
       // Populate the role field using the AdminRole model
       {
         $lookup: {
-          from: "adminroles",
-          localField: "role",
+          from: "adressmodels",
+          localField: "address",
           foreignField: "_id",
-          as: "role",
+          as: "address",
         },
       },
       // Unwind the role array to get a single object
-      { $unwind: "$role" },
+      { $unwind: "$address" },
     ]);
 
-    const count = await AdminModel.find(filter).countDocuments();
+    const count = await HouseInfo.find(filter).countDocuments();
 
-    if (admins.length > 0) {
+    if (houses.length > 0) {
       res.status(200).json({
-        admins,
+        houses,
         pagination: {
+          totalRecords: Number(count),
           totalPages: Math.ceil(count / limit),
           currentPage: page,
           previousPage: page - 1 > 0 ? page - 1 : null,
@@ -50,127 +45,118 @@ const GetAdmins = async (req, res) => {
         },
       });
     } else {
-      return resourceError(res, "No admin found");
+      return resourceError(res, "No house found");
     }
   } catch (error) {
     serverError(res, error);
   }
 };
 
-//********* New Admin Create ************//
+// Controller function to get monthly created houses per year
+const getMonthlyCreatedHouses = async (req, res) => {
+  const year = req.query.year; // Get the year from the request query parameter
 
-const createSubAdmin = async (req, res) => {
-  const { username, password, firstname, lastname, phone, role } = req.body;
-
-  const salt = await bcrypt.genSalt(10);
-  const hashedPass = await bcrypt.hash(password, salt);
+  // Construct the start and end dates for the specified year
+  const startDate = new Date(year, 0, 1); // January 1st of the specified year
+  const endDate = new Date(year, 11, 31, 23, 59, 59); // December 31st of the specified year
 
   try {
-    const adminRole = await AdminRole.findOne({ name: role });
+    let query = { createdAt: { $gte: startDate, $lte: endDate } };
 
-    if (!adminRole) {
-      return resourceError(res, "Role not defined!");
+    // If year is not provided, get data for the entire year
+    if (!year) {
+      query = {};
     }
 
-    const newAdmin = new AdminModel({
-      username,
-      password: hashedPass,
-      firstname,
-      lastname,
-      fullName: firstname + " " + lastname,
-      phone,
-      role: adminRole._id,
+    const monthlyData = await HouseInfo.find(query);
+
+    // Initialize an object to store monthly totals
+    const monthlyTotals = {};
+
+    // Iterate over the monthly data and calculate the totals for each month
+    monthlyData.forEach((house) => {
+      const month = house.createdAt.getMonth(); // Get the month index (0-11)
+      const monthName = new Date(0, month).toLocaleString("en-US", {
+        month: "short",
+      }); // Get the month name
+      const existingTotal = monthlyTotals[monthName] || 0;
+      monthlyTotals[monthName] = existingTotal + 1; // Increment the count for the month
     });
-    const [isOwnerUsernameExist, isRenterUsernameExist, isAdminUsernameExist] =
-      await Promise.all([
-        OwnerInfoModel.findOne({ username: req.body.username }),
-        RenterInfoModel.findOne({ username: req.body.username }),
-        AdminModel.findOne({ username: req.body.username }),
-      ]);
 
-    if (isRenterUsernameExist || isOwnerUsernameExist || isAdminUsernameExist) {
-      return resourceError(res, "username already taken. Try new one");
-    } else {
-      const admin = await newAdmin.save();
-      res.status(200).json({ message: "admin created", admin });
-    }
-    // else {
-    //   return resourceError(res, "Only super admin can create another admin");
-    // }
-  } catch (error) {
-    serverError(res, error);
-  }
-};
+    // Create an object with the monthly totals, including months with no houses
+    const monthlyTotalsObject = {};
 
-//********* Update Personal Profile ************\\
-
-const UpdatePersonalProfile = async (req, res) => {
-  try {
-    const admin = await AdminModel.findById({ _id: req.user._id });
-
-    if (admin) {
-      await admin.updateOne({ $set: req.body });
-      res.status(200).json({ message: "Profile updated" });
-    } else {
-      return resourceError(res, "Does not recognize user");
-    }
-  } catch (error) {
-    serverError(res, error);
-  }
-};
-
-//********* Update Admin Profile ************\\
-
-const UpdateAdminProfile = async (req, res) => {
-  const id = req.params.id;
-  try {
-    const filter = { _id: id };
-    const update = {
-      $set: {
-        firstname: req.body.firstname,
-        lastname: req.body.lastname,
-        fullName: `${req.body.firstname} ${req.body.lastname}`,
-        address: req.body.address,
-        country: req.body.country,
-        country_code: req.body.country_code,
-        postcode: req.body.postcode,
-        state: req.body.state,
-        state_district: req.body.state_district,
-        nid: req.body.nid,
-      },
-    };
-    const options = { returnDocument: "after" };
-
-    const result = await AdminModel.findByIdAndUpdate(filter, update, options);
-    result && res.status(200).json(result);
-  } catch (error) {
-    serverError(res, error);
-  }
-};
-
-//********* Delete Admin Profile ************\\
-
-const DeleteAdminProfile = async (req, res) => {
-  const id = req.params.id;
-
-  try {
-    const adminDeleted = await AdminModel.findByIdAndDelete(id);
-    if (adminDeleted) {
-      res.status(201).json({
-        message: "admin deleted!",
+    for (let monthIndex = 0; monthIndex < 12; monthIndex++) {
+      const monthName = new Date(0, monthIndex).toLocaleString("en-US", {
+        month: "short",
       });
-    } else {
-      return resourceError(res, "Action forbidden");
+      monthlyTotalsObject[monthName.toLowerCase()] =
+        monthlyTotals[monthName] || 0;
     }
+
+    res.status(200).json(monthlyTotalsObject);
   } catch (error) {
     serverError(res, error);
+  }
+};
+
+// Controller function to get yearly regional houses
+const getRegionalHouses = async (req, res) => {
+  const year = req.query.year; // Get the year from the request query parameter
+
+  try {
+    let query = {};
+
+    // If year is provided, filter the data by year
+    if (year) {
+      const startDate = new Date(year, 0, 1); // January 1st of the specified year
+      const endDate = new Date(year, 11, 31, 23, 59, 59); // December 31st of the specified year
+      query.createdAt = { $gte: startDate, $lte: endDate };
+    }
+
+    const houseData = await HouseInfo.find(query)
+      .populate({
+        path: "address",
+        model: "AdressModel",
+        // select: "state",
+      })
+      .exec();
+
+    // Initialize an object to store state totals
+    const stateTotals = {};
+
+    // Calculate the totals for each state
+    houseData.forEach((house) => {
+      const state = house.address.state;
+      stateTotals[state] = (stateTotals[state] || 0) + 1; // Increment the count for the state
+    });
+
+    res.status(200).json(stateTotals);
+  } catch (error) {
+    serverError(res, error);
+  }
+};
+
+// Controller function to count verified and not verified houses
+const countVerifiedHouses = async (req, res) => {
+  try {
+    const verifiedCount = await HouseInfo.countDocuments({ isVerified: true });
+    const notVerifiedCount = await HouseInfo.countDocuments({
+      isVerified: false,
+    });
+
+    res
+      .status(200)
+      .json({ verified: verifiedCount, notVerified: notVerifiedCount });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
   }
 };
 
 module.exports = {
-  GetAdmins,
-  createSubAdmin,
-  UpdatePersonalProfile,
-  UpdateAdminProfile,
-  DeleteAdminProfile,
+  GetHouses,
+  getMonthlyCreatedHouses,
+  getRegionalHouses,
+  countVerifiedHouses,
 };

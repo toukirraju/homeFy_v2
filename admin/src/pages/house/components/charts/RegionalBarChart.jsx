@@ -1,7 +1,7 @@
 import CustomChart from "../../../../Components/UI/CustomChart";
 import generateRgbaColors from "../../../../utility/genrateRgbaColors";
 
-const RegionalBarChart = () => {
+const RegionalBarChart = ({ regionalData }) => {
   const labels = [
     "Dhaka",
     "Khulna",
@@ -12,7 +12,6 @@ const RegionalBarChart = () => {
     "Mymensingh",
     "Chittagong",
   ];
-  const data = [75345, 54562, 83452, 93452, 74235, 84523, 66452, 93424];
   const backgroundColor = generateRgbaColors(labels.length, 0.4);
   const borderColor = "#afafaf";
 
@@ -39,7 +38,7 @@ const RegionalBarChart = () => {
           },
         },
         formatter: function (value, context) {
-          return value + " /-";
+          return value;
         },
         anchor: "middel",
         align: "center",
@@ -50,8 +49,8 @@ const RegionalBarChart = () => {
   return (
     <CustomChart
       type="bar"
-      labels={labels}
-      data={data}
+      labels={Object.keys(regionalData)}
+      data={Object.values(regionalData)}
       backgroundColor={backgroundColor}
       borderColor={borderColor}
       options={options}

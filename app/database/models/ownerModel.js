@@ -64,6 +64,7 @@ const ownerSchema = new Schema(
     houseName: {
       // for manager
       type: String,
+      default: "",
     },
     isOwner: {
       type: Boolean,

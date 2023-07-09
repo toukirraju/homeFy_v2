@@ -1,38 +1,26 @@
-import React, { useEffect } from "react";
 import "chart.js/auto";
-import Style from "../../../dashboard/styles/Dashboard.module.css";
 import { Chart } from "react-chartjs-2";
 import ChartDataLabels from "chartjs-plugin-datalabels";
-import { useDispatch, useSelector } from "react-redux";
 import { useMediaQuery } from "@mantine/hooks";
 // import { getBillWidget } from "../../../redux/slices/dashboardSlice";
 
-const PieChart = () => {
-  const dispatch = useDispatch();
+const PieChart = ({ blokedData }) => {
   const isMobile = useMediaQuery("(max-width: 768px)");
-  // const {  billWidgets,  isReload } =
-  //   useSelector((state) => state.dashboardData);
-  // // console.log(billWidgets);
-
-  // useEffect(() => {
-  //   dispatch(getBillWidget());
-  // }, [isReload, dispatch]);
+  const ownerData = {
+    blocked: blokedData.blockedOwnerCount,
+    unblock: blokedData.notBlockedOwnerCount,
+  };
   return (
     <>
-      <div className={`${Style.circular_pie}`}>
+      <div>
         <Chart
           type="pie"
           data={{
-            labels: ["Active", "Inactive"],
+            labels: Object.keys(ownerData),
             datasets: [
               {
                 label: "Renters",
-                data: [
-                  534, 344,
-                  // billWidgets.totalPayable,
-                  // billWidgets.totalPaidBill,
-                  // billWidgets.remainingBill,
-                ],
+                data: Object.values(ownerData),
                 backgroundColor: [
                   "rgba(255, 99, 132, 0.4)",
                   "rgba(54, 162, 235, 0.4)",
@@ -54,7 +42,7 @@ const PieChart = () => {
 
             plugins: {
               legend: {
-                display: isMobile ? false : true,
+                // display: isMobile ? false : true,
                 labels: {
                   color: "gray",
                   font: {
@@ -72,7 +60,7 @@ const PieChart = () => {
                   },
                 },
                 formatter: function (value, context) {
-                  return value + " /-";
+                  return value;
                 },
                 // formatter: function (value, context) {
                 //   return (

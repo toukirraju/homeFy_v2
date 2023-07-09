@@ -1,46 +1,29 @@
-import React, { useEffect } from "react";
 import "chart.js/auto";
-import Style from "../../../dashboard/styles/Dashboard.module.css";
 import { Chart } from "react-chartjs-2";
 import ChartDataLabels from "chartjs-plugin-datalabels";
-import { useDispatch, useSelector } from "react-redux";
 import { useMediaQuery } from "@mantine/hooks";
-// import { getBillWidget } from "../../../redux/slices/dashboardSlice";
 
-const PieChart = () => {
-  const dispatch = useDispatch();
+const PieChart = ({ verifiedData }) => {
   const isMobile = useMediaQuery("(max-width: 768px)");
-  // const {  billWidgets,  isReload } =
-  //   useSelector((state) => state.dashboardData);
-  // // console.log(billWidgets);
-
-  // useEffect(() => {
-  //   dispatch(getBillWidget());
-  // }, [isReload, dispatch]);
   return (
     <>
-      <div className={`${Style.circular_pie}`}>
+      <div>
         <Chart
           type="pie"
           data={{
-            labels: ["Active", "Inactive"],
+            labels: Object.keys(verifiedData),
             datasets: [
               {
-                label: "Renters",
-                data: [
-                  534, 344,
-                  // billWidgets.totalPayable,
-                  // billWidgets.totalPaidBill,
-                  // billWidgets.remainingBill,
-                ],
+                label: "Houses",
+                data: Object.values(verifiedData),
                 backgroundColor: [
-                  "rgba(255, 99, 132, 0.4)",
                   "rgba(54, 162, 235, 0.4)",
+                  "rgba(255, 99, 132, 0.4)",
                   "rgba(255, 206, 86, 0.4)",
                 ],
                 borderColor: [
-                  "rgba(255, 99, 132, 1)",
                   "rgba(54, 162, 235, 1)",
+                  "rgba(255, 99, 132, 1)",
                   "rgba(255, 206, 86, 1)",
                 ],
                 borderWidth: 3,
@@ -54,7 +37,7 @@ const PieChart = () => {
 
             plugins: {
               legend: {
-                display: isMobile ? false : true,
+                // display: isMobile ? false : true,
                 labels: {
                   color: "gray",
                   font: {

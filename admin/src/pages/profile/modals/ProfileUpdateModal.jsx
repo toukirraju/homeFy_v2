@@ -1,5 +1,5 @@
 import Styles from "./ModalStyle.module.css";
-import { Modal, useMantineTheme } from "@mantine/core";
+import { Modal } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
@@ -17,7 +17,6 @@ const SignupSchema = Yup.object().shape({
 });
 
 function ProfileUpdateModal({ modalOpened, setModalOpened, data }) {
-  const theme = useMantineTheme();
   const isMobile = useMediaQuery("(max-width: 600px)");
 
   const initialValues = {
