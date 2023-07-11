@@ -1,24 +1,7 @@
 import CustomChart from "../../../../Components/UI/CustomChart";
-import generateRgbaColors from "../../../../utility/genrateRgbaColors";
 
-const RenterLineChart = () => {
-  const labels = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
-  const data = [75345, 54562, 83452, 93452, 74235, 84523, 66452, 93424];
-  const backgroundColor = generateRgbaColors(labels.length, 0.4);
-  const borderColor = "#afafaf";
+const RenterLineChart = ({ yearlyData }) => {
+  const borderColor = "#4191a5";
 
   const options = {
     responsive: true,
@@ -54,9 +37,8 @@ const RenterLineChart = () => {
   return (
     <CustomChart
       type="line"
-      labels={labels}
-      data={data}
-      backgroundColor={backgroundColor}
+      labels={Object.keys(yearlyData.yearlyCreatedRenter)}
+      data={Object.values(yearlyData.yearlyCreatedRenter)}
       borderColor={borderColor}
       options={options}
     />

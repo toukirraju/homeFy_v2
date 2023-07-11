@@ -1,19 +1,11 @@
 import CustomChart from "../../../../Components/UI/CustomChart";
 import generateRgbaColors from "../../../../utility/genrateRgbaColors";
 
-const RegionalBarChart = () => {
-  const labels = [
-    "Dhaka",
-    "Khulna",
-    "Barisal",
-    "Sylhet",
-    "Rajshahi",
-    "Rangpur",
-    "Mymensingh",
-    "Chittagong",
-  ];
-  const data = [75345, 54562, 83452, 93452, 74235, 84523, 66452, 93424];
-  const backgroundColor = generateRgbaColors(labels.length, 0.4);
+const PaidAmountBarChart = ({ yearlyPaidAmount }) => {
+  const backgroundColor = generateRgbaColors(
+    Object.keys(yearlyPaidAmount).length,
+    0.4
+  );
   const borderColor = "#afafaf";
 
   const options = {
@@ -50,8 +42,8 @@ const RegionalBarChart = () => {
   return (
     <CustomChart
       type="bar"
-      labels={labels}
-      data={data}
+      labels={Object.keys(yearlyPaidAmount)}
+      data={Object.values(yearlyPaidAmount)}
       backgroundColor={backgroundColor}
       borderColor={borderColor}
       options={options}
@@ -59,4 +51,4 @@ const RegionalBarChart = () => {
   );
 };
 
-export default RegionalBarChart;
+export default PaidAmountBarChart;
