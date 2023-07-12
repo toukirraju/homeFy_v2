@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { useState } from "react";
 import { BiEdit, BiTrash } from "react-icons/bi";
 import { useSelector } from "react-redux";
-import { Box, Button, Group, Text } from "@mantine/core";
+import { Box, Button, Group, Stack, Text } from "@mantine/core";
 import { DataTable } from "mantine-datatable";
 import { useFetchHousesQuery } from "../../../../redux/features/house/houseApi";
 
@@ -12,6 +12,9 @@ const HouseListTable = () => {
   const [search, setSearch] = useState("");
   const [updateAdminModalOpened, setUpdateAdminModalOpened] = useState(false);
   const [selectedAdmin, setSelectedAdmin] = useState({});
+
+  const [expandedCompanyIds, setExpandedCompanyIds] = useState([]);
+  const [expandedDepartmentIds, setExpandedDepartmentIds] = useState([]);
 
   const { houses, pagination } = useSelector((state) => state.houses);
 
@@ -179,6 +182,23 @@ const HouseListTable = () => {
             fetching={isLoading}
             onScrollToBottom={loadMoreRecords}
             scrollViewportRef={scrollViewportRef}
+            rowExpansion={{
+              content: ({ record }) => (
+                <Stack p="xs" spacing={6}>
+                  <Group spacing={6}>
+                    <Text>Address:</Text>
+                    <Text>
+                      {console.log(record)}
+                      {record.address.address_display_name}
+                    </Text>
+                  </Group>
+                  <Group spacing={6}>
+                    <Text>Mission statement:</Text>
+                    {/* <Text italic>“{record.missionStatement}”</Text> */}
+                  </Group>
+                </Stack>
+              ),
+            }}
           />
         </Box>
 

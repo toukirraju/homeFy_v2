@@ -25,20 +25,17 @@ const Owner = () => {
   } = useFetchOwnersChartsQuery({ year });
 
   //line chart
-  let lineChart, widgets;
+  let widgets;
 
   if (isLoading && !isError) {
-    lineChart = <Loader />;
+    widgets = <Loader />;
   }
 
   if (!isLoading && isError && error) {
-    lineChart = <Error message={error?.data?.message} />;
+    widgets = <Error message={error?.data?.message} />;
   }
 
   if (!isLoading && !isError && Object.keys(yearlyData).length > 0) {
-    lineChart = (
-      <OwnerLineChart yrlyCreatedOwner={yearlyData.yearlyCreatedOwner} />
-    );
     widgets = (
       <div className="md:grid grid-cols-10 gap-2 my-2">
         <div className="card md:col-span-2 w-full">
@@ -104,7 +101,9 @@ const Owner = () => {
             />
           </span>
         </div>
-        <div className="w-full">{lineChart}</div>
+        <div className="w-full">
+          <OwnerLineChart year={year} />
+        </div>
       </div>
 
       {widgets}

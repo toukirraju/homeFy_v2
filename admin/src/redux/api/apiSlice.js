@@ -3,7 +3,8 @@ import { userLoggedOut } from "../features/auth/authSlice";
 import { setError } from "../features/errorSlice";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: process.env.REACT_APP_API_URL,
+  // baseUrl: process.env.REACT_APP_API_URL,
+  baseUrl: "https://api.h0mify.com/api/v1",
 
   prepareHeaders: async (headers, { getState, endpoint }) => {
     const token = getState()?.auth?.token;

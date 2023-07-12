@@ -8,8 +8,10 @@ const {
 
 dotEnv.config({ path: "./config.env" });
 
+const dataBaseUrl = process.env.DATABASE || "mongodb://localhost:27017/h0mify";
+
 mongoose
-  .connect(process.env.DATABASE, {
+  .connect(dataBaseUrl, {
     useNewUrlParser: true,
   })
   .then(() => {

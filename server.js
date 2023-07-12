@@ -47,6 +47,10 @@ app.use(
   "/api/v1/admin/bills",
   require("./app/routers/admin/BillsAdmin.routes")
 );
+app.use(
+  "/api/v1/admin/dashboard",
+  require("./app/routers/admin/AdminDashboard.routes")
+);
 
 app.use("/api/v1/owner", require("./app/routers/Owner.routes"));
 app.use("/api/v1/apartment", require("./app/routers/Apartment.routes"));

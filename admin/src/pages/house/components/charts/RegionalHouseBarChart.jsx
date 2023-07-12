@@ -1,19 +1,31 @@
-import { useSelector } from "react-redux";
+import { useState } from "react";
 import CustomChart from "../../../../Components/UI/CustomChart";
-import { useFetchYearlyBillPaidQuery } from "../../../../redux/features/bills/billApi";
+import { useFetchRegionalHousesQuery } from "../../../../redux/features/house/houseApi";
 import generateRgbaColors from "../../../../utility/genrateRgbaColors";
 import { Loader } from "@mantine/core";
 import Error from "../../../../Components/Error";
+import { useSelector } from "react-redux";
 
-const PaidAmountBarChart = ({ year = new Date().getFullYear() }) => {
-  const {
-    data: yearlyPaidAmount,
-    isLoading: paidLoading,
-    isError: paidError,
-  } = useFetchYearlyBillPaidQuery({ year });
-
+const RegionalHouseBarChart = ({ year = new Date().getFullYear() }) => {
   const error = useSelector((state) => state.error);
 
+  const {
+    data: regionalHouses,
+    isLoading: regionalLoding,
+    isError: regionalError,
+  } = useFetchRegionalHousesQuery({ year });
+
+  const labels = [
+    "Dhaka",
+    "Khulna",
+    "Barisal",
+    "Sylhet",
+    "Rajshahi",
+    "Rangpur",
+    "Mymensingh",
+    "Chittagong",
+  ];
+  const backgroundColor = generateRgbaColors(labels.length, 0.4);
   const borderColor = "#afafaf";
 
   const options = {
@@ -39,7 +51,7 @@ const PaidAmountBarChart = ({ year = new Date().getFullYear() }) => {
           },
         },
         formatter: function (value, context) {
-          return value + " /-";
+          return value;
         },
         anchor: "middel",
         align: "center",
@@ -51,32 +63,31 @@ const PaidAmountBarChart = ({ year = new Date().getFullYear() }) => {
   //bar chart
   let barChart;
 
-  if (paidLoading && !paidError) {
+  if (regionalLoding && !regionalError) {
     barChart = <Loader />;
   }
 
-  if (!paidLoading && paidError && error) {
+  if (!regionalLoding && regionalError && error) {
     barChart = <Error message={error?.data?.message} />;
   }
 
-  if (!paidLoading && !paidError && Object.keys(yearlyPaidAmount).length > 0) {
-    const backgroundColor = generateRgbaColors(
-      Object.keys(yearlyPaidAmount).length,
-      0.4
-    );
+  if (
+    !regionalLoding &&
+    !regionalError &&
+    Object.keys(regionalHouses).length > 0
+  ) {
     barChart = (
       <CustomChart
         type="bar"
-        labels={Object.keys(yearlyPaidAmount)}
-        data={Object.values(yearlyPaidAmount)}
+        labels={Object.keys(regionalHouses)}
+        data={Object.values(regionalHouses)}
         backgroundColor={backgroundColor}
         borderColor={borderColor}
         options={options}
       />
     );
   }
-
   return barChart;
 };
 
-export default PaidAmountBarChart;
+export default RegionalHouseBarChart;

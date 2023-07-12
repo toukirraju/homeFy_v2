@@ -1,12 +1,11 @@
 import HousesLineChart from "./components/charts/HousesLineChart";
-import PieChart from "./components/charts/PieChart";
-import RegionalBarChart from "./components/charts/RegionalBarChart";
+import VerifyHousePieChart from "./components/charts/VerifyHousePieChart";
+import RegionalHouseBarChart from "./components/charts/RegionalHouseBarChart";
 import HouseListTable from "./components/table/HouseListTable";
 import { useState } from "react";
 import { YearPickerInput } from "@mantine/dates";
 import {
   useFetchCreatedHousesQuery,
-  useFetchRegionalHousesQuery,
   useFetchVerifiedHouseCountQuery,
 } from "../../redux/features/house/houseApi";
 import { Loader } from "@mantine/core";
@@ -29,18 +28,6 @@ const House = () => {
     isError: createdError,
   } = useFetchCreatedHousesQuery({ year });
 
-  const {
-    data: regionalHouses,
-    isLoading: regionalLoding,
-    isError: regionalError,
-  } = useFetchRegionalHousesQuery({ year });
-
-  const {
-    data: verifiedHouses,
-    isLoading: verifiedLoding,
-    isError: verifiedError,
-  } = useFetchVerifiedHouseCountQuery();
-
   //line chart
   let lineChart;
 
@@ -58,44 +45,6 @@ const House = () => {
     Object.keys(yearlyCreatedHouses).length > 0
   ) {
     lineChart = <HousesLineChart data={yearlyCreatedHouses} />;
-  }
-
-  //bar chart
-  let barChart;
-
-  if (regionalLoding && !regionalError) {
-    barChart = <Loader />;
-  }
-
-  if (!regionalLoding && regionalError && error) {
-    barChart = <Error message={error?.data?.message} />;
-  }
-
-  if (
-    !regionalLoding &&
-    !regionalError &&
-    Object.keys(regionalHouses).length > 0
-  ) {
-    barChart = <RegionalBarChart regionalData={regionalHouses} />;
-  }
-
-  //pie chart
-  let pieChart;
-
-  if (verifiedLoding && !verifiedError) {
-    pieChart = <Loader />;
-  }
-
-  if (!verifiedLoding && verifiedError && error) {
-    pieChart = <Error message={error?.data?.message} />;
-  }
-
-  if (
-    !verifiedLoding &&
-    !verifiedError &&
-    Object.keys(verifiedHouses).length > 0
-  ) {
-    pieChart = <PieChart verifiedData={verifiedHouses} />;
   }
 
   return (
@@ -120,8 +69,12 @@ const House = () => {
       </div>
 
       <div className="md:grid grid-cols-7 gap-2 my-2">
-        <div className="card md:col-span-2 w-full">{pieChart}</div>
-        <div className="card md:col-span-5 w-full">{barChart}</div>
+        <div className="card md:col-span-2 w-full">
+          <VerifyHousePieChart />
+        </div>
+        <div className="card md:col-span-5 w-full">
+          <RegionalHouseBarChart year={year} />
+        </div>
       </div>
 
       <div className="card">

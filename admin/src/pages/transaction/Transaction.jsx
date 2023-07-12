@@ -3,10 +3,7 @@ import PaidAmountBarChart from "./components/charts/PaidAmountBarChart";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Loader } from "@mantine/core";
-import {
-  useFetchYearlyBillCountQuery,
-  useFetchYearlyBillPaidQuery,
-} from "../../redux/features/bills/billApi";
+import { useFetchYearlyBillCountQuery } from "../../redux/features/bills/billApi";
 import Error from "../../Components/Error";
 import { YearPickerInput } from "@mantine/dates";
 import BillListTable from "./components/tables/BillListTable";
@@ -28,12 +25,6 @@ const Transaction = () => {
     isError,
   } = useFetchYearlyBillCountQuery({ year });
 
-  const {
-    data: yearlyPaidAmount,
-    isLoading: paidLoading,
-    isError: paidError,
-  } = useFetchYearlyBillPaidQuery({ year });
-
   //line chart
   let lineChart;
 
@@ -47,21 +38,6 @@ const Transaction = () => {
 
   if (!isLoading && !isError && Object.keys(yearlyBillCount).length > 0) {
     lineChart = <BillLineChart yearlyBillCount={yearlyBillCount} />;
-  }
-
-  //bar chart
-  let barChart;
-
-  if (paidLoading && !paidError) {
-    barChart = <Loader />;
-  }
-
-  if (!paidLoading && paidError && error) {
-    barChart = <Error message={error?.data?.message} />;
-  }
-
-  if (!paidLoading && !paidError && Object.keys(yearlyPaidAmount).length > 0) {
-    barChart = <PaidAmountBarChart yearlyPaidAmount={yearlyPaidAmount} />;
   }
 
   return (
@@ -85,7 +61,9 @@ const Transaction = () => {
         <div className="w-full">{lineChart}</div>
       </div>
 
-      <div className="card my-2 w-full">{barChart}</div>
+      <div className="card my-2 w-full">
+        <PaidAmountBarChart year={year} />
+      </div>
 
       <div className="card">
         <BillListTable />

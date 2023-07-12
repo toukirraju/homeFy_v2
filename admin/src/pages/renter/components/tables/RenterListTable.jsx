@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { useState } from "react";
 import { BiEdit, BiTrash } from "react-icons/bi";
 import { useSelector } from "react-redux";
-import { Box, Button, Group, Text } from "@mantine/core";
+import { Box, Button, Group, Text, TextInput } from "@mantine/core";
 import { DataTable } from "mantine-datatable";
 import { useFetchOwnersQuery } from "../../../../redux/features/owner/ownerApi";
 import { useFetchRentersQuery } from "../../../../redux/features/renter/renterApi";

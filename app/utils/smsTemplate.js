@@ -23,7 +23,7 @@ const sendInvoiceOnMessage = (bill, phone) => {
 
   const templateBnShort = `
     প্রিয় গ্রাহক,
-    আপনার বাড়ি ভাড়া সফলভাবে 
+    আপনার ভাড়া সফলভাবে 
     গ্রহণ করা হয়েছে।
     প্রদানযোগ্য: ${convertToBanglaDigit(bill.payableAmount)}/-
     প্রদান: ${convertToBanglaDigit(bill.paidAmount)}/-

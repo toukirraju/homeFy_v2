@@ -15,28 +15,6 @@ const Renter = () => {
   };
   const year = getYearFromDate(date);
 
-  const error = useSelector((state) => state.error);
-
-  const {
-    data: yearlyData,
-    isLoading,
-    isError,
-  } = useFetchRenterChartsQuery({ year });
-
-  //line chart
-  let lineChart;
-
-  if (isLoading && !isError) {
-    lineChart = <Loader />;
-  }
-
-  if (!isLoading && isError && error) {
-    lineChart = <Error message={error?.data?.message} />;
-  }
-
-  if (!isLoading && !isError && Object.keys(yearlyData).length > 0) {
-    lineChart = <RenterLineChart yearlyData={yearlyData} />;
-  }
   return (
     <>
       <div className="card dark:bg-slate-800 dark:text-slate-400 flex flex-col  items-center max-h-[200px] ">
@@ -55,7 +33,9 @@ const Renter = () => {
             />
           </span>
         </div>
-        <div className="w-full">{lineChart}</div>
+        <div className="w-full">
+          <RenterLineChart year={year} />
+        </div>
       </div>
 
       <div className="card">

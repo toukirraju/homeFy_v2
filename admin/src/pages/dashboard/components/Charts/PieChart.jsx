@@ -10,7 +10,7 @@ const PieChart = ({ labels = [], data = [], type = "pie" }) => {
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        display: false,
+        // display: false,
         labels: {
           color: "gray",
           font: {
@@ -30,10 +30,10 @@ const PieChart = ({ labels = [], data = [], type = "pie" }) => {
         formatter: function (value, context) {
           const label = context.chart.data.labels[context.dataIndex];
 
-          return label;
-          // return value + " /-";
+          return label + " " + value;
+          // return value ;
         },
-        anchor: "end",
+        anchor: "center",
         align: "center",
       },
     },

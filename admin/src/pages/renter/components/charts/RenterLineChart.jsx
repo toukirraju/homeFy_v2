@@ -1,6 +1,10 @@
+import { useSelector } from "react-redux";
 import CustomChart from "../../../../Components/UI/CustomChart";
+import { useFetchRenterChartsQuery } from "../../../../redux/features/renter/renterApi";
+import { Loader } from "@mantine/core";
+import Error from "../../../../Components/Error";
 
-const RenterLineChart = ({ yearlyData }) => {
+const RenterLineChart = ({ year = new Date().getFullYear() }) => {
   const borderColor = "#4191a5";
 
   const options = {
@@ -34,15 +38,38 @@ const RenterLineChart = ({ yearlyData }) => {
       },
     },
   };
-  return (
-    <CustomChart
-      type="line"
-      labels={Object.keys(yearlyData.yearlyCreatedRenter)}
-      data={Object.values(yearlyData.yearlyCreatedRenter)}
-      borderColor={borderColor}
-      options={options}
-    />
-  );
+
+  const error = useSelector((state) => state.error);
+
+  const {
+    data: yearlyData,
+    isLoading,
+    isError,
+  } = useFetchRenterChartsQuery({ year });
+
+  //line chart
+  let lineChart;
+
+  if (isLoading && !isError) {
+    lineChart = <Loader />;
+  }
+
+  if (!isLoading && isError && error) {
+    lineChart = <Error message={error?.data?.message} />;
+  }
+
+  if (!isLoading && !isError && Object.keys(yearlyData).length > 0) {
+    lineChart = (
+      <CustomChart
+        type="line"
+        labels={Object.keys(yearlyData.yearlyCreatedRenter)}
+        data={Object.values(yearlyData.yearlyCreatedRenter)}
+        borderColor={borderColor}
+        options={options}
+      />
+    );
+  }
+  return lineChart;
 };
 
 export default RenterLineChart;
